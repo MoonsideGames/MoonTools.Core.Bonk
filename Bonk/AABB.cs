@@ -16,16 +16,16 @@ namespace MoonTools.Core.Bonk
         public int Width { get { return MaxX - MinX; } }
         public int Height { get { return MaxY - MinY; } }
 
-        public static AABB FromTransform2DedVertices(IEnumerable<Position2D> vertices, Transform2D transform)
+        public static AABB FromTransformedVertices(IEnumerable<Position2D> vertices, Transform2D transform)
         {
-            var Transform2DedVertices = vertices.Select(vertex => Vector2.Transform(vertex, transform.TransformMatrix));
+            var TransformedVertices = vertices.Select(vertex => Vector2.Transform(vertex, transform.TransformMatrix));
 
             return new AABB
             {
-                MinX = (int)Math.Round(Transform2DedVertices.Min(vertex => vertex.X)),
-                MinY = (int)Math.Round(Transform2DedVertices.Min(vertex => vertex.Y)),
-                MaxX = (int)Math.Round(Transform2DedVertices.Max(vertex => vertex.X)),
-                MaxY = (int)Math.Round(Transform2DedVertices.Max(vertex => vertex.Y))
+                MinX = (int)Math.Round(TransformedVertices.Min(vertex => vertex.X)),
+                MinY = (int)Math.Round(TransformedVertices.Min(vertex => vertex.Y)),
+                MaxX = (int)Math.Round(TransformedVertices.Max(vertex => vertex.X)),
+                MaxY = (int)Math.Round(TransformedVertices.Max(vertex => vertex.Y))
             };
         }
 

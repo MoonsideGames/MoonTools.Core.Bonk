@@ -15,16 +15,16 @@ namespace MoonTools.Core.Bonk
 
         public Vector2 Support(Vector2 direction, Transform2D transform)
         {
-            var Transform2DedStart = Vector2.Transform(vertices[0], transform.TransformMatrix);
-            var Transform2DedEnd = Vector2.Transform(vertices[1], transform.TransformMatrix);
-            return Vector2.Dot(Transform2DedStart, direction) > Vector2.Dot(Transform2DedEnd, direction) ?
-                Transform2DedStart :
-                Transform2DedEnd;
+            var TransformedStart = Vector2.Transform(vertices[0], transform.TransformMatrix);
+            var TransformedEnd = Vector2.Transform(vertices[1], transform.TransformMatrix);
+            return Vector2.Dot(TransformedStart, direction) > Vector2.Dot(TransformedEnd, direction) ?
+                TransformedStart :
+                TransformedEnd;
         }
 
         public AABB AABB(Transform2D Transform2D)
         {
-            return Bonk.AABB.FromTransform2DedVertices(vertices, Transform2D);
+            return Bonk.AABB.FromTransformedVertices(vertices, Transform2D);
         }
 
         public bool Equals(IShape2D other)

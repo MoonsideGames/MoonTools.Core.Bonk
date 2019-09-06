@@ -36,12 +36,12 @@ namespace MoonTools.Core.Bonk
 
             foreach (var v in vertices)
             {
-                var Transform2DedVertex = Vector2.Transform(v, transform.TransformMatrix);
-                var distance = Vector2.Dot(Transform2DedVertex, direction);
+                var TransformedVertex = Vector2.Transform(v, transform.TransformMatrix);
+                var distance = Vector2.Dot(TransformedVertex, direction);
                 if (distance > furthestDistance)
                 {
                     furthestDistance = distance;
-                    furthestVertex = Transform2DedVertex;
+                    furthestVertex = TransformedVertex;
                 }
             }
 
@@ -50,7 +50,7 @@ namespace MoonTools.Core.Bonk
 
         public AABB AABB(Transform2D Transform2D)
         {
-            return Bonk.AABB.FromTransform2DedVertices(vertices, Transform2D);
+            return Bonk.AABB.FromTransformedVertices(vertices, Transform2D);
         }
 
         public bool Equals(IShape2D other)
