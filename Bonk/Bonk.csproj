@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Version>1.0.0</Version>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Description>.NET Core Collision Detection for MonoGame</Description>
+    <PackageId>MoonTools.Core.Bonk</PackageId>
+    <RootNamespace>MoonTools.Core.Bonk</RootNamespace>
+    <Company>Moonside Games</Company>
+    <Authors>Evan Hemsley</Authors>
+    <Copyright>Evan Hemsley 2019</Copyright>
+    <Product>MoonTools.Core.Bonk</Product>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <AssemblyName>MoonTools.Core.Bonk</AssemblyName>
+    <PackageLicenseExpression>LGPL-3.0-only</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/MoonsideGames/MoonTools.Core.Bonk</PackageProjectUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="MoonTools.Core.Structs" Version="1.0.1"/>
+  </ItemGroup>
+</Project>
