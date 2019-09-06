@@ -1,0 +1,46 @@
+version: 2.1
+
+defaults: &defaults
+  working_directory: ~/repo
+  docker:
+    - image: mcr.microsoft.com/dotnet/core/sdk:2.2
+      environment:
+        DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+        DOTNET_CLI_TELEMETRY_OPTOUT: 1
+
+jobs:
+  test:
+    <<: *defaults
+    steps:
+      - checkout
+      - run: dotnet restore
+      - run: dotnet build -c Release
+      - run: dotnet test -c Release
+      - persist_to_workspace:
+          root: .
+          paths: ./Bonk/bin
+
+  deploy:
+    <<: *defaults
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run: dotnet nuget push ./Bonk/bin/Release/MoonTools.Core.Bonk.*.nupkg -k $API_KEY -s https://api.nuget.org/v3/index.json
+
+workflows:
+  version: 2
+  test_and_deploy:
+    jobs:
+      - test:
+          filters:
+            tags:
+              only: /.*/
+      - deploy:
+          requires:
+            - test
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^\d+\.\d+\.\d+(-rc\d+)?$/
