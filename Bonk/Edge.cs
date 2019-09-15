@@ -2,7 +2,7 @@
 
 namespace MoonTools.Core.Bonk
 {
-    public struct Edge
+    internal struct Edge
     {
         public float distance;
         public Vector2 normal;

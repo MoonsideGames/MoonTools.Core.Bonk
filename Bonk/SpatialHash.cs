@@ -16,7 +16,7 @@ namespace MoonTools.Core.Bonk
             this.cellSize = cellSize;
         }
 
-        public (int, int) Hash(int x, int y)
+        private (int, int) Hash(int x, int y)
         {
             return ((int)Math.Floor((float)x / cellSize), (int)Math.Floor((float)y / cellSize));
         }
