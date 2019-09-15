@@ -70,7 +70,7 @@ namespace Tests
         [Test]
         public void PolygonPolygonNotOverlapping()
         {
-            var shapeA = new Polygon(new Position2D(0, 0),
+            var shapeA = new Polygon(
                 new Position2D(-1, 1), new Position2D(1, 1),
                 new Position2D(-1, -1), new Position2D(1, -1)
             );
@@ -111,7 +111,7 @@ namespace Tests
 
             var transformA = Transform2D.DefaultTransform;
 
-            var polygon = new Polygon(new Position2D(0, 0),
+            var polygon = new Polygon(
                 new Position2D(-1, -1), new Position2D(1, -1),
                 new Position2D(1, 1), new Position2D(-1, 1)
             );
@@ -165,7 +165,7 @@ namespace Tests
             var circle = new Circle(1);
             var circleTransform = new Transform2D(new Vector2(5, 0));
 
-            var square = new Polygon(new Position2D(0, 0),
+            var square = new Polygon(
                 new Position2D(-1, -1), new Position2D(1, -1),
                 new Position2D(1, 1), new Position2D(-1, 1)
             );
