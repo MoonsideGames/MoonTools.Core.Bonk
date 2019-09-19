@@ -54,6 +54,27 @@ namespace Tests
         }
 
         [Test]
+        public void InsertAndRetrieveSameValues()
+        {
+            var spatialHash = new SpatialHash<int>(16);
+
+            var rectA = new MoonTools.Core.Bonk.Rectangle(-2, -2, 2, 2);
+            var rectATransform = new Transform2D(new Vector2(-8, -8));
+
+            var rectB = new MoonTools.Core.Bonk.Rectangle(-2, -2, 2, 2);
+            var rectBTransform = new Transform2D(new Vector2(-8, -8));
+
+            var rectC = new MoonTools.Core.Bonk.Rectangle(-1, -1, 1, 1);
+            var rectCTransform = new Transform2D(new Vector2(-8, -8));
+
+            spatialHash.Insert(0, rectA, rectATransform);
+            spatialHash.Insert(1, rectB, rectBTransform);
+            spatialHash.Insert(2, rectC, rectCTransform);
+
+            spatialHash.Retrieve(2, rectC, rectCTransform).Should().HaveCount(2);
+        }
+
+        [Test]
         public void Clear()
         {
             var spatialHash = new SpatialHash<int>(16);
