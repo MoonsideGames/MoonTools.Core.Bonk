@@ -8,13 +8,13 @@ namespace MoonTools.Core.Bonk
 {
     public struct AABB
     {
-        public int MinX { get; private set; }
-        public int MinY { get; private set; }
-        public int MaxX { get; private set; }
-        public int MaxY { get; private set; }
+        public float MinX { get; private set; }
+        public float MinY { get; private set; }
+        public float MaxX { get; private set; }
+        public float MaxY { get; private set; }
 
-        public int Width { get { return MaxX - MinX; } }
-        public int Height { get { return MaxY - MinY; } }
+        public float Width { get { return MaxX - MinX; } }
+        public float Height { get { return MaxY - MinY; } }
 
         public static AABB FromTransformedVertices(IEnumerable<Position2D> vertices, Transform2D transform)
         {
@@ -22,14 +22,14 @@ namespace MoonTools.Core.Bonk
 
             return new AABB
             {
-                MinX = (int)Math.Round(TransformedVertices.Min(vertex => vertex.X)),
-                MinY = (int)Math.Round(TransformedVertices.Min(vertex => vertex.Y)),
-                MaxX = (int)Math.Round(TransformedVertices.Max(vertex => vertex.X)),
-                MaxY = (int)Math.Round(TransformedVertices.Max(vertex => vertex.Y))
+                MinX = TransformedVertices.Min(vertex => vertex.X),
+                MinY = TransformedVertices.Min(vertex => vertex.Y),
+                MaxX = TransformedVertices.Max(vertex => vertex.X),
+                MaxY = TransformedVertices.Max(vertex => vertex.Y)
             };
         }
 
-        public AABB(int minX, int minY, int maxX, int maxY)
+        public AABB(float minX, float minY, float maxX, float maxY)
         {
             MinX = minX;
             MinY = minY;

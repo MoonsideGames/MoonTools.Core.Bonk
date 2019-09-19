@@ -18,13 +18,13 @@ namespace MoonTools.Core.Bonk
             return Vector2.Transform(Vector2.Normalize(direction) * Radius, transform.TransformMatrix);
         }
 
-        public AABB AABB(Transform2D Transform2D)
+        public AABB AABB(Transform2D transform2D)
         {
             return new AABB(
-                Transform2D.Position.X - Radius,
-                Transform2D.Position.Y - Radius,
-                Transform2D.Position.X + Radius,
-                Transform2D.Position.Y + Radius
+                transform2D.Position.X - Radius * transform2D.Scale.X,
+                transform2D.Position.Y - Radius * transform2D.Scale.Y,
+                transform2D.Position.X + Radius * transform2D.Scale.X,
+                transform2D.Position.Y + Radius * transform2D.Scale.Y
             );
         }
 
