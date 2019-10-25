@@ -16,5 +16,6 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="MoonTools.Core.Structs" Version="1.0.1"/>
+    <PackageReference Include="morelinq" Version="3.2.0"/>
   </ItemGroup>
 </Project>

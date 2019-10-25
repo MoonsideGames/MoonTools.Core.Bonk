@@ -1,126 +1,87 @@
-﻿/*
- * Implementation of the GJK collision algorithm
- * Based on some math blogs
- * https://blog.hamaluik.ca/posts/building-a-collision-engine-part-1-2d-gjk-collision-detection/
- * and some code from https://github.com/kroitor/gjk.c
- */
-
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using MoonTools.Core.Structs;
 using System;
+using MoonTools.Core.Bonk.Extensions;
 
 namespace MoonTools.Core.Bonk
 {
     public static class GJK2D
     {
-        private enum SolutionStatus
+        public static bool TestCollision(IShape2D shapeA, Transform2D transformA, IShape2D shapeB, Transform2D transformB)
         {
-            NoIntersection,
-            Intersection,
-            StillSolving
+            return OriginInside(MinkowskiDifference(shapeA, transformA, shapeB, transformB));
         }
 
-        public static ValueTuple<bool, SimplexVertices> TestCollision(IShape2D shapeA, Transform2D Transform2DA, IShape2D shapeB, Transform2D Transform2DB)
+        public static (bool, (Func<Vector2, Vector2>, Vector2, Vector2)) CollisionAndSimplex(IShape2D shapeA, Transform2D transformA, IShape2D shapeB, Transform2D transformB)
         {
-            var vertices = new SimplexVertices(new Vector2?[] { null, null, null, null });
+            var support = MinkowskiDifference(shapeA, transformA, shapeB, transformB);
+            var result = OriginInsideWithSimplex(support);
+            return (result.Item1, (support, result.Item2, result.Item3));
+        }
 
-            const SolutionStatus solutionStatus = SolutionStatus.StillSolving;
-            var direction = Transform2DB.Position - Transform2DA.Position;
+        private static Func<Vector2, Vector2> MinkowskiDifference(IShape2D shapeA, Transform2D transformA, IShape2D shapeB, Transform2D transformB)
+        {
+            return direction => shapeA.Support(direction, transformA) - shapeB.Support(-direction, transformB);
+        }
 
-            var result = (solutionStatus, direction);
+        private static bool OriginInside(Func<Vector2, Vector2> support)
+        {
+            var a = support(Vector2.UnitX);
+            var b = support(-a);
 
-            while (result.solutionStatus == SolutionStatus.StillSolving)
+            return Vector2.Dot(a, b) > 0 ? false : CheckSimplex(support, a, b);
+        }
+
+        private static (bool, Vector2, Vector2) OriginInsideWithSimplex(Func<Vector2, Vector2> support)
+        {
+            var a = support(Vector2.UnitX);
+            var b = support(-a);
+
+            return Vector2.Dot(a, b) > 0 ? (false, a, b) : Simplex(support, a, b);
+        }
+
+        private static bool CheckSimplex(Func<Vector2, Vector2> support, Vector2 a, Vector2 b)
+        {
+            var axb = a.Cross(b);
+            var c = support((b - a).Perpendicular());
+            var axc = a.Cross(c);
+            var bxc = b.Cross(c);
+            var cxb = -bxc;
+
+            return (b - a) == Vector2.Zero || (axb.Y > 0 != bxc.Y > 0 ? CheckSimplex(support, b, c) : (axc.Y > 0 != cxb.Y > 0 ? CheckSimplex(support, a, c) : true));
+        }
+
+        private static (bool, Vector2, Vector2) Simplex(Func<Vector2, Vector2> support, Vector2 a, Vector2 b)
+        {
+            if ((b - a) == Vector2.Zero)
             {
-                result = EvolveSimplex(shapeA, Transform2DA, shapeB, Transform2DB, vertices, result.direction);
+                return (false, a, b);
             }
-
-            return ValueTuple.Create(result.solutionStatus == SolutionStatus.Intersection, vertices);
-        }
-
-        private static (SolutionStatus, Vector2) EvolveSimplex(IShape2D shapeA, Transform2D Transform2DA, IShape2D shapeB, Transform2D Transform2DB, SimplexVertices vertices, Vector2 direction)
-        {
-            switch(vertices.Count)
+            else
             {
-                case 0:
-                    if (direction == Vector2.Zero)
+                var c = support((b - a).Perpendicular());
+                var axb = a.Cross(b);
+                var bxc = b.Cross(c);
+
+                if (axb.Y > 0 != bxc.Y > 0)
+                {
+                    return Simplex(support, b, c);
+                }
+                else
+                {
+                    var axc = a.Cross(c);
+                    var cxb = -bxc;
+
+                    if (axc.Y > 0 != cxb.Y > 0)
                     {
-                        direction = Vector2.UnitX;
+                        return Simplex(support, a, b);
                     }
-                    break;
-
-                case 1:
-                    direction *= -1;
-                    break;
-
-                case 2:
-                    var ab = vertices[1] - vertices[0];
-                    var a0 = vertices[0] * -1;
-
-                    direction = TripleProduct(ab, a0, ab);
-                    if (direction == Vector2.Zero)
-                    {
-                        direction = Perpendicular(ab);
-                    }
-                    break;
-
-                case 3:
-                    var c0 = vertices[2] * -1;
-                    var bc = vertices[1] - vertices[2];
-                    var ca = vertices[0] - vertices[2];
-
-                    var bcNorm = TripleProduct(ca, bc, bc);
-                    var caNorm = TripleProduct(bc, ca, ca);
-
-                    // the origin is outside line bc
-                    // get rid of a and add a new support in the direction of bcNorm
-                    if (Vector2.Dot(bcNorm, c0) > 0)
-                    {
-                        vertices.RemoveAt(0);
-                        direction = bcNorm;
-                    }
-                    // the origin is outside line ca
-                    // get rid of b and add a new support in the direction of caNorm
-                    else if (Vector2.Dot(caNorm, c0) > 0)
-                    {
-                        vertices.RemoveAt(1);
-                        direction = caNorm;
-                    }
-                    // the origin is inside both ab and ac,
-                    // so it must be inside the triangle!
                     else
                     {
-                        return (SolutionStatus.Intersection, direction);
+                        return (true, a, b);
                     }
-                    break;
+                }
             }
-
-            return (AddSupport(shapeA, Transform2DA, shapeB, Transform2DB, vertices, direction) ?
-                SolutionStatus.StillSolving :
-                SolutionStatus.NoIntersection, direction);
-        }
-
-        private static bool AddSupport(IShape2D shapeA, Transform2D Transform2DA, IShape2D shapeB, Transform2D Transform2DB, SimplexVertices vertices, Vector2 direction)
-        {
-            var newVertex = shapeA.Support(direction, Transform2DA) - shapeB.Support(-direction, Transform2DB);
-            vertices.Add(newVertex);
-            return Vector2.Dot(direction, newVertex) >= 0;
-        }
-
-        private static Vector2 TripleProduct(Vector2 a, Vector2 b, Vector2 c)
-        {
-            var A = new Vector3(a.X, a.Y, 0);
-            var B = new Vector3(b.X, b.Y, 0);
-            var C = new Vector3(c.X, c.Y, 0);
-
-            var first = Vector3.Cross(A, B);
-            var second = Vector3.Cross(first, C);
-
-            return new Vector2(second.X, second.Y);
-        }
-
-        private static Vector2 Perpendicular(Vector2 v)
-        {
-            return new Vector2(v.Y, -v.X);
         }
     }
 }

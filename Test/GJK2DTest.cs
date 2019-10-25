@@ -2,6 +2,7 @@
 using MoonTools.Core.Bonk;
 using MoonTools.Core.Structs;
 using Microsoft.Xna.Framework;
+using FluentAssertions;
 
 namespace Tests
 {
@@ -13,7 +14,7 @@ namespace Tests
             var lineA = new Line(new Position2D(-1, -1), new Position2D(1, 1));
             var lineB = new Line(new Position2D(-1, 1), new Position2D(1, -1));
 
-            Assert.IsTrue(GJK2D.TestCollision(lineA, Transform2D.DefaultTransform, lineB, Transform2D.DefaultTransform).Item1);
+            GJK2D.TestCollision(lineA, Transform2D.DefaultTransform, lineB, Transform2D.DefaultTransform).Should().BeTrue();
         }
 
         [Test]
@@ -22,7 +23,7 @@ namespace Tests
             var lineA = new Line(new Position2D(0, 1), new Position2D(1, 0));
             var lineB = new Line(new Position2D(-1, -1), new Position2D(-2, -2));
 
-            Assert.IsFalse(GJK2D.TestCollision(lineA, Transform2D.DefaultTransform, lineB, Transform2D.DefaultTransform).Item1);
+            GJK2D.TestCollision(lineA, Transform2D.DefaultTransform, lineB, Transform2D.DefaultTransform).Should().BeFalse();
         }
 
         [Test]
@@ -33,7 +34,7 @@ namespace Tests
             var circleB = new Circle(2);
             var transformB = new Transform2D(new Vector2(1, 1));
 
-            Assert.IsTrue(GJK2D.TestCollision(circleA, transformA, circleB, transformB).Item1);
+            Assert.IsTrue(GJK2D.TestCollision(circleA, transformA, circleB, transformB));
         }
 
         [Test]
@@ -44,7 +45,7 @@ namespace Tests
             var circleB = new Circle(2);
             var transformB = new Transform2D(new Vector2(5, 5));
 
-            Assert.IsFalse(GJK2D.TestCollision(circleA, transformA, circleB, transformB).Item1);
+            Assert.IsFalse(GJK2D.TestCollision(circleA, transformA, circleB, transformB));
         }
 
         [Test]
@@ -64,7 +65,7 @@ namespace Tests
 
             var transformB = new Transform2D(new Vector2(0.5f, 0.5f));
 
-            Assert.IsTrue(GJK2D.TestCollision(shapeA, transformA, shapeB, transformB).Item1);
+            Assert.IsTrue(GJK2D.TestCollision(shapeA, transformA, shapeB, transformB));
         }
 
         [Test]
@@ -84,7 +85,7 @@ namespace Tests
 
             var transformB = new Transform2D(new Vector2(5, 0));
 
-            Assert.IsFalse(GJK2D.TestCollision(shapeA, transformA, shapeB, transformB).Item1);
+            Assert.IsFalse(GJK2D.TestCollision(shapeA, transformA, shapeB, transformB));
         }
 
         [Test]
@@ -101,7 +102,7 @@ namespace Tests
 
             var transformB = Transform2D.DefaultTransform;
 
-            Assert.IsTrue(GJK2D.TestCollision(line, transformA, polygon, transformB).Item1);
+            Assert.IsTrue(GJK2D.TestCollision(line, transformA, polygon, transformB));
         }
 
         [Test]
@@ -118,7 +119,7 @@ namespace Tests
 
             var transformB = Transform2D.DefaultTransform;
 
-            Assert.IsFalse(GJK2D.TestCollision(line, transformA, polygon, transformB).Item1);
+            Assert.IsFalse(GJK2D.TestCollision(line, transformA, polygon, transformB));
         }
 
         [Test]
@@ -129,7 +130,7 @@ namespace Tests
             var circle = new Circle(1);
             var transformB = Transform2D.DefaultTransform;
 
-            Assert.IsTrue(GJK2D.TestCollision(line, transformA, circle, transformB).Item1);
+            Assert.IsTrue(GJK2D.TestCollision(line, transformA, circle, transformB));
         }
 
         [Test]
@@ -140,7 +141,7 @@ namespace Tests
             var circle = new Circle(1);
             var transformB = Transform2D.DefaultTransform;
 
-            Assert.IsFalse(GJK2D.TestCollision(line, transformA, circle, transformB).Item1);
+            Assert.IsFalse(GJK2D.TestCollision(line, transformA, circle, transformB));
         }
 
         [Test]
@@ -156,7 +157,7 @@ namespace Tests
 
             var transformB = Transform2D.DefaultTransform;
 
-            Assert.IsTrue(GJK2D.TestCollision(circle, transformA, square, transformB).Item1);
+            Assert.IsTrue(GJK2D.TestCollision(circle, transformA, square, transformB));
         }
 
         [Test]
@@ -171,7 +172,7 @@ namespace Tests
             );
             var squareTransform = Transform2D.DefaultTransform;
 
-            Assert.IsFalse(GJK2D.TestCollision(circle, circleTransform, square, squareTransform).Item1);
+            Assert.IsFalse(GJK2D.TestCollision(circle, circleTransform, square, squareTransform));
         }
 
         [Test]
@@ -183,7 +184,7 @@ namespace Tests
             var rectangleB = new MoonTools.Core.Bonk.Rectangle(-1, -1, 1, 1);
             var transformB = new Transform2D(new Vector2(1, 0));
 
-            Assert.IsTrue(GJK2D.TestCollision(rectangleA, transformA, rectangleB, transformB).Item1);
+            Assert.IsTrue(GJK2D.TestCollision(rectangleA, transformA, rectangleB, transformB));
         }
 
         [Test]
@@ -195,7 +196,7 @@ namespace Tests
             var rectangleB = new MoonTools.Core.Bonk.Rectangle(-1, -1, 1, 1);
             var transformB = new Transform2D(new Vector2(1, 0));
 
-            Assert.IsTrue(GJK2D.TestCollision(rectangleA, transformA, rectangleB, transformB).Item1);
+            Assert.IsTrue(GJK2D.TestCollision(rectangleA, transformA, rectangleB, transformB));
         }
     }
 }
