@@ -7,6 +7,9 @@ using MoreLinq;
 
 namespace MoonTools.Core.Bonk
 {
+    /// <summary>
+    /// A rectangle is a shape defined by a minimum and maximum X value and a minimum and maximum Y value.
+    /// </summary>
     public struct Rectangle : IShape2D, IEquatable<IShape2D>
     {
         public int MinX { get; }

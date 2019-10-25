@@ -4,6 +4,9 @@ using MoonTools.Core.Structs;
 
 namespace MoonTools.Core.Bonk
 {
+    /// <summary>
+    /// A Circle is a shape defined by a radius.
+    /// </summary>
     public struct Circle : IShape2D, IEquatable<IShape2D>
     {
         public int Radius { get; private set; }

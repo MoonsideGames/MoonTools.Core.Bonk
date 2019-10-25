@@ -5,6 +5,9 @@ using MoonTools.Core.Structs;
 
 namespace MoonTools.Core.Bonk
 {
+    /// <summary>
+    /// A line is a shape defined by exactly two points in space.
+    /// </summary>
     public struct Line : IShape2D, IEquatable<IShape2D>
     {
         private Position2D v0;

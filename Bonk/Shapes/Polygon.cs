@@ -4,6 +4,9 @@ using MoonTools.Core.Structs;
 
 namespace MoonTools.Core.Bonk
 {
+    /// <summary>
+    /// A Shape defined by an arbitrary collection of vertices. WARNING: Polygon must use an Array internally and therefore will create GC pressure.
+    /// </summary>
     public struct Polygon : IShape2D, IEquatable<IShape2D>
     {
         public Position2D[] Vertices { get; private set; }
@@ -48,7 +51,7 @@ namespace MoonTools.Core.Bonk
 
                 for (int i = 0; i < Vertices.Length; i++)
                 {
-                    if (Vertices[i].ToVector2() != otherPolygon.Vertices[i].ToVector2()) { return false;}
+                    if (Vertices[i].ToVector2() != otherPolygon.Vertices[i].ToVector2()) { return false; }
                 }
 
                 return true;

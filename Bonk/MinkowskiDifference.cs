@@ -4,6 +4,9 @@ using MoonTools.Core.Structs;
 
 namespace MoonTools.Core.Bonk
 {
+    /// <summary>
+    /// A Minkowski difference between two shapes.
+    /// </summary>
     public struct MinkowskiDifference : IEquatable<MinkowskiDifference>
     {
         private IShape2D shapeA;
