@@ -2,90 +2,10 @@
 using MoonTools.Core.Structs;
 using System;
 using MoonTools.Core.Bonk.Extensions;
-using System.Collections.Generic;
 
 namespace MoonTools.Core.Bonk
 {
-    public struct MinkowskiDifference : IEquatable<MinkowskiDifference>
-    {
-        private IShape2D shapeA;
-        private Transform2D transformA;
-        private IShape2D shapeB;
-        private Transform2D transformB;
 
-        public MinkowskiDifference(IShape2D shapeA, Transform2D transformA, IShape2D shapeB, Transform2D transformB)
-        {
-            this.shapeA = shapeA;
-            this.transformA = transformA;
-            this.shapeB = shapeB;
-            this.transformB = transformB;
-        }
-
-        public bool Equals(MinkowskiDifference other)
-        {
-            return
-                shapeA == other.shapeA &&
-                transformA.Equals(other.transformA) &&
-                shapeB == other.shapeB &&
-                transformB.Equals(other.transformB);
-        }
-
-        public Vector2 Support(Vector2 direction)
-        {
-            return shapeA.Support(direction, transformA) - shapeB.Support(-direction, transformB);
-        }
-    }
-
-    public struct Simplex : IShape2D
-    {
-        MinkowskiDifference minkowskiDifference;
-        Vector2 directionA;
-        Vector2 directionB;
-
-        public Simplex(MinkowskiDifference minkowskiDifference, Vector2 directionA, Vector2 directionB)
-        {
-            this.minkowskiDifference = minkowskiDifference;
-            this.directionA = directionA;
-            this.directionB = directionB;
-        }
-
-        public IEnumerable<Position2D> Vertices
-        {
-            get
-            {
-                yield return (Position2D)Support(directionA);
-                yield return (Position2D)Support(directionB);
-                yield return (Position2D)Support(-(directionB - directionA).Perpendicular());
-            }
-        }
-
-        public AABB AABB(Transform2D transform)
-        {
-            return Bonk.AABB.FromTransformedVertices(Vertices, transform);
-        }
-
-        public bool Equals(IShape2D other)
-        {
-            if (other is Simplex polytope)
-            {
-                return minkowskiDifference.Equals(polytope.minkowskiDifference) &&
-                    directionA == polytope.directionA &&
-                    directionB == polytope.directionB;
-            }
-
-            return false;
-        }
-
-        public Vector2 Support(Vector2 direction)
-        {
-            return minkowskiDifference.Support(direction);
-        }
-
-        public Vector2 Support(Vector2 direction, Transform2D transform)
-        {
-            return Vector2.Transform(Support(direction), transform.TransformMatrix);
-        }
-    }
 
     public static class GJK2D
     {
