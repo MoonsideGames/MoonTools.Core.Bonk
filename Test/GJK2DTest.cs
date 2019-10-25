@@ -18,12 +18,34 @@ namespace Tests
         }
 
         [Test]
+        public void ScaledLinesOverlapping()
+        {
+            var lineA = new Line(new Position2D(-1, -1), new Position2D(1, 1));
+            var lineB = new Line(new Position2D(-1, 1), new Position2D(1, -1));
+
+            var transform = new Transform2D(new Position2D(0, 0), 0f, new Vector2(2, 2));
+
+            Assert.IsTrue(GJK2D.TestCollision(lineA, transform, lineB, transform).Item1);
+        }
+
+        [Test]
         public void LineLineNotOverlapping()
         {
             var lineA = new Line(new Position2D(0, 1), new Position2D(1, 0));
             var lineB = new Line(new Position2D(-1, -1), new Position2D(-2, -2));
 
             GJK2D.TestCollision(lineA, Transform2D.DefaultTransform, lineB, Transform2D.DefaultTransform).Should().BeFalse();
+        }
+
+        [Test]
+        public void ScaledLinesNotOverlapping()
+        {
+            var lineA = new Line(new Position2D(0, 1), new Position2D(1, 0));
+            var lineB = new Line(new Position2D(-1, -1), new Position2D(-2, -2));
+
+            var transform = new Transform2D(new Position2D(0, 0), 0f, new Vector2(2, 2));
+
+            Assert.IsFalse(GJK2D.TestCollision(lineA, transform, lineB, transform).Item1);
         }
 
         [Test]
@@ -38,6 +60,17 @@ namespace Tests
         }
 
         [Test]
+        public void ScaledCirclesOverlapping()
+        {
+            var circleA = new Circle(2);
+            var transformA = new Transform2D(new Vector2(-3, 0), 0f, new Vector2(2, 2));
+            var circleB = new Circle(2);
+            var transformB = new Transform2D(new Vector2(3, 0), 0f, new Vector2(2, 2));
+
+            Assert.IsTrue(GJK2D.TestCollision(circleA, transformA, circleB, transformB).Item1);
+        }
+
+        [Test]
         public void CircleCircleNotOverlapping()
         {
             var circleA = new Circle(2);
@@ -46,6 +79,17 @@ namespace Tests
             var transformB = new Transform2D(new Vector2(5, 5));
 
             Assert.IsFalse(GJK2D.TestCollision(circleA, transformA, circleB, transformB));
+        }
+
+        [Test]
+        public void ScaledCirclesNotOverlapping()
+        {
+            var circleA = new Circle(2);
+            var transformA = new Transform2D(new Vector2(-5, -5), 0, new Vector2(0.2f, 0.2f));
+            var circleB = new Circle(2);
+            var transformB = new Transform2D(new Vector2(5, 5), 0, new Vector2(0.2f, 0.2f));
+
+            Assert.IsFalse(GJK2D.TestCollision(circleA, transformA, circleB, transformB).Item1);
         }
 
         [Test]
@@ -69,6 +113,26 @@ namespace Tests
         }
 
         [Test]
+        public void ScaledPolygonsOverlapping()
+        {
+            var shapeA = new Polygon(
+                new Position2D(-1, 1), new Position2D(1, 1),
+                new Position2D(-1, -1), new Position2D(1, -1)
+            );
+
+            var transformA = Transform2D.DefaultTransform;
+
+            var shapeB = new Polygon(
+                new Position2D(-1, 1), new Position2D(1, 1),
+                new Position2D(-1, -1), new Position2D(1, -1)
+            );
+
+            var transformB = new Transform2D(new Vector2(3f, 0f), 0f, new Vector2(3f, 3f));
+
+            Assert.IsTrue(GJK2D.TestCollision(shapeA, transformA, shapeB, transformB).Item1);
+        }
+
+        [Test]
         public void PolygonPolygonNotOverlapping()
         {
             var shapeA = new Polygon(
@@ -86,6 +150,26 @@ namespace Tests
             var transformB = new Transform2D(new Vector2(5, 0));
 
             Assert.IsFalse(GJK2D.TestCollision(shapeA, transformA, shapeB, transformB));
+        }
+
+        [Test]
+        public void ScaledPolygonsNotOverlapping()
+        {
+            var shapeA = new Polygon(
+                new Position2D(-1, 1), new Position2D(1, 1),
+                new Position2D(-1, -1), new Position2D(1, -1)
+            );
+
+            var transformA = Transform2D.DefaultTransform;
+
+            var shapeB = new Polygon(
+                new Position2D(-1, 1), new Position2D(1, 1),
+                new Position2D(-1, -1), new Position2D(1, -1)
+            );
+
+            var transformB = new Transform2D(new Vector2(2f, 0), 0f, new Vector2(0.2f, 0.2f));
+
+            Assert.IsFalse(GJK2D.TestCollision(shapeA, transformA, shapeB, transformB).Item1);  
         }
 
         [Test]

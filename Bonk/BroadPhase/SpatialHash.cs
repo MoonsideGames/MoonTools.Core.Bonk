@@ -8,22 +8,22 @@ namespace MoonTools.Core.Bonk
     {
         private readonly int cellSize;
 
-        private readonly Dictionary<int, Dictionary<int, HashSet<(IShape2D, Transform2D)>>> hashDictionary = new Dictionary<int, Dictionary<int, HashSet<(IShape2D, Transform2D)>>>();
-        private readonly Dictionary<(IShape2D, Transform2D), T> IDLookup = new Dictionary<(IShape2D, Transform2D), T>();
+        private readonly Dictionary<int, Dictionary<int, HashSet<T>>> hashDictionary = new Dictionary<int, Dictionary<int, HashSet<T>>>();
+        private readonly Dictionary<T, (IShape2D, Transform2D)> IDLookup = new Dictionary<T, (IShape2D, Transform2D)>();
 
         public SpatialHash(int cellSize)
         {
             this.cellSize = cellSize;
         }
 
-        private (int, int) Hash(int x, int y)
+        private (int, int) Hash(float x, float y)
         {
-            return ((int)Math.Floor((float)x / cellSize), (int)Math.Floor((float)y / cellSize));
+            return ((int)Math.Floor(x / cellSize), (int)Math.Floor(y / cellSize));
         }
 
-        public void Insert(T id, IShape2D shape, Transform2D Transform2D)
+        public void Insert(T id, IShape2D shape, Transform2D transform2D)
         {
-            var box = shape.AABB(Transform2D);
+            var box = shape.AABB(transform2D);
             var minHash = Hash(box.MinX, box.MinY);
             var maxHash = Hash(box.MaxX, box.MaxY);
 
@@ -33,23 +33,23 @@ namespace MoonTools.Core.Bonk
                 {
                     if (!hashDictionary.ContainsKey(i))
                     {
-                        hashDictionary.Add(i, new Dictionary<int, HashSet<(IShape2D, Transform2D)>>());
+                        hashDictionary.Add(i, new Dictionary<int, HashSet<T>>());
                     }
 
                     if (!hashDictionary[i].ContainsKey(j))
                     {
-                        hashDictionary[i].Add(j, new HashSet<(IShape2D, Transform2D)>());
+                        hashDictionary[i].Add(j, new HashSet<T>());
                     }
 
-                    hashDictionary[i][j].Add((shape, Transform2D));
-                    IDLookup[(shape, Transform2D)] = id;
+                    hashDictionary[i][j].Add(id);
+                    IDLookup[id] = (shape, transform2D);
                 }
             }
         }
 
-        public IEnumerable<(T, IShape2D, Transform2D)> Retrieve(T id, IShape2D shape, Transform2D Transform2D)
+        public IEnumerable<(T, IShape2D, Transform2D)> Retrieve(T id, IShape2D shape, Transform2D transform2D)
         {
-            var box = shape.AABB(Transform2D);
+            var box = shape.AABB(transform2D);
             var minHash = Hash(box.MinX, box.MinY);
             var maxHash = Hash(box.MaxX, box.MaxY);
 
@@ -59,10 +59,10 @@ namespace MoonTools.Core.Bonk
                 {
                     if (hashDictionary.ContainsKey(i) && hashDictionary[i].ContainsKey(j))
                     {
-                        foreach (var (otherShape, otherTransform2D) in hashDictionary[i][j])
+                        foreach (var t in hashDictionary[i][j])
                         {
-                            var otherID = IDLookup[(otherShape, otherTransform2D)];
-                            if (!id.Equals(otherID)) { yield return (otherID, otherShape, otherTransform2D); }
+                            var (otherShape, otherTransform) = IDLookup[t];
+                            if (!id.Equals(t)) { yield return (t, otherShape, otherTransform); }
                         }
                     }
                 }
