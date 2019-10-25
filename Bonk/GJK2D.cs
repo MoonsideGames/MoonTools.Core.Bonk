@@ -5,6 +5,7 @@ using MoonTools.Core.Bonk.Extensions;
 
 namespace MoonTools.Core.Bonk
 {
+    // TODO: get rid of minkowski closure for GC purposes
     public static class GJK2D
     {
         public static bool TestCollision(IShape2D shapeA, Transform2D transformA, IShape2D shapeB, Transform2D transformB)

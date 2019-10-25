@@ -18,6 +18,7 @@ namespace MoonTools.Core.Bonk
         CounterClockwise
     }
 
+    // TODO: convert SimplexVertices to PooledList
     public static class EPA2D
     {
         // vector returned gives direction from A to B
