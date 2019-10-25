@@ -6,6 +6,9 @@ namespace MoonTools.Core.Bonk
 {
     public static class GJK2D
     {
+        /// <summary>
+        /// Tests if the two shape-transform pairs are overlapping.
+        /// </summary>
         public static bool TestCollision(IShape2D shapeA, Transform2D transformA, IShape2D shapeB, Transform2D transformB)
         {
             var minkowskiDifference = new MinkowskiDifference(shapeA, transformA, shapeB, transformB);
@@ -29,6 +32,9 @@ namespace MoonTools.Core.Bonk
             return (b - a) == Vector2.Zero || (axb.Y > 0 != bxc.Y > 0 ? CheckSimplex(simplex.WithDirections(b, c)) : (axc.Y > 0 != cxb.Y > 0 ? CheckSimplex(simplex.WithDirections(a, c)) : true));
         }
 
+        /// <summary>
+        /// Tests if the two shape-transform pairs are overlapping, and returns a simplex that can be used by the EPA algorithm to determine a miminum separating vector.
+        /// </summary>
         public static (bool, Simplex) FindCollisionSimplex(IShape2D shapeA, Transform2D transformA, IShape2D shapeB, Transform2D transformB)
         {
             var minkowskiDifference = new MinkowskiDifference(shapeA, transformA, shapeB, transformB);

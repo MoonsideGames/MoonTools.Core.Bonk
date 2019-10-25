@@ -5,6 +5,9 @@ using MoonTools.Core.Bonk.Extensions;
 
 namespace MoonTools.Core.Bonk
 {
+    /// <summary>
+    /// A simplex is a shape used to calculate overlap. It is defined by a Minkowski difference and two direction vectors.
+    /// </summary>
     public struct Simplex : IShape2D
     {
         MinkowskiDifference minkowskiDifference;

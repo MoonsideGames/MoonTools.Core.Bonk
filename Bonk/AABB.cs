@@ -6,6 +6,9 @@ using MoonTools.Core.Structs;
 
 namespace MoonTools.Core.Bonk
 {
+    /// <summary>
+    /// Axis-aligned bounding box.
+    /// </summary>
     public struct AABB
     {
         public float MinX { get; private set; }

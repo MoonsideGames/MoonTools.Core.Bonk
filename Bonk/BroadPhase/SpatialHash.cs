@@ -4,6 +4,10 @@ using MoonTools.Core.Structs;
 
 namespace MoonTools.Core.Bonk
 {
+    /// <summary>
+    /// Used to quickly check if two shapes are potentially overlapping.
+    /// </summary>
+    /// <typeparam name="T">The type that will be used to uniquely identify shape-transform pairs.</typeparam>
     public class SpatialHash<T> where T : IEquatable<T>
     {
         private readonly int cellSize;
@@ -21,6 +25,12 @@ namespace MoonTools.Core.Bonk
             return ((int)Math.Floor(x / cellSize), (int)Math.Floor(y / cellSize));
         }
 
+        /// <summary>
+        /// Inserts an element into the SpatialHash.
+        /// </summary>
+        /// <param name="id">A unique ID for the shape-transform pair.</param>
+        /// <param name="shape"></param>
+        /// <param name="transform2D"></param>
         public void Insert(T id, IShape2D shape, Transform2D transform2D)
         {
             var box = shape.AABB(transform2D);
@@ -47,6 +57,9 @@ namespace MoonTools.Core.Bonk
             }
         }
 
+        /// <summary>
+        /// Retrieves all the potential collisions of a shape-transform pair. Excludes any shape-transforms with the given ID.
+        /// </summary>
         public IEnumerable<(T, IShape2D, Transform2D)> Retrieve(T id, IShape2D shape, Transform2D transform2D)
         {
             var box = shape.AABB(transform2D);
@@ -69,6 +82,9 @@ namespace MoonTools.Core.Bonk
             }
         }
 
+        /// <summary>
+        /// Removes everything that has been inserted into the SpatialHash.
+        /// </summary>
         public void Clear()
         {
             foreach (var innerDict in hashDictionary.Values)
