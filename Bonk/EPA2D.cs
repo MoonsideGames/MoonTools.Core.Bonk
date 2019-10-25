@@ -22,15 +22,14 @@ namespace MoonTools.Core.Bonk
     public static class EPA2D
     {
         // vector returned gives direction from A to B
-        public static Vector2 Intersect(IShape2D shapeA, Transform2D Transform2DA, IShape2D shapeB, Transform2D Transform2DB, (Func<Vector2, Vector2>, Vector2, Vector2) givenSimplexVertices)
+        public static Vector2 Intersect(IShape2D shapeA, Transform2D Transform2DA, IShape2D shapeB, Transform2D Transform2DB, Simplex givenSimplex)
         {
             var simplexVertices = new SimplexVertices(new Vector2?[36]);
 
-            var (simplexSupport, a, b) = givenSimplexVertices;
-            simplexVertices.Add(simplexSupport(a));
-            simplexVertices.Add(simplexSupport(b));
-            simplexVertices.Add(simplexSupport(-a));
-            simplexVertices.Add(simplexSupport(-b));
+            foreach (var vertex in givenSimplex.Vertices)
+            {
+                simplexVertices.Add(vertex);
+            }
 
             var e0 = (simplexVertices[1].X - simplexVertices[0].X) * (simplexVertices[1].Y + simplexVertices[0].Y);
             var e1 = (simplexVertices[2].X - simplexVertices[1].X) * (simplexVertices[2].Y + simplexVertices[1].Y);
