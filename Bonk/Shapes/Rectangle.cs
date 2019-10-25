@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using MoonTools.Core.Structs;
+using MoreLinq;
 
 namespace MoonTools.Core.Bonk
 {
@@ -11,7 +14,16 @@ namespace MoonTools.Core.Bonk
         public int MaxX { get; }
         public int MaxY { get; }
 
-        private Position2D[] vertices;
+        private IEnumerable<Position2D> vertices
+        {
+            get
+            {
+                yield return new Position2D(MinX, MinY);
+                yield return new Position2D(MinX, MaxY);
+                yield return new Position2D(MaxX, MinY);
+                yield return new Position2D(MaxX, MaxY);
+            }
+        }
 
         public Rectangle(int minX, int minY, int maxX, int maxY)
         {
@@ -19,33 +31,11 @@ namespace MoonTools.Core.Bonk
             MinY = minY;
             MaxX = maxX;
             MaxY = maxY;
-
-            vertices = new Position2D[4]
-            {
-                new Position2D(minX, minY),
-                new Position2D(minX, maxY),
-                new Position2D(maxX, minY),
-                new Position2D(maxX, maxY)
-            };
         }
 
         public Vector2 Support(Vector2 direction, Transform2D transform)
         {
-            var furthestDistance = float.NegativeInfinity;
-            var furthestVertex = Vector2.Transform(vertices[0], transform.TransformMatrix);
-
-            foreach (var v in vertices)
-            {
-                var TransformedVertex = Vector2.Transform(v, transform.TransformMatrix);
-                var distance = Vector2.Dot(TransformedVertex, direction);
-                if (distance > furthestDistance)
-                {
-                    furthestDistance = distance;
-                    furthestVertex = TransformedVertex;
-                }
-            }
-
-            return furthestVertex;
+            return vertices.Select(vertex => Vector2.Transform(vertex, transform.TransformMatrix)).MaxBy(transformed => Vector2.Dot(transformed, direction)).First();
         }
 
         public AABB AABB(Transform2D Transform2D)

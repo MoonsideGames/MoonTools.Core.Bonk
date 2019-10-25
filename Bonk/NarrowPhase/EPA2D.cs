@@ -4,10 +4,10 @@
  * https://blog.hamaluik.ca/posts/building-a-collision-engine-part-2-2d-penetration-vectors/
  */
 
+using Collections.Pooled;
 using Microsoft.Xna.Framework;
 using MoonTools.Core.Structs;
 using System;
-using System.Collections.Generic;
 
 namespace MoonTools.Core.Bonk
 {
@@ -20,11 +20,11 @@ namespace MoonTools.Core.Bonk
     public static class EPA2D
     {
         // vector returned gives direction from A to B
-        public static Vector2 Intersect(IShape2D shapeA, Transform2D Transform2DA, IShape2D shapeB, Transform2D Transform2DB, IEnumerable<Vector2> givenSimplexVertices)
+        public static Vector2 Intersect(IShape2D shapeA, Transform2D Transform2DA, IShape2D shapeB, Transform2D Transform2DB, Simplex simplex)
         {
-            var simplexVertices = new SimplexVertices(new Vector2?[36]);
+            var simplexVertices = new PooledList<Vector2>(36, ClearMode.Always);
 
-            foreach (var vertex in givenSimplexVertices)
+            foreach (var vertex in simplex.Vertices)
             {
                 simplexVertices.Add(vertex);
             }
@@ -55,10 +55,12 @@ namespace MoonTools.Core.Bonk
                 }
             }
 
+            simplexVertices.Dispose();
+
             return intersection;
         }
 
-        private static Edge FindClosestEdge(PolygonWinding winding, SimplexVertices simplexVertices)
+        private static Edge FindClosestEdge(PolygonWinding winding, PooledList<Vector2> simplexVertices)
         {
             var closestDistance = float.PositiveInfinity;
             var closestNormal = Vector2.Zero;
