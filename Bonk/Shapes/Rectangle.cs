@@ -46,6 +46,16 @@ namespace MoonTools.Core.Bonk
             return Bonk.AABB.FromTransformedVertices(vertices, Transform2D);
         }
 
+        public override bool Equals(object obj)
+        {
+            if (obj is IShape2D other)
+            {
+                return Equals(other);
+            }
+
+            return false;
+        }
+
         public bool Equals(IShape2D other)
         {
             if (other is Rectangle rectangle)
@@ -57,6 +67,27 @@ namespace MoonTools.Core.Bonk
             }
 
             return false;
+        }
+
+        public override int GetHashCode()
+        {
+            var hashCode = -1260800952;
+            hashCode = hashCode * -1521134295 + MinX.GetHashCode();
+            hashCode = hashCode * -1521134295 + MinY.GetHashCode();
+            hashCode = hashCode * -1521134295 + MaxX.GetHashCode();
+            hashCode = hashCode * -1521134295 + MaxY.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<IEnumerable<Position2D>>.Default.GetHashCode(vertices);
+            return hashCode;
+        }
+
+        public static bool operator ==(Rectangle a, Rectangle b)
+        {
+            return a.Equals(b);
+        }
+
+        public static bool operator !=(Rectangle a, Rectangle b)
+        {
+            return !(a == b);
         }
     }
 }
