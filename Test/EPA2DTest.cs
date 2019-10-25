@@ -18,7 +18,7 @@ namespace Tests
             var squareB = new MoonTools.Core.Bonk.Rectangle(-1, -1, 1, 1);
             var transformB = new Transform2D(new Vector2(1.5f, 0));
 
-            var (result, simplex) = GJK2D.CollisionAndSimplex(squareA, transformA, squareB, transformB);
+            var (result, simplex) = GJK2D.FindCollisionSimplex(squareA, transformA, squareB, transformB);
 
             result.Should().BeTrue();
 
@@ -36,7 +36,7 @@ namespace Tests
             var circleB = new Circle(1);
             var transformB = new Transform2D(new Vector2(1, 1));
 
-            var (result, simplex) = GJK2D.CollisionAndSimplex(circleA, transformA, circleB, transformB);
+            var (result, simplex) = GJK2D.FindCollisionSimplex(circleA, transformA, circleB, transformB);
 
             result.Should().BeTrue();
 
@@ -57,7 +57,7 @@ namespace Tests
             var square = new MoonTools.Core.Bonk.Rectangle(-1, -1, 1, 1);
             var transformB = Transform2D.DefaultTransform;
 
-            var (result, simplex) = GJK2D.CollisionAndSimplex(line, transformA, square, transformB);
+            var (result, simplex) = GJK2D.FindCollisionSimplex(line, transformA, square, transformB);
 
             result.Should().BeTrue();
 

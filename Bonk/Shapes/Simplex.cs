@@ -11,11 +11,19 @@ namespace MoonTools.Core.Bonk
         Vector2 directionA;
         Vector2 directionB;
 
+        public Vector2 DirectionA { get { return directionA; } }
+        public Vector2 DirectionB { get { return directionB; } }
+
         public Simplex(MinkowskiDifference minkowskiDifference, Vector2 directionA, Vector2 directionB)
         {
             this.minkowskiDifference = minkowskiDifference;
             this.directionA = directionA;
             this.directionB = directionB;
+        }
+
+        public Simplex WithDirections(Vector2 a, Vector2 b)
+        {
+            return new Simplex(minkowskiDifference, a, b);
         }
 
         public IEnumerable<Position2D> Vertices
