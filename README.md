@@ -1,6 +1,6 @@
 # MoonTools.Core.Bonk
 
-[![NuGet Badge](https://buildstats.info/nuget/MoonTools.Core.Bonk)](https://www.nuget.org/packages/NUnit/)
+[![NuGet Badge](https://buildstats.info/nuget/MoonTools.Core.Bonk)](https://www.nuget.org/packages/MoonTools.Core.Bonk/)
 [![CircleCI](https://circleci.com/gh/MoonsideGames/MoonTools.Core.Bonk.svg?style=svg)](https://circleci.com/gh/MoonsideGames/MoonTools.Core.Bonk)
 
 Bonk is a fast and modular collision detection system for MonoGame that is part of the MoonTools suite.
