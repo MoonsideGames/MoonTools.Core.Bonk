@@ -1,6 +1,10 @@
-﻿using System;
+﻿using System.Linq;
+using System;
+using System.Collections.Generic;
+using Collections.Pooled;
 using Microsoft.Xna.Framework;
 using MoonTools.Core.Structs;
+using MoreLinq;
 
 namespace MoonTools.Core.Bonk
 {
@@ -9,31 +13,19 @@ namespace MoonTools.Core.Bonk
     /// </summary>
     public struct Polygon : IShape2D, IEquatable<IShape2D>
     {
-        public Position2D[] Vertices { get; private set; }
+        private PooledSet<Position2D> vertices;
+
+        public IEnumerable<Position2D> Vertices { get { return vertices == null ? Enumerable.Empty<Position2D>() : vertices; } }
 
         // vertices are local to the origin
         public Polygon(params Position2D[] vertices)
         {
-            Vertices = vertices;
+            this.vertices = new PooledSet<Position2D>(vertices, ClearMode.Always);
         }
 
         public Vector2 Support(Vector2 direction, Transform2D transform)
         {
-            var furthest = float.NegativeInfinity;
-            var furthestVertex = Vector2.Transform(Vertices[0], transform.TransformMatrix);
-
-            foreach (var vertex in Vertices)
-            {
-                var TransformedVertex = Vector2.Transform(vertex, transform.TransformMatrix);
-                var distance = Vector2.Dot(TransformedVertex, direction);
-                if (distance > furthest)
-                {
-                    furthest = distance;
-                    furthestVertex = TransformedVertex;
-                }
-            }
-
-            return furthestVertex;
+            return Vertices.Select(vertex => Vector2.Transform(vertex, transform.TransformMatrix)).MaxBy(transformed => Vector2.Dot(transformed, direction)).First();
         }
 
         public AABB AABB(Transform2D Transform2D)
@@ -41,23 +33,42 @@ namespace MoonTools.Core.Bonk
             return Bonk.AABB.FromTransformedVertices(Vertices, Transform2D);
         }
 
-        public bool Equals(IShape2D other)
+        public override bool Equals(object obj)
         {
-            if (other is Polygon)
+            if (obj is IShape2D other)
             {
-                var otherPolygon = (Polygon)other;
-
-                if (Vertices.Length != otherPolygon.Vertices.Length) { return false; }
-
-                for (int i = 0; i < Vertices.Length; i++)
-                {
-                    if (Vertices[i].ToVector2() != otherPolygon.Vertices[i].ToVector2()) { return false; }
-                }
-
-                return true;
+                return Equals(other);
             }
 
             return false;
+        }
+
+        public bool Equals(IShape2D other)
+        {
+            if (other is Polygon otherPolygon)
+            {
+                return vertices.SetEquals(otherPolygon.vertices);
+            }
+
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            var hashCode = -1404792980;
+            hashCode = hashCode * -1521134295 + EqualityComparer<PooledSet<Position2D>>.Default.GetHashCode(vertices);
+            hashCode = hashCode * -1521134295 + EqualityComparer<IEnumerable<Position2D>>.Default.GetHashCode(Vertices);
+            return hashCode;
+        }
+
+        public static bool operator ==(Polygon a, Polygon b)
+        {
+            return a.Equals(b);
+        }
+
+        public static bool operator !=(Polygon a, Polygon b)
+        {
+            return !(a == b);
         }
     }
 }

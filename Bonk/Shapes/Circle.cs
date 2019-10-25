@@ -31,6 +31,16 @@ namespace MoonTools.Core.Bonk
             );
         }
 
+        public override bool Equals(object obj)
+        {
+            if (obj is Circle other)
+            {
+                return Equals(other);
+            }
+
+            return false;
+        }
+
         public bool Equals(IShape2D other)
         {
             if (other is Circle circle)
@@ -39,6 +49,21 @@ namespace MoonTools.Core.Bonk
             }
 
             return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return 598075851 + Radius.GetHashCode();
+        }
+
+        public static bool operator ==(Circle a, Circle b)
+        {
+            return a.Equals(b);
+        }
+
+        public static bool operator !=(Circle a, Circle b)
+        {
+            return !(a == b);
         }
     }
 }

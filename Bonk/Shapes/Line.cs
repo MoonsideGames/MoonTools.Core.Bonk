@@ -42,15 +42,43 @@ namespace MoonTools.Core.Bonk
             return Bonk.AABB.FromTransformedVertices(vertices, Transform2D);
         }
 
-        public bool Equals(IShape2D other)
+        public override bool Equals(object obj)
         {
-            if (other is Line)
+            if (obj is IShape2D other)
             {
-                var otherLine = (Line)other;
-                return v0.ToVector2() == otherLine.v0.ToVector2() && v1.ToVector2() == otherLine.v1.ToVector2();
+                return Equals(other);
             }
 
             return false;
+        }
+
+        public bool Equals(IShape2D other)
+        {
+            if (other is Line otherLine)
+            {
+                return (v0 == otherLine.v0 && v1 == otherLine.v1) || (v1 == otherLine.v0 && v0 == otherLine.v1);
+            }
+
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            var hashCode = -851829407;
+            hashCode = hashCode * -1521134295 + EqualityComparer<Position2D>.Default.GetHashCode(v0);
+            hashCode = hashCode * -1521134295 + EqualityComparer<Position2D>.Default.GetHashCode(v1);
+            hashCode = hashCode * -1521134295 + EqualityComparer<IEnumerable<Position2D>>.Default.GetHashCode(vertices);
+            return hashCode;
+        }
+
+        public static bool operator ==(Line a, Line b)
+        {
+            return a.Equals(b);
+        }
+
+        public static bool operator !=(Line a, Line b)
+        {
+            return !(a == b);
         }
     }
 }
