@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Version>2.1.1-preview</Version>
+    <Version>2.1.1</Version>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Description>.NET Core Collision Detection for MonoGame</Description>
     <PackageId>MoonTools.Core.Bonk</PackageId>
