@@ -1,41 +1,59 @@
+using System.Linq;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using MoonTools.Core.Structs;
 using MoonTools.Core.Bonk.Extensions;
+using MoreLinq;
 
 namespace MoonTools.Core.Bonk
 {
     /// <summary>
-    /// A simplex is a shape used to calculate overlap. It is defined by a Minkowski difference and two direction vectors.
+    /// A simplex is a shape with up to n - 2 vertices in the nth dimension.
     /// </summary>
-    public struct Simplex : IShape2D
+    public struct Simplex2D : IShape2D
     {
-        MinkowskiDifference minkowskiDifference;
-        Vector2 directionA;
-        Vector2 directionB;
+        Vector2 a;
+        Vector2? b;
+        Vector2? c;
 
-        public Vector2 DirectionA { get { return directionA; } }
-        public Vector2 DirectionB { get { return directionB; } }
+        public Vector2 A => a;
+        public Vector2? B => b;
+        public Vector2? C => c;
 
-        public Simplex(MinkowskiDifference minkowskiDifference, Vector2 directionA, Vector2 directionB)
+        public bool ZeroSimplex { get { return !b.HasValue && !c.HasValue; } }
+        public bool OneSimplex { get { return b.HasValue && !c.HasValue; } }
+        public bool TwoSimplex { get { return b.HasValue && c.HasValue; } }
+
+        public int Count => TwoSimplex ? 3 : (OneSimplex ? 2 : 1);
+
+        public Simplex2D(Vector2 a)
         {
-            this.minkowskiDifference = minkowskiDifference;
-            this.directionA = directionA;
-            this.directionB = directionB;
+            this.a = a;
+            this.b = null;
+            this.c = null;
         }
 
-        public Simplex WithDirections(Vector2 a, Vector2 b)
+        public Simplex2D(Vector2 a, Vector2 b)
         {
-            return new Simplex(minkowskiDifference, a, b);
+            this.a = a;
+            this.b = b;
+            this.c = null;
+        }
+
+        public Simplex2D(Vector2 a, Vector2 b, Vector2 c)
+        {
+            this.a = a;
+            this.b = b;
+            this.c = c;
         }
 
         public IEnumerable<Position2D> Vertices
         {
             get
             {
-                yield return (Position2D)Support(directionA);
-                yield return (Position2D)Support(directionB);
-                yield return (Position2D)Support(-(directionB - directionA).Perpendicular());
+                yield return (Position2D)a;
+                if (b.HasValue) { yield return (Position2D)b; }
+                if (c.HasValue) { yield return (Position2D)c; }
             }
         }
 
@@ -46,7 +64,7 @@ namespace MoonTools.Core.Bonk
 
         public Vector2 Support(Vector2 direction)
         {
-            return minkowskiDifference.Support(direction);
+            return Vertices.MaxBy(vertex => Vector2.Dot(vertex, direction)).First();
         }
 
         public Vector2 Support(Vector2 direction, Transform2D transform)
@@ -66,11 +84,10 @@ namespace MoonTools.Core.Bonk
 
         public bool Equals(IShape2D other)
         {
-            if (other is Simplex otherSimplex)
+            if (other is Simplex2D otherSimplex)
             {
-                return minkowskiDifference == otherSimplex.minkowskiDifference &&
-                    ((directionA == otherSimplex.directionA && directionB == otherSimplex.directionB) ||
-                    (directionA == otherSimplex.directionB && directionB == otherSimplex.directionA));
+                if (Count != otherSimplex.Count) { return false; }
+                return Vertices.Intersect(otherSimplex.Vertices).Count() == Count;
             }
 
             return false;
@@ -78,22 +95,23 @@ namespace MoonTools.Core.Bonk
 
         public override int GetHashCode()
         {
-            var hashCode = 74270316;
-            hashCode = hashCode * -1521134295 + EqualityComparer<MinkowskiDifference>.Default.GetHashCode(minkowskiDifference);
-            hashCode = hashCode * -1521134295 + EqualityComparer<Vector2>.Default.GetHashCode(directionA);
-            hashCode = hashCode * -1521134295 + EqualityComparer<Vector2>.Default.GetHashCode(directionB);
-            hashCode = hashCode * -1521134295 + EqualityComparer<Vector2>.Default.GetHashCode(DirectionA);
-            hashCode = hashCode * -1521134295 + EqualityComparer<Vector2>.Default.GetHashCode(DirectionB);
+            var hashCode = -495772172;
+            hashCode = hashCode * -1521134295 + EqualityComparer<Vector2>.Default.GetHashCode(a);
+            hashCode = hashCode * -1521134295 + EqualityComparer<Vector2?>.Default.GetHashCode(b);
+            hashCode = hashCode * -1521134295 + EqualityComparer<Vector2?>.Default.GetHashCode(c);
+            hashCode = hashCode * -1521134295 + ZeroSimplex.GetHashCode();
+            hashCode = hashCode * -1521134295 + OneSimplex.GetHashCode();
+            hashCode = hashCode * -1521134295 + TwoSimplex.GetHashCode();
             hashCode = hashCode * -1521134295 + EqualityComparer<IEnumerable<Position2D>>.Default.GetHashCode(Vertices);
             return hashCode;
         }
 
-        public static bool operator ==(Simplex a, Simplex b)
+        public static bool operator ==(Simplex2D a, Simplex2D b)
         {
             return a.Equals(b);
         }
 
-        public static bool operator !=(Simplex a, Simplex b)
+        public static bool operator !=(Simplex2D a, Simplex2D b)
         {
             return !(a == b);
         }

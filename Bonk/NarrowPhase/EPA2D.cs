@@ -24,7 +24,7 @@ namespace MoonTools.Core.Bonk
         /// </summary>
         /// <param name="simplex">A simplex returned by the GJK algorithm.</param>
         /// <returns></returns>
-        public static Vector2 Intersect(IShape2D shapeA, Transform2D Transform2DA, IShape2D shapeB, Transform2D Transform2DB, Simplex simplex)
+        public static Vector2 Intersect(IShape2D shapeA, Transform2D Transform2DA, IShape2D shapeB, Transform2D Transform2DB, Simplex2D simplex)
         {
             var simplexVertices = new PooledList<Vector2>(36, ClearMode.Always);
 

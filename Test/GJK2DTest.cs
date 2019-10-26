@@ -260,6 +260,18 @@ namespace Tests
         }
 
         [Test]
+        public void RectanglesNotOverlapping()
+        {
+            var rectangleA = new MoonTools.Core.Bonk.Rectangle(-6, -6, 6, 6);
+            var transformA = new Transform2D(new Position2D(39, 249));
+
+            var rectangleB = new MoonTools.Core.Bonk.Rectangle(0, 0, 16, 16);
+            var transformB = new Transform2D(new Position2D(16, 240));
+
+            GJK2D.TestCollision(rectangleA, transformA, rectangleB, transformB).Should().BeFalse();
+        }
+
+        [Test]
         public void RotatedRectanglesOverlapping()
         {
             var rectangleA = new MoonTools.Core.Bonk.Rectangle(-1, -1, 2, 2);

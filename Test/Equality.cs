@@ -258,169 +258,163 @@ namespace Tests
         public class SimplexTests
         {
             [Test]
-            public void SimplexEquals()
+            public void ZeroSimplexEquals()
             {
-                var shapeA = new Circle(3);
-                var transformA = new Transform2D(new Position2D(1, 2));
-
-                var shapeB = new Circle(2);
-                var transformB = new Transform2D(new Position2D(4, 5));
-
-                var minkowskiDifference = new MinkowskiDifference(shapeA, transformA, shapeB, transformB);
-
-                var directionA = Vector2.UnitX;
-                var directionB = Vector2.UnitY;
-
-                var simplexA = new Simplex(minkowskiDifference, directionA, directionB);
-                var simplexB = new Simplex(minkowskiDifference, directionA, directionB);
+                var simplexA = new Simplex2D(Vector2.One);
+                var simplexB = new Simplex2D(Vector2.One);
 
                 simplexA.Equals(simplexB).Should().BeTrue();
             }
 
             [Test]
-            public void SimplexEqualsOperator()
+            public void ZeroSimplexEqualsOperator()
             {
-                var shapeA = new Circle(3);
-                var transformA = new Transform2D(new Position2D(1, 2));
-
-                var shapeB = new Circle(2);
-                var transformB = new Transform2D(new Position2D(4, 5));
-
-                var minkowskiDifference = new MinkowskiDifference(shapeA, transformA, shapeB, transformB);
-
-                var directionA = Vector2.UnitX;
-                var directionB = Vector2.UnitY;
-
-                var simplexA = new Simplex(minkowskiDifference, directionA, directionB);
-                var simplexB = new Simplex(minkowskiDifference, directionA, directionB);
+                var simplexA = new Simplex2D(Vector2.One);
+                var simplexB = new Simplex2D(Vector2.One);
 
                 (simplexA == simplexB).Should().BeTrue();
             }
 
             [Test]
-            public void SimplexDirectionOutOfOrderEqual()
+            public void ZeroSimplexNotEquals()
             {
-                var shapeA = new Circle(3);
-                var transformA = new Transform2D(new Position2D(1, 2));
+                var simplexA = new Simplex2D(Vector2.Zero);
+                var simplexB = new Simplex2D(Vector2.One);
 
-                var shapeB = new Circle(2);
-                var transformB = new Transform2D(new Position2D(4, 5));
+                simplexA.Equals(simplexB).Should().BeFalse();
 
-                var minkowskiDifference = new MinkowskiDifference(shapeA, transformA, shapeB, transformB);
+                var simplexC = new Simplex2D(Vector2.Zero, Vector2.One);
 
-                var directionA = Vector2.UnitX;
-                var directionB = Vector2.UnitY;
+                simplexA.Equals(simplexC).Should().BeFalse();
+            }
 
-                var simplexA = new Simplex(minkowskiDifference, directionA, directionB);
-                var simplexB = new Simplex(minkowskiDifference, directionB, directionA);
+            [Test]
+            public void ZeroSimplexNotEqualsOperator()
+            {
+                var simplexA = new Simplex2D(Vector2.Zero);
+                var simplexB = new Simplex2D(Vector2.One);
+
+                (simplexA != simplexB).Should().BeTrue();
+            }
+
+            [Test]
+            public void OneSimplexEquals()
+            {
+                var simplexA = new Simplex2D(Vector2.One, Vector2.Zero);
+                var simplexB = new Simplex2D(Vector2.One, Vector2.Zero);
 
                 simplexA.Equals(simplexB).Should().BeTrue();
+
+                var simplexC = new Simplex2D(Vector2.One, Vector2.Zero);
+                var simplexD = new Simplex2D(Vector2.Zero, Vector2.One);
+
+                simplexC.Equals(simplexD).Should().BeTrue();
             }
 
             [Test]
-            public void SimplexDirectionOutOfOrderEqualOperator()
+            public void OneSimplexEqualsOperator()
             {
-                var shapeA = new Circle(3);
-                var transformA = new Transform2D(new Position2D(1, 2));
-
-                var shapeB = new Circle(2);
-                var transformB = new Transform2D(new Position2D(4, 5));
-
-                var minkowskiDifference = new MinkowskiDifference(shapeA, transformA, shapeB, transformB);
-
-                var directionA = Vector2.UnitX;
-                var directionB = Vector2.UnitY;
-
-                var simplexA = new Simplex(minkowskiDifference, directionA, directionB);
-                var simplexB = new Simplex(minkowskiDifference, directionB, directionA);
+                var simplexA = new Simplex2D(Vector2.One, Vector2.Zero);
+                var simplexB = new Simplex2D(Vector2.One, Vector2.Zero);
 
                 (simplexA == simplexB).Should().BeTrue();
+
+                var simplexC = new Simplex2D(Vector2.One, Vector2.Zero);
+                var simplexD = new Simplex2D(Vector2.Zero, Vector2.One);
+
+                (simplexC == simplexD).Should().BeTrue();
             }
 
             [Test]
-            public void SimplexMinkowskiNotEqual()
+            public void OneSimplexNotEquals()
             {
-                var shapeA = new Circle(3);
-                var transformA = new Transform2D(new Position2D(1, 2));
-
-                var shapeB = new Circle(2);
-                var transformB = new Transform2D(new Position2D(4, 5));
-
-                var minkowskiDifferenceA = new MinkowskiDifference(shapeA, transformA, shapeB, transformB);
-                var minkowskiDifferenceB = new MinkowskiDifference(shapeB, transformB, shapeA, transformA);
-
-                var directionA = Vector2.UnitX;
-                var directionB = Vector2.UnitY;
-
-                var simplexA = new Simplex(minkowskiDifferenceA, directionA, directionB);
-                var simplexB = new Simplex(minkowskiDifferenceB, directionA, directionB);
+                var simplexA = new Simplex2D(Vector2.One, Vector2.Zero);
+                var simplexB = new Simplex2D(Vector2.One, Vector2.UnitX);
 
                 simplexA.Equals(simplexB).Should().BeFalse();
+
+                var simplexC = new Simplex2D(Vector2.One, Vector2.Zero);
+                var simplexD = new Simplex2D(Vector2.Zero, Vector2.UnitX);
+
+                simplexC.Equals(simplexD).Should().BeFalse();
+
+                var simplexE = new Simplex2D(Vector2.Zero);
+
+                simplexA.Equals(simplexE).Should().BeFalse();
             }
 
             [Test]
-            public void SimplexMinkowskiNotEqualOperator()
+            public void OneSimplexNotEqualsOperator()
             {
-                var shapeA = new Circle(3);
-                var transformA = new Transform2D(new Position2D(1, 2));
+                var simplexA = new Simplex2D(Vector2.One, Vector2.Zero);
+                var simplexB = new Simplex2D(Vector2.One, Vector2.UnitX);
 
-                var shapeB = new Circle(2);
-                var transformB = new Transform2D(new Position2D(4, 5));
+                (simplexA == simplexB).Should().BeFalse();
 
-                var minkowskiDifferenceA = new MinkowskiDifference(shapeA, transformA, shapeB, transformB);
-                var minkowskiDifferenceB = new MinkowskiDifference(shapeB, transformB, shapeA, transformA);
+                var simplexC = new Simplex2D(Vector2.One, Vector2.Zero);
+                var simplexD = new Simplex2D(Vector2.Zero, Vector2.UnitX);
 
-                var directionA = Vector2.UnitX;
-                var directionB = Vector2.UnitY;
-
-                var simplexA = new Simplex(minkowskiDifferenceA, directionA, directionB);
-                var simplexB = new Simplex(minkowskiDifferenceB, directionA, directionB);
-
-                (simplexA != simplexB).Should().BeTrue();
+                (simplexC == simplexD).Should().BeFalse();
             }
 
             [Test]
-            public void SimplexDirectionsNotEqual()
+            public void TwoSimplexEquals()
             {
-                var shapeA = new Circle(3);
-                var transformA = new Transform2D(new Position2D(1, 2));
+                var simplexA = new Simplex2D(Vector2.One, Vector2.Zero, Vector2.UnitX);
+                var simplexB = new Simplex2D(Vector2.One, Vector2.Zero, Vector2.UnitX);
 
-                var shapeB = new Circle(2);
-                var transformB = new Transform2D(new Position2D(4, 5));
+                simplexA.Equals(simplexB).Should().BeTrue();
 
-                var minkowskiDifference = new MinkowskiDifference(shapeA, transformA, shapeB, transformB);
+                var simplexC = new Simplex2D(Vector2.One, Vector2.Zero, Vector2.UnitX);
+                var simplexD = new Simplex2D(Vector2.Zero, Vector2.One, Vector2.UnitX);
 
-                var directionA = Vector2.UnitX;
-                var directionB = Vector2.UnitY;
-                var directionC = -Vector2.UnitX;
-                var directionD = -Vector2.UnitY;
+                simplexC.Equals(simplexD).Should().BeTrue();
+            }
 
-                var simplexA = new Simplex(minkowskiDifference, directionA, directionB);
-                var simplexB = new Simplex(minkowskiDifference, directionC, directionD);
+            [Test]
+            public void TwoSimplexEqualsOperator()
+            {
+                var simplexA = new Simplex2D(Vector2.One, Vector2.Zero, Vector2.UnitX);
+                var simplexB = new Simplex2D(Vector2.One, Vector2.Zero, Vector2.UnitX);
+
+                (simplexA == simplexB).Should().BeTrue();
+
+                var simplexC = new Simplex2D(Vector2.One, Vector2.Zero, Vector2.UnitX);
+                var simplexD = new Simplex2D(Vector2.Zero, Vector2.One, Vector2.UnitX);
+
+                (simplexC == simplexD).Should().BeTrue();
+            }
+
+            [Test]
+            public void TwoSimplexNotEquals()
+            {
+                var simplexA = new Simplex2D(Vector2.One, Vector2.UnitY, Vector2.UnitX);
+                var simplexB = new Simplex2D(Vector2.One, Vector2.Zero, Vector2.UnitX);
 
                 simplexA.Equals(simplexB).Should().BeFalse();
+
+                var simplexC = new Simplex2D(Vector2.One, Vector2.Zero, Vector2.UnitX);
+                var simplexD = new Simplex2D(Vector2.Zero, Vector2.UnitY, Vector2.UnitX);
+
+                simplexC.Equals(simplexD).Should().BeFalse();
+
+                var simplexE = new Simplex2D(Vector2.Zero);
+
+                simplexA.Equals(simplexE).Should().BeFalse();
             }
 
             [Test]
-            public void SimplexDirectionsNotEqualOperator()
+            public void TwoSimplexNotEqualsOperator()
             {
-                var shapeA = new Circle(3);
-                var transformA = new Transform2D(new Position2D(1, 2));
+                var simplexA = new Simplex2D(Vector2.One, Vector2.UnitY, Vector2.UnitX);
+                var simplexB = new Simplex2D(Vector2.One, Vector2.Zero, Vector2.UnitX);
 
-                var shapeB = new Circle(2);
-                var transformB = new Transform2D(new Position2D(4, 5));
+                (simplexA == simplexB).Should().BeFalse();
 
-                var minkowskiDifference = new MinkowskiDifference(shapeA, transformA, shapeB, transformB);
+                var simplexC = new Simplex2D(Vector2.One, Vector2.Zero, Vector2.UnitX);
+                var simplexD = new Simplex2D(Vector2.Zero, Vector2.UnitY, Vector2.UnitX);
 
-                var directionA = Vector2.UnitX;
-                var directionB = Vector2.UnitY;
-                var directionC = -Vector2.UnitX;
-                var directionD = -Vector2.UnitY;
-
-                var simplexA = new Simplex(minkowskiDifference, directionA, directionB);
-                var simplexB = new Simplex(minkowskiDifference, directionC, directionD);
-
-                (simplexA != simplexB).Should().BeTrue();
+                (simplexC == simplexD).Should().BeFalse();
             }
         }
     }

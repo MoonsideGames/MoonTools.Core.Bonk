@@ -26,6 +26,10 @@ namespace Tests
 
             intersection.X.Should().Be(1f);
             intersection.Y.Should().Be(0);
+
+            var movedTransform = new Transform2D(transformA.Position - intersection * 1.01f); // move a tiny bit past
+
+            GJK2D.TestCollision(squareA, movedTransform, squareB, transformB).Should().BeFalse();
         }
 
         [Test]
@@ -47,6 +51,10 @@ namespace Tests
 
             intersection.X.Should().BeApproximately(ix, 0.01f);
             intersection.Y.Should().BeApproximately(iy, 0.01f);
+
+            var movedTransform = new Transform2D(transformA.Position - intersection * 1.01f); // move a tiny bit past
+
+            GJK2D.TestCollision(circleA, movedTransform, circleB, transformB).Should().BeFalse();
         }
 
         [Test]
@@ -63,8 +71,9 @@ namespace Tests
 
             var intersection = EPA2D.Intersect(line, transformA, square, transformB, simplex);
 
-            intersection.X.Should().Be(-1);
-            intersection.Y.Should().Be(1);
+            var movedTransform = new Transform2D(transformA.Position - intersection * 1.01f); // move a tiny bit past
+
+            GJK2D.TestCollision(line, movedTransform, square, transformB).Should().BeFalse();
         }
     }
 }
