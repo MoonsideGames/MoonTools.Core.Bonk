@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Version>2.1.1</Version>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <Description>.NET Core Collision Detection for MonoGame</Description>
     <PackageId>MoonTools.Core.Bonk</PackageId>
     <RootNamespace>MoonTools.Core.Bonk</RootNamespace>
@@ -15,7 +15,7 @@
     <PackageProjectUrl>https://github.com/MoonsideGames/MoonTools.Core.Bonk</PackageProjectUrl>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="MoonTools.Core.Structs" Version="1.1.0"/>
+    <PackageReference Include="MoonTools.Core.Structs" Version="2.0.0"/>
     <PackageReference Include="morelinq" Version="3.2.0"/>
     <PackageReference Include="Collections.Pooled" Version="1.0.82"/>
   </ItemGroup>

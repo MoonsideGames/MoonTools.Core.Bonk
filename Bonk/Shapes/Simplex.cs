@@ -1,8 +1,7 @@
 using System.Linq;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+using System.Numerics;
 using MoonTools.Core.Structs;
-using MoonTools.Core.Bonk.Extensions;
 using MoreLinq;
 
 namespace MoonTools.Core.Bonk

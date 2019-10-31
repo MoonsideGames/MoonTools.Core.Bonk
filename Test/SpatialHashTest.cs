@@ -1,8 +1,8 @@
 using FluentAssertions;
-using Microsoft.Xna.Framework;
 using NUnit.Framework;
 using MoonTools.Core.Structs;
 using MoonTools.Core.Bonk;
+using System.Numerics;
 
 namespace Tests
 {

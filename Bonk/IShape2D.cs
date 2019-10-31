@@ -1,5 +1,5 @@
 ﻿using System;
-using Microsoft.Xna.Framework;
+using System.Numerics;
 using MoonTools.Core.Structs;
 
 namespace MoonTools.Core.Bonk

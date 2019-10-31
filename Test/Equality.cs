@@ -3,7 +3,7 @@ using FluentAssertions;
 
 using MoonTools.Core.Bonk;
 using MoonTools.Core.Structs;
-using Microsoft.Xna.Framework;
+using System.Numerics;
 
 namespace Tests
 {

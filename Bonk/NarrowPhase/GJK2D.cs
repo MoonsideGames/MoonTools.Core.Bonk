@@ -1,6 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using MoonTools.Core.Structs;
+﻿using MoonTools.Core.Structs;
 using MoonTools.Core.Bonk.Extensions;
+using System.Numerics;
 
 namespace MoonTools.Core.Bonk
 {

@@ -5,9 +5,9 @@
  */
 
 using Collections.Pooled;
-using Microsoft.Xna.Framework;
 using MoonTools.Core.Structs;
 using System;
+using System.Numerics;
 
 namespace MoonTools.Core.Bonk
 {
@@ -79,13 +79,12 @@ namespace MoonTools.Core.Bonk
                 Vector2 norm;
                 if (winding == PolygonWinding.Clockwise)
                 {
-                    norm = new Vector2(edge.Y, -edge.X);
+                    norm = Vector2.Normalize(new Vector2(edge.Y, -edge.X));
                 }
                 else
                 {
-                    norm = new Vector2(-edge.Y, edge.X);
+                    norm = Vector2.Normalize(new Vector2(-edge.Y, edge.X));
                 }
-                norm.Normalize();
 
                 var dist = Vector2.Dot(norm, simplexVertices[i]);
 
