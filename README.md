@@ -3,7 +3,7 @@
 [![NuGet Badge](https://buildstats.info/nuget/MoonTools.Core.Bonk)](https://www.nuget.org/packages/MoonTools.Core.Bonk/)
 [![CircleCI](https://circleci.com/gh/MoonsideGames/MoonTools.Core.Bonk.svg?style=svg)](https://circleci.com/gh/MoonsideGames/MoonTools.Core.Bonk)
 
-Bonk is a fast and modular collision detection system for MonoGame that is part of the MoonTools suite.
+Bonk is a fast and modular collision detection system for .NET that is part of the MoonTools suite. It can be used with any .NET-based game engine.
 
 Bonk is designed to help you figure out if two shapes are overlapping and by how much.
 
