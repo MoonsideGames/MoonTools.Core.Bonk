@@ -26,7 +26,7 @@ namespace MoonTools.Core.Bonk
 
         public Vector2 Support(Vector2 direction, Transform2D transform)
         {
-            return position;
+            return Vector2.Transform(position.ToVector2(), transform.TransformMatrix);
         }
 
         public override bool Equals(object obj)

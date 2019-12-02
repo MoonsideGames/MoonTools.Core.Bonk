@@ -11,7 +11,8 @@ namespace Tests
         [Test]
         public void PointLineOverlapping()
         {
-            var point = new Point(1, 1);
+            var point = new Point(-3, -3);
+            var pointTransform = new Transform2D(new Position2D(4, 4));
             var line = new Line(new Position2D(-2, -2), new Position2D(2, 2));
 
             GJK2D.TestCollision(point, Transform2D.DefaultTransform, line, Transform2D.DefaultTransform).Should().BeTrue();
@@ -41,10 +42,11 @@ namespace Tests
         [Test]
         public void PointCircleNotOverlapping()
         {
-            var point = new Point(3, 0);
+            var point = new Point(0, 0);
+            var pointTransform = new Transform2D(new Position2D(3, 0));
             var circle = new Circle(1);
 
-            GJK2D.TestCollision(point, Transform2D.DefaultTransform, circle, Transform2D.DefaultTransform).Should().BeFalse();
+            GJK2D.TestCollision(point, pointTransform, circle, Transform2D.DefaultTransform).Should().BeFalse();
         }
 
         [Test]
