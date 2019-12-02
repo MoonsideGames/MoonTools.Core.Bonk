@@ -13,7 +13,7 @@ namespace MoonTools.Core.Bonk
         private Position2D v0;
         private Position2D v1;
 
-        private IEnumerable<Position2D> vertices
+        private IEnumerable<Position2D> Vertices
         {
             get
             {
@@ -39,7 +39,7 @@ namespace MoonTools.Core.Bonk
 
         public AABB AABB(Transform2D Transform2D)
         {
-            return Bonk.AABB.FromTransformedVertices(vertices, Transform2D);
+            return Bonk.AABB.FromTransformedVertices(Vertices, Transform2D);
         }
 
         public override bool Equals(object obj)
@@ -67,7 +67,7 @@ namespace MoonTools.Core.Bonk
             var hashCode = -851829407;
             hashCode = hashCode * -1521134295 + EqualityComparer<Position2D>.Default.GetHashCode(v0);
             hashCode = hashCode * -1521134295 + EqualityComparer<Position2D>.Default.GetHashCode(v1);
-            hashCode = hashCode * -1521134295 + EqualityComparer<IEnumerable<Position2D>>.Default.GetHashCode(vertices);
+            hashCode = hashCode * -1521134295 + EqualityComparer<IEnumerable<Position2D>>.Default.GetHashCode(Vertices);
             return hashCode;
         }
 

@@ -17,7 +17,7 @@ namespace MoonTools.Core.Bonk
         public int MaxX { get; }
         public int MaxY { get; }
 
-        private IEnumerable<Position2D> vertices
+        public IEnumerable<Position2D> Vertices
         {
             get
             {
@@ -38,12 +38,12 @@ namespace MoonTools.Core.Bonk
 
         public Vector2 Support(Vector2 direction, Transform2D transform)
         {
-            return vertices.Select(vertex => Vector2.Transform(vertex, transform.TransformMatrix)).MaxBy(transformed => Vector2.Dot(transformed, direction)).First();
+            return Vertices.Select(vertex => Vector2.Transform(vertex, transform.TransformMatrix)).MaxBy(transformed => Vector2.Dot(transformed, direction)).First();
         }
 
         public AABB AABB(Transform2D Transform2D)
         {
-            return Bonk.AABB.FromTransformedVertices(vertices, Transform2D);
+            return Bonk.AABB.FromTransformedVertices(Vertices, Transform2D);
         }
 
         public override bool Equals(object obj)
@@ -76,7 +76,7 @@ namespace MoonTools.Core.Bonk
             hashCode = hashCode * -1521134295 + MinY.GetHashCode();
             hashCode = hashCode * -1521134295 + MaxX.GetHashCode();
             hashCode = hashCode * -1521134295 + MaxY.GetHashCode();
-            hashCode = hashCode * -1521134295 + EqualityComparer<IEnumerable<Position2D>>.Default.GetHashCode(vertices);
+            hashCode = hashCode * -1521134295 + EqualityComparer<IEnumerable<Position2D>>.Default.GetHashCode(Vertices);
             return hashCode;
         }
 

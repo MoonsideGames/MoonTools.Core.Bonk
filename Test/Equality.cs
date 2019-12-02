@@ -253,6 +253,66 @@ namespace Tests
 
                 (a != b).Should().BeTrue();
             }
+
+            [Test]
+            public void PolygonRectangleEqual()
+            {
+                var a = new Polygon(
+                    new Position2D(1, 1),
+                    new Position2D(1, -1),
+                    new Position2D(-1, -1),
+                    new Position2D(-1, 1)
+                );
+
+                var b = new Rectangle(-1, -1, 1, 1);
+
+                a.Should().BeEquivalentTo(b);
+            }
+
+            [Test]
+            public void PolygonRectangleNotEqual()
+            {
+                var a = new Polygon(
+                    new Position2D(2, 1),
+                    new Position2D(1, -1),
+                    new Position2D(-1, -1),
+                    new Position2D(-2, 1)
+                );
+
+                var b = new Rectangle(-1, -1, 1, 1);
+
+                a.Should().NotBeEquivalentTo(b);
+            }
+
+            [Test]
+            public void PolygonRectangleEqualOperator()
+            {
+                var a = new Polygon(
+                    new Position2D(1, 1),
+                    new Position2D(1, -1),
+                    new Position2D(-1, -1),
+                    new Position2D(-1, 1)
+                );
+
+                var b = new Rectangle(-1, -1, 1, 1);
+
+                (a == b).Should().BeTrue();
+            }
+
+            [Test]
+            public void PolygonRectangleNotEqualOperator()
+            {
+                var a = new Polygon(
+                    new Position2D(2, 1),
+                    new Position2D(1, -1),
+                    new Position2D(-1, -1),
+                    new Position2D(-2, 1)
+                );
+
+                var b = new Rectangle(-1, -1, 1, 1);
+
+                (a != b).Should().BeTrue();
+            }
         }
 
         public class SimplexTests

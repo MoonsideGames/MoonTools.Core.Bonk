@@ -1,26 +1,32 @@
 ﻿using System.Linq;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Numerics;
-using Collections.Pooled;
 using MoonTools.Core.Structs;
 using MoreLinq;
 
 namespace MoonTools.Core.Bonk
 {
     /// <summary>
-    /// A Shape defined by an arbitrary collection of vertices. WARNING: Polygon must use an Array internally and therefore will create GC pressure.
+    /// A Shape defined by an arbitrary collection of vertices.
+    /// NOTE: A Polygon must have more than 2 vertices and should not have duplicate vertices.
     /// </summary>
     public struct Polygon : IShape2D, IEquatable<IShape2D>
     {
-        private PooledSet<Position2D> vertices;
+        private ImmutableArray<Position2D> vertices;
 
         public IEnumerable<Position2D> Vertices { get { return vertices == null ? Enumerable.Empty<Position2D>() : vertices; } }
 
         // vertices are local to the origin
         public Polygon(params Position2D[] vertices)
         {
-            this.vertices = new PooledSet<Position2D>(vertices, ClearMode.Always);
+            this.vertices = ImmutableArray.Create<Position2D>(vertices);
+        }
+
+        public Polygon(ImmutableArray<Position2D> vertices)
+        {
+            this.vertices = vertices;
         }
 
         public Vector2 Support(Vector2 direction, Transform2D transform)
@@ -47,7 +53,19 @@ namespace MoonTools.Core.Bonk
         {
             if (other is Polygon otherPolygon)
             {
-                return vertices.SetEquals(otherPolygon.vertices);
+                var q = from a in vertices
+                        join b in otherPolygon.vertices on a equals b
+                        select a;
+
+                return vertices.Length == otherPolygon.vertices.Length && q.Count() == vertices.Length;
+            }
+            else if (other is Rectangle rectangle)
+            {
+                var q = from a in vertices
+                        join b in rectangle.Vertices on a equals b
+                        select a;
+
+                return vertices.Length == 4 && q.Count() == vertices.Length;
             }
 
             return false;
@@ -55,10 +73,7 @@ namespace MoonTools.Core.Bonk
 
         public override int GetHashCode()
         {
-            var hashCode = -1404792980;
-            hashCode = hashCode * -1521134295 + EqualityComparer<PooledSet<Position2D>>.Default.GetHashCode(vertices);
-            hashCode = hashCode * -1521134295 + EqualityComparer<IEnumerable<Position2D>>.Default.GetHashCode(Vertices);
-            return hashCode;
+            return HashCode.Combine(vertices, Vertices);
         }
 
         public static bool operator ==(Polygon a, Polygon b)
@@ -67,6 +82,16 @@ namespace MoonTools.Core.Bonk
         }
 
         public static bool operator !=(Polygon a, Polygon b)
+        {
+            return !(a == b);
+        }
+
+        public static bool operator ==(Polygon a, Rectangle b)
+        {
+            return a.Equals(b);
+        }
+
+        public static bool operator !=(Polygon a, Rectangle b)
         {
             return !(a == b);
         }
