@@ -13,7 +13,7 @@ namespace MoonTools.Core.Bonk
         private Position2D v0;
         private Position2D v1;
 
-        private IEnumerable<Position2D> Vertices
+        public IEnumerable<Position2D> Vertices
         {
             get
             {
