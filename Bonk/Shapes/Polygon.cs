@@ -10,7 +10,7 @@ namespace MoonTools.Core.Bonk
 {
     /// <summary>
     /// A Shape defined by an arbitrary collection of vertices.
-    /// NOTE: A Polygon must have more than 2 vertices and should not have duplicate vertices.
+    /// NOTE: A Polygon must have more than 2 vertices, be convex, and should not have duplicate vertices.
     /// </summary>
     public struct Polygon : IShape2D, IEquatable<IShape2D>
     {

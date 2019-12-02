@@ -9,6 +9,44 @@ namespace Tests
 {
     public class EqualityTests
     {
+        public class PointTests
+        {
+            [Test]
+            public void PointEqual()
+            {
+                var a = new Point(1, 1);
+                var b = new Point(1, 1);
+
+                a.Should().BeEquivalentTo(b);
+            }
+
+            [Test]
+            public void PointNotEqual()
+            {
+                var a = new Point(1, 1);
+                var b = new Point(-1, 1);
+
+                a.Should().NotBeEquivalentTo(b);
+            }
+
+            [Test]
+            public void PointEqualOperator()
+            {
+                var a = new Point(1, 1);
+                var b = new Point(1, 1);
+                (a == b).Should().BeTrue();
+            }
+
+            [Test]
+            public void PointNotEqualOperator()
+            {
+                var a = new Point(1, 1);
+                var b = new Point(-1, 1);
+
+                (a != b).Should().BeTrue();
+            }
+        }
+
         public class CircleTests
         {
             [Test]

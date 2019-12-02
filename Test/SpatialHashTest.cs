@@ -34,6 +34,9 @@ namespace Tests
             var line = new MoonTools.Core.Bonk.Line(new Position2D(20, -4), new Position2D(22, -12));
             var lineTransform = new Transform2D(new Vector2(0, 0));
 
+            var point = new MoonTools.Core.Bonk.Point(8, 8);
+            var pointTransform = Transform2D.DefaultTransform;
+
             spatialHash.Insert(0, rectA, rectATransform);
             spatialHash.Insert(1, rectB, rectBTransform);
             spatialHash.Insert(2, rectC, rectCTransform);
@@ -41,9 +44,11 @@ namespace Tests
             spatialHash.Insert(4, circleA, circleATransform);
             spatialHash.Insert(1, circleB, circleBTransform);
             spatialHash.Insert(6, line, lineTransform);
+            spatialHash.Insert(7, point, pointTransform);
 
             spatialHash.Retrieve(0, rectA, rectATransform).Should().BeEmpty();
             spatialHash.Retrieve(1, rectB, rectBTransform).Should().NotContain((1, circleB, circleBTransform));
+            spatialHash.Retrieve(1, rectB, rectBTransform).Should().Contain((7, point, pointTransform));
             spatialHash.Retrieve(2, rectC, rectCTransform).Should().Contain((6, line, lineTransform)).And.Contain((4, circleA, circleATransform));
             spatialHash.Retrieve(3, rectD, rectDTransform).Should().Contain((1, circleB, circleBTransform));
 

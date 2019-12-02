@@ -9,6 +9,91 @@ namespace Tests
     public class GJK2DTest
     {
         [Test]
+        public void PointLineOverlapping()
+        {
+            var point = new Point(1, 1);
+            var line = new Line(new Position2D(-2, -2), new Position2D(2, 2));
+
+            GJK2D.TestCollision(point, Transform2D.DefaultTransform, line, Transform2D.DefaultTransform).Should().BeTrue();
+        }
+
+        [Test]
+        public void PointLineNotOverlapping()
+        {
+            var point = new Point(1, 1);
+            var line = new Line(new Position2D(-3, -2), new Position2D(-9, -5));
+
+            GJK2D.TestCollision(point, Transform2D.DefaultTransform, line, Transform2D.DefaultTransform).Should().BeFalse();
+        }
+
+        [Test]
+        public void PointCircleOverlapping()
+        {
+            var point = new Point();
+            var circle = new Circle(3);
+
+            var pointTransform = new Transform2D(new Position2D(1, 1));
+            var circleTransform = new Transform2D(new Position2D(-1, 0));
+
+            GJK2D.TestCollision(point, pointTransform, circle, circleTransform).Should().BeTrue();
+        }
+
+        [Test]
+        public void PointCircleNotOverlapping()
+        {
+            var point = new Point(3, 0);
+            var circle = new Circle(1);
+
+            GJK2D.TestCollision(point, Transform2D.DefaultTransform, circle, Transform2D.DefaultTransform).Should().BeFalse();
+        }
+
+        [Test]
+        public void PointRectangleOverlapping()
+        {
+            var point = new Point(1, 1);
+            var rectangle = new Rectangle(-2, -2, 2, 2);
+
+            GJK2D.TestCollision(point, Transform2D.DefaultTransform, rectangle, Transform2D.DefaultTransform).Should().BeTrue();
+        }
+
+        [Test]
+        public void PointRectangleNotOverlapping()
+        {
+            var point = new Point(5, 5);
+            var rectangle = new Rectangle(-2, -2, 2, 2);
+
+            GJK2D.TestCollision(point, Transform2D.DefaultTransform, rectangle, Transform2D.DefaultTransform).Should().BeFalse();
+        }
+
+        [Test]
+        public void PointPolygonOverlapping()
+        {
+            var point = new Point(1, 1);
+            var polygon = new Polygon(
+                new Position2D(-2, -2),
+                new Position2D(-3, 2),
+                new Position2D(3, 2),
+                new Position2D(3, -2)
+            );
+
+            GJK2D.TestCollision(point, Transform2D.DefaultTransform, polygon, Transform2D.DefaultTransform).Should().BeTrue();
+        }
+
+        [Test]
+        public void PointPolygonNotOverlapping()
+        {
+            var point = new Point(5, 5);
+            var polygon = new Polygon(
+                new Position2D(-2, -2),
+                new Position2D(-3, 2),
+                new Position2D(3, 2),
+                new Position2D(3, -2)
+            );
+
+            GJK2D.TestCollision(point, Transform2D.DefaultTransform, polygon, Transform2D.DefaultTransform).Should().BeFalse();
+        }
+
+        [Test]
         public void LineLineOverlapping()
         {
             var lineA = new Line(new Position2D(-1, -1), new Position2D(1, 1));
