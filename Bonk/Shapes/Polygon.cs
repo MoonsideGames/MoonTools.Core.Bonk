@@ -19,7 +19,7 @@ namespace MoonTools.Core.Bonk
         public IEnumerable<Position2D> Vertices { get { return vertices == null ? Enumerable.Empty<Position2D>() : vertices; } }
 
         // vertices are local to the origin
-        public Polygon(params Position2D[] vertices)
+        public Polygon(params Position2D[] vertices) // TODO: remove this, params is bad because it allocates an array
         {
             this.vertices = ImmutableArray.Create<Position2D>(vertices);
         }
