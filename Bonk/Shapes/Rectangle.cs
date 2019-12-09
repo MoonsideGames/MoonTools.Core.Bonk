@@ -10,7 +10,7 @@ namespace MoonTools.Core.Bonk
     /// <summary>
     /// A rectangle is a shape defined by a minimum and maximum X value and a minimum and maximum Y value.
     /// </summary>
-    public struct Rectangle : IShape2D, IEquatable<IShape2D>
+    public struct Rectangle : IShape2D, IEquatable<Rectangle>
     {
         public int MinX { get; }
         public int MinY { get; }
@@ -48,36 +48,30 @@ namespace MoonTools.Core.Bonk
 
         public override bool Equals(object obj)
         {
-            if (obj is IShape2D other)
-            {
-                return Equals(other);
-            }
-
-            return false;
+            return obj is IShape2D other && Equals(other);
         }
 
         public bool Equals(IShape2D other)
         {
-            if (other is Rectangle rectangle)
-            {
-                return MinX == rectangle.MinX &&
-                    MinY == rectangle.MinY &&
-                    MaxX == rectangle.MaxX &&
-                    MaxY == rectangle.MaxY;
-            }
+            return (other is Rectangle rectangle && Equals(rectangle)) || (other is Polygon polygon && Equals(polygon));
+        }
 
-            return false;
+        public bool Equals(Rectangle other)
+        {
+            return MinX == other.MinX &&
+                MinY == other.MinY &&
+                MaxX == other.MaxX &&
+                MaxY == other.MaxY;
+        }
+
+        public bool Equals(Polygon other)
+        {
+            return RectanglePolygonComparison.Equals(other, this);
         }
 
         public override int GetHashCode()
         {
-            var hashCode = -1260800952;
-            hashCode = hashCode * -1521134295 + MinX.GetHashCode();
-            hashCode = hashCode * -1521134295 + MinY.GetHashCode();
-            hashCode = hashCode * -1521134295 + MaxX.GetHashCode();
-            hashCode = hashCode * -1521134295 + MaxY.GetHashCode();
-            hashCode = hashCode * -1521134295 + EqualityComparer<IEnumerable<Position2D>>.Default.GetHashCode(Vertices);
-            return hashCode;
+            return HashCode.Combine(MinX, MinY, MaxX, MaxY);
         }
 
         public static bool operator ==(Rectangle a, Rectangle b)

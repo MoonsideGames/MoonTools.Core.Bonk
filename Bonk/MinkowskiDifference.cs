@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Numerics;
 using MoonTools.Core.Structs;
 
@@ -10,51 +9,41 @@ namespace MoonTools.Core.Bonk
     /// </summary>
     public struct MinkowskiDifference : IEquatable<MinkowskiDifference>
     {
-        private IShape2D shapeA;
-        private Transform2D transformA;
-        private IShape2D shapeB;
-        private Transform2D transformB;
+        private IShape2D ShapeA { get; }
+        private Transform2D TransformA { get; }
+        private IShape2D ShapeB { get; }
+        private Transform2D TransformB { get; }
 
         public MinkowskiDifference(IShape2D shapeA, Transform2D transformA, IShape2D shapeB, Transform2D transformB)
         {
-            this.shapeA = shapeA;
-            this.transformA = transformA;
-            this.shapeB = shapeB;
-            this.transformB = transformB;
+            ShapeA = shapeA;
+            TransformA = transformA;
+            ShapeB = shapeB;
+            TransformB = transformB;
         }
 
         public Vector2 Support(Vector2 direction)
         {
-            return shapeA.Support(direction, transformA) - shapeB.Support(-direction, transformB);
+            return ShapeA.Support(direction, TransformA) - ShapeB.Support(-direction, TransformB);
         }
 
         public override bool Equals(object other)
         {
-            if (other is MinkowskiDifference otherMinkowskiDifference)
-            {
-                return Equals(otherMinkowskiDifference);
-            }
-
-            return false;
+            return other is MinkowskiDifference minkowskiDifference && Equals(minkowskiDifference);
         }
 
         public bool Equals(MinkowskiDifference other)
         {
             return
-                shapeA == other.shapeA &&
-                transformA == other.transformA &&
-                shapeB == other.shapeB &&
-                transformB == other.transformB;
+                ShapeA == other.ShapeA &&
+                TransformA == other.TransformA &&
+                ShapeB == other.ShapeB &&
+                TransformB == other.TransformB;
         }
 
         public override int GetHashCode()
         {
-            var hashCode = 974363698;
-            hashCode = hashCode * -1521134295 + EqualityComparer<IShape2D>.Default.GetHashCode(shapeA);
-            hashCode = hashCode * -1521134295 + EqualityComparer<Transform2D>.Default.GetHashCode(transformA);
-            hashCode = hashCode * -1521134295 + EqualityComparer<IShape2D>.Default.GetHashCode(shapeB);
-            hashCode = hashCode * -1521134295 + EqualityComparer<Transform2D>.Default.GetHashCode(transformB);
-            return hashCode;
+            return HashCode.Combine(ShapeA, TransformA, ShapeB, TransformB);
         }
 
         public static bool operator ==(MinkowskiDifference a, MinkowskiDifference b)

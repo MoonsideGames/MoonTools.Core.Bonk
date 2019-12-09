@@ -31,7 +31,7 @@ namespace MoonTools.Core.Bonk
         /// <param name="id">A unique ID for the shape-transform pair.</param>
         /// <param name="shape"></param>
         /// <param name="transform2D"></param>
-        public void Insert(T id, IShape2D shape, Transform2D transform2D)
+        public void Insert<TShape2D>(T id, TShape2D shape, Transform2D transform2D) where TShape2D : struct, IShape2D
         {
             var box = shape.AABB(transform2D);
             var minHash = Hash(box.MinX, box.MinY);
@@ -60,7 +60,7 @@ namespace MoonTools.Core.Bonk
         /// <summary>
         /// Retrieves all the potential collisions of a shape-transform pair. Excludes any shape-transforms with the given ID.
         /// </summary>
-        public IEnumerable<(T, IShape2D, Transform2D)> Retrieve(T id, IShape2D shape, Transform2D transform2D)
+        public IEnumerable<(T, IShape2D, Transform2D)> Retrieve<TShape2D>(T id, TShape2D shape, Transform2D transform2D) where TShape2D : struct, IShape2D
         {
             var box = shape.AABB(transform2D);
             var minHash = Hash(box.MinX, box.MinY);

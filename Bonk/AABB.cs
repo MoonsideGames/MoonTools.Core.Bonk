@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -8,7 +9,7 @@ namespace MoonTools.Core.Bonk
     /// <summary>
     /// Axis-aligned bounding box.
     /// </summary>
-    public struct AABB
+    public struct AABB : IEquatable<AABB>
     {
         public float MinX { get; private set; }
         public float MinY { get; private set; }
@@ -31,12 +32,40 @@ namespace MoonTools.Core.Bonk
             };
         }
 
+        public override bool Equals(object obj)
+        {
+            return obj is AABB aabb && Equals(aabb);
+        }
+
+        public bool Equals(AABB other)
+        {
+            return MinX == other.MinX &&
+                   MinY == other.MinY &&
+                   MaxX == other.MaxX &&
+                   MaxY == other.MaxY;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(MinX, MinY, MaxX, MaxY);
+        }
+
         public AABB(float minX, float minY, float maxX, float maxY)
         {
             MinX = minX;
             MinY = minY;
             MaxX = maxX;
             MaxY = maxY;
+        }
+
+        public static bool operator ==(AABB left, AABB right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(AABB left, AABB right)
+        {
+            return !(left == right);
         }
     }
 }

@@ -27,7 +27,7 @@ namespace Tests
             intersection.X.Should().Be(1f);
             intersection.Y.Should().Be(0);
 
-            var movedTransform = new Transform2D(transformA.Position - intersection * 1.01f); // move a tiny bit past
+            var movedTransform = new Transform2D(transformA.Position - (intersection * 1.01f)); // move a tiny bit past
 
             GJK2D.TestCollision(squareA, movedTransform, squareB, transformB).Should().BeFalse();
         }
@@ -46,13 +46,13 @@ namespace Tests
 
             var intersection = EPA2D.Intersect(circleA, transformA, circleB, transformB, simplex);
 
-            var ix = circleA.Radius * (float)Math.Cos(Math.PI / 4) - (circleB.Radius * (float)Math.Cos(5 * Math.PI / 4) + transformB.Position.X);
-            var iy = circleA.Radius * (float)Math.Sin(Math.PI / 4) - (circleB.Radius * (float)Math.Sin(5 * Math.PI / 4) + transformB.Position.Y);
+            var ix = (circleA.Radius * (float)Math.Cos(Math.PI / 4)) - ((circleB.Radius * (float)Math.Cos(5 * Math.PI / 4)) + transformB.Position.X);
+            var iy = (circleA.Radius * (float)Math.Sin(Math.PI / 4)) - ((circleB.Radius * (float)Math.Sin(5 * Math.PI / 4)) + transformB.Position.Y);
 
             intersection.X.Should().BeApproximately(ix, 0.01f);
             intersection.Y.Should().BeApproximately(iy, 0.01f);
 
-            var movedTransform = new Transform2D(transformA.Position - intersection * 1.01f); // move a tiny bit past
+            var movedTransform = new Transform2D(transformA.Position - (intersection * 1.01f)); // move a tiny bit past
 
             GJK2D.TestCollision(circleA, movedTransform, circleB, transformB).Should().BeFalse();
         }
@@ -71,7 +71,7 @@ namespace Tests
 
             var intersection = EPA2D.Intersect(line, transformA, square, transformB, simplex);
 
-            var movedTransform = new Transform2D(transformA.Position - intersection * 1.01f); // move a tiny bit past
+            var movedTransform = new Transform2D(transformA.Position - (intersection * 1.01f)); // move a tiny bit past
 
             GJK2D.TestCollision(line, movedTransform, square, transformB).Should().BeFalse();
         }

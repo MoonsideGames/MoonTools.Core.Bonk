@@ -3,6 +3,7 @@ using MoonTools.Core.Bonk;
 using MoonTools.Core.Structs;
 using System.Numerics;
 using FluentAssertions;
+using System.Collections.Immutable;
 
 namespace Tests
 {
@@ -15,7 +16,7 @@ namespace Tests
             var pointTransform = new Transform2D(new Position2D(4, 4));
             var line = new Line(new Position2D(-2, -2), new Position2D(2, 2));
 
-            GJK2D.TestCollision(point, Transform2D.DefaultTransform, line, Transform2D.DefaultTransform).Should().BeTrue();
+            GJK2D.TestCollision(point, pointTransform, line, Transform2D.DefaultTransform).Should().BeTrue();
         }
 
         [Test]
@@ -71,12 +72,12 @@ namespace Tests
         public void PointPolygonOverlapping()
         {
             var point = new Point(1, 1);
-            var polygon = new Polygon(
+            var polygon = new Polygon(ImmutableArray.Create(
                 new Position2D(-2, -2),
                 new Position2D(-3, 2),
                 new Position2D(3, 2),
                 new Position2D(3, -2)
-            );
+            ));
 
             GJK2D.TestCollision(point, Transform2D.DefaultTransform, polygon, Transform2D.DefaultTransform).Should().BeTrue();
         }
@@ -85,12 +86,12 @@ namespace Tests
         public void PointPolygonNotOverlapping()
         {
             var point = new Point(5, 5);
-            var polygon = new Polygon(
+            var polygon = new Polygon(ImmutableArray.Create(
                 new Position2D(-2, -2),
                 new Position2D(-3, 2),
                 new Position2D(3, 2),
                 new Position2D(3, -2)
-            );
+            ));
 
             GJK2D.TestCollision(point, Transform2D.DefaultTransform, polygon, Transform2D.DefaultTransform).Should().BeFalse();
         }
@@ -182,17 +183,17 @@ namespace Tests
         [Test]
         public void PolygonPolygonOverlapping()
         {
-            var shapeA = new Polygon(
+            var shapeA = new Polygon(ImmutableArray.Create(
                 new Position2D(-1, 1), new Position2D(1, 1),
                 new Position2D(-1, -1), new Position2D(1, -1)
-            );
+            ));
 
             var transformA = Transform2D.DefaultTransform;
 
-            var shapeB = new Polygon(
+            var shapeB = new Polygon(ImmutableArray.Create(
                 new Position2D(-1, 1), new Position2D(1, 1),
                 new Position2D(-1, -1), new Position2D(1, -1)
-            );
+            ));
 
             var transformB = new Transform2D(new Vector2(0.5f, 0.5f));
 
@@ -202,17 +203,17 @@ namespace Tests
         [Test]
         public void ScaledPolygonsOverlapping()
         {
-            var shapeA = new Polygon(
+            var shapeA = new Polygon(ImmutableArray.Create(
                 new Position2D(-1, 1), new Position2D(1, 1),
                 new Position2D(-1, -1), new Position2D(1, -1)
-            );
+            ));
 
             var transformA = Transform2D.DefaultTransform;
 
-            var shapeB = new Polygon(
+            var shapeB = new Polygon(ImmutableArray.Create(
                 new Position2D(-1, 1), new Position2D(1, 1),
                 new Position2D(-1, -1), new Position2D(1, -1)
-            );
+            ));
 
             var transformB = new Transform2D(new Vector2(3f, 0f), 0f, new Vector2(3f, 3f));
 
@@ -222,17 +223,17 @@ namespace Tests
         [Test]
         public void PolygonPolygonNotOverlapping()
         {
-            var shapeA = new Polygon(
+            var shapeA = new Polygon(ImmutableArray.Create(
                 new Position2D(-1, 1), new Position2D(1, 1),
                 new Position2D(-1, -1), new Position2D(1, -1)
-            );
+            ));
 
             var transformA = Transform2D.DefaultTransform;
 
-            var shapeB = new Polygon(
+            var shapeB = new Polygon(ImmutableArray.Create(
                 new Position2D(-1, 1), new Position2D(1, 1),
                 new Position2D(-1, -1), new Position2D(1, -1)
-            );
+            ));
 
             var transformB = new Transform2D(new Vector2(5, 0));
 
@@ -242,17 +243,17 @@ namespace Tests
         [Test]
         public void ScaledPolygonsNotOverlapping()
         {
-            var shapeA = new Polygon(
+            var shapeA = new Polygon(ImmutableArray.Create(
                 new Position2D(-1, 1), new Position2D(1, 1),
                 new Position2D(-1, -1), new Position2D(1, -1)
-            );
+            ));
 
             var transformA = Transform2D.DefaultTransform;
 
-            var shapeB = new Polygon(
+            var shapeB = new Polygon(ImmutableArray.Create(
                 new Position2D(-2, 2), new Position2D(2, 2),
                 new Position2D(-2, -2), new Position2D(2, -2)
-            );
+            ));
 
             var transformB = new Transform2D(new Vector2(3f, 0), 0f, new Vector2(0.5f, 0.5f));
 
@@ -266,10 +267,10 @@ namespace Tests
 
             var transformA = Transform2D.DefaultTransform;
 
-            var polygon = new Polygon(
+            var polygon = new Polygon(ImmutableArray.Create(
                 new Position2D(-1, -1), new Position2D(1, -1),
                 new Position2D(1, 1), new Position2D(-1, 1)
-            );
+            ));
 
             var transformB = Transform2D.DefaultTransform;
 
@@ -283,10 +284,10 @@ namespace Tests
 
             var transformA = Transform2D.DefaultTransform;
 
-            var polygon = new Polygon(
+            var polygon = new Polygon(ImmutableArray.Create(
                 new Position2D(-1, -1), new Position2D(1, -1),
                 new Position2D(1, 1), new Position2D(-1, 1)
-            );
+            ));
 
             var transformB = Transform2D.DefaultTransform;
 
@@ -321,10 +322,10 @@ namespace Tests
             var circle = new Circle(1);
             var transformA = new Transform2D(new Vector2(0.25f, 0));
 
-            var square = new Polygon(
+            var square = new Polygon(ImmutableArray.Create(
                 new Position2D(-1, -1), new Position2D(1, -1),
                 new Position2D(1, 1), new Position2D(-1, 1)
-            );
+            ));
 
             var transformB = Transform2D.DefaultTransform;
 
@@ -337,10 +338,10 @@ namespace Tests
             var circle = new Circle(1);
             var circleTransform = new Transform2D(new Vector2(5, 0));
 
-            var square = new Polygon(
+            var square = new Polygon(ImmutableArray.Create(
                 new Position2D(-1, -1), new Position2D(1, -1),
                 new Position2D(1, 1), new Position2D(-1, 1)
-            );
+            ));
             var squareTransform = Transform2D.DefaultTransform;
 
             GJK2D.TestCollision(circle, circleTransform, square, squareTransform).Should().BeFalse();

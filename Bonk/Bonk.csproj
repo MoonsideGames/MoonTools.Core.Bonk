@@ -15,8 +15,12 @@
     <PackageProjectUrl>https://github.com/MoonsideGames/MoonTools.Core.Bonk</PackageProjectUrl>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="MoonTools.Core.Structs" Version="2.0.0"/>
-    <PackageReference Include="morelinq" Version="3.2.0"/>
-    <PackageReference Include="System.Collections.Immutable" Version="1.6.0"/>
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.8">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="MoonTools.Core.Structs" Version="2.0.0" />
+    <PackageReference Include="morelinq" Version="3.2.0" />
+    <PackageReference Include="System.Collections.Immutable" Version="1.6.0" />
   </ItemGroup>
 </Project>

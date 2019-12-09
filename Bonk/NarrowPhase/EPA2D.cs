@@ -12,7 +12,7 @@ using System.Numerics;
 
 namespace MoonTools.Core.Bonk
 {
-    enum PolygonWinding
+    internal enum PolygonWinding
     {
         Clockwise,
         CounterClockwise
@@ -24,8 +24,7 @@ namespace MoonTools.Core.Bonk
         /// Returns a minimum separating vector in the direction from A to B.
         /// </summary>
         /// <param name="simplex">A simplex returned by the GJK algorithm.</param>
-        /// <returns></returns>
-        public static Vector2 Intersect(IShape2D shapeA, Transform2D Transform2DA, IShape2D shapeB, Transform2D Transform2DB, Simplex2D simplex)
+        public static Vector2 Intersect<TShapeA, TShapeB>(TShapeA shapeA, Transform2D Transform2DA, TShapeB shapeB, Transform2D Transform2DB, Simplex2D simplex) where TShapeA : struct, IShape2D where TShapeB : struct, IShape2D
         {
             var simplexVertices = simplex.Vertices.Select(vertex => vertex.ToVector2()).ToImmutableArray();
 

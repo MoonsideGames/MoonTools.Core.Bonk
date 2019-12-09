@@ -5,7 +5,7 @@ using MoonTools.Core.Structs;
 
 namespace MoonTools.Core.Bonk
 {
-    public struct Point : IShape2D, IEquatable<IShape2D>
+    public struct Point : IShape2D, IEquatable<Point>
     {
         private Position2D position;
 
@@ -31,22 +31,17 @@ namespace MoonTools.Core.Bonk
 
         public override bool Equals(object obj)
         {
-            if (obj is IShape2D other)
-            {
-                return Equals(other);
-            }
-
-            return false;
+            return obj is IShape2D other && Equals(other);
         }
 
         public bool Equals(IShape2D other)
         {
-            if (other is Point otherPoint)
-            {
-                return position == otherPoint.position;
-            }
+            return other is Point otherPoint && Equals(otherPoint);
+        }
 
-            return false;
+        public bool Equals(Point other)
+        {
+            return position == other.position;
         }
 
         public override int GetHashCode()

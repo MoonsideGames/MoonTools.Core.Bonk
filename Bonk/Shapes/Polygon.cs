@@ -12,16 +12,18 @@ namespace MoonTools.Core.Bonk
     /// A Shape defined by an arbitrary collection of vertices.
     /// NOTE: A Polygon must have more than 2 vertices, be convex, and should not have duplicate vertices.
     /// </summary>
-    public struct Polygon : IShape2D, IEquatable<IShape2D>
+    public struct Polygon : IShape2D, IEquatable<Polygon>
     {
         private ImmutableArray<Position2D> vertices;
 
-        public IEnumerable<Position2D> Vertices { get { return vertices == null ? Enumerable.Empty<Position2D>() : vertices; } }
+        public IEnumerable<Position2D> Vertices { get { return vertices; } }
+
+        public int VertexCount {  get { return vertices.Length; } }
 
         // vertices are local to the origin
-        public Polygon(params Position2D[] vertices) // TODO: remove this, params is bad because it allocates an array
+        public Polygon(IEnumerable<Position2D> vertices) // TODO: remove this, params is bad because it allocates an array
         {
-            this.vertices = ImmutableArray.Create<Position2D>(vertices);
+            this.vertices = vertices.ToImmutableArray();
         }
 
         public Polygon(ImmutableArray<Position2D> vertices)
@@ -41,39 +43,31 @@ namespace MoonTools.Core.Bonk
 
         public override bool Equals(object obj)
         {
-            if (obj is IShape2D other)
-            {
-                return Equals(other);
-            }
-
-            return false;
+            return obj is IShape2D other && Equals(other);
         }
 
         public bool Equals(IShape2D other)
         {
-            if (other is Polygon otherPolygon)
-            {
-                var q = from a in vertices
-                        join b in otherPolygon.vertices on a equals b
-                        select a;
+            return (other is Polygon otherPolygon && Equals(otherPolygon)) || (other is Rectangle rectangle && Equals(rectangle));
+        }
 
-                return vertices.Length == otherPolygon.vertices.Length && q.Count() == vertices.Length;
-            }
-            else if (other is Rectangle rectangle)
-            {
-                var q = from a in vertices
-                        join b in rectangle.Vertices on a equals b
-                        select a;
+        public bool Equals(Polygon other)
+        {
+            var q = from a in vertices
+                    join b in other.Vertices on a equals b
+                    select a;
 
-                return vertices.Length == 4 && q.Count() == vertices.Length;
-            }
+            return vertices.Length == other.VertexCount && q.Count() == vertices.Length;
+        }
 
-            return false;
+        public bool Equals(Rectangle rectangle)
+        {
+            return RectanglePolygonComparison.Equals(this, rectangle);
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(vertices, Vertices);
+            return HashCode.Combine(Vertices);
         }
 
         public static bool operator ==(Polygon a, Polygon b)

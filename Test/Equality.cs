@@ -4,10 +4,11 @@ using FluentAssertions;
 using MoonTools.Core.Bonk;
 using MoonTools.Core.Structs;
 using System.Numerics;
+using System.Collections.Immutable;
 
 namespace Tests
 {
-    public class EqualityTests
+    public static class EqualityTests
     {
         public class PointTests
         {
@@ -148,8 +149,8 @@ namespace Tests
             [Test]
             public void RectangleEqual()
             {
-                var a = new MoonTools.Core.Bonk.Rectangle(0, 0, 3, 3);
-                var b = new MoonTools.Core.Bonk.Rectangle(0, 0, 3, 3);
+                var a = new Rectangle(0, 0, 3, 3);
+                var b = new Rectangle(0, 0, 3, 3);
 
                 a.Equals(b).Should().BeTrue();
             }
@@ -157,8 +158,8 @@ namespace Tests
             [Test]
             public void RectangleEqualOperator()
             {
-                var a = new MoonTools.Core.Bonk.Rectangle(0, 0, 3, 3);
-                var b = new MoonTools.Core.Bonk.Rectangle(0, 0, 3, 3);
+                var a = new Rectangle(0, 0, 3, 3);
+                var b = new Rectangle(0, 0, 3, 3);
 
                 (a == b).Should().BeTrue();
             }
@@ -166,8 +167,8 @@ namespace Tests
             [Test]
             public void RectangleNotEqual()
             {
-                var a = new MoonTools.Core.Bonk.Rectangle(0, 0, 3, 3);
-                var b = new MoonTools.Core.Bonk.Rectangle(-1, -1, 5, 5);
+                var a = new Rectangle(0, 0, 3, 3);
+                var b = new Rectangle(-1, -1, 5, 5);
 
                 a.Equals(b).Should().BeFalse();
             }
@@ -175,8 +176,8 @@ namespace Tests
             [Test]
             public void RectangleNotEqualOperator()
             {
-                var a = new MoonTools.Core.Bonk.Rectangle(0, 0, 3, 3);
-                var b = new MoonTools.Core.Bonk.Rectangle(-1, -1, 5, 5);
+                var a = new Rectangle(0, 0, 3, 3);
+                var b = new Rectangle(-1, -1, 5, 5);
 
                 (a != b).Should().BeTrue();
             }
@@ -187,17 +188,17 @@ namespace Tests
             [Test]
             public void PolygonEqual()
             {
-                var a = new Polygon(
+                var a = new Polygon(ImmutableArray.Create(
                     new Position2D(0, 1),
                     new Position2D(1, 2),
                     new Position2D(-1, -1)
-                );
+                ));
 
-                var b = new Polygon(
+                var b = new Polygon(ImmutableArray.Create(
                     new Position2D(0, 1),
                     new Position2D(1, 2),
                     new Position2D(-1, -1)
-                );
+                ));
 
                 a.Equals(b).Should().BeTrue();
             }
@@ -205,17 +206,17 @@ namespace Tests
             [Test]
             public void PolygonEqualOperator()
             {
-                var a = new Polygon(
+                var a = new Polygon(ImmutableArray.Create(
                     new Position2D(0, 1),
                     new Position2D(1, 2),
                     new Position2D(-1, -1)
-                );
+                ));
 
-                var b = new Polygon(
+                var b = new Polygon(ImmutableArray.Create(
                     new Position2D(0, 1),
                     new Position2D(1, 2),
                     new Position2D(-1, -1)
-                );
+                ));
 
                 (a == b).Should().BeTrue();
             }
@@ -223,17 +224,17 @@ namespace Tests
             [Test]
             public void PolygonDifferentOrderEqual()
             {
-                var a = new Polygon(
+                var a = new Polygon(ImmutableArray.Create(
                     new Position2D(0, 1),
                     new Position2D(1, 2),
                     new Position2D(-1, -1)
-                );
+                ));
 
-                var b = new Polygon(
+                var b = new Polygon(ImmutableArray.Create(
                     new Position2D(1, 2),
                     new Position2D(-1, -1),
                     new Position2D(0, 1)
-                );
+                ));
 
                 a.Equals(b).Should().BeTrue();
             }
@@ -241,17 +242,17 @@ namespace Tests
             [Test]
             public void PolygonDifferentOrderEqualOperator()
             {
-                var a = new Polygon(
+                var a = new Polygon(ImmutableArray.Create(
                     new Position2D(0, 1),
                     new Position2D(1, 2),
                     new Position2D(-1, -1)
-                );
+                ));
 
-                var b = new Polygon(
+                var b = new Polygon(ImmutableArray.Create(
                     new Position2D(1, 2),
                     new Position2D(-1, -1),
                     new Position2D(0, 1)
-                );
+                ));
 
                 (a == b).Should().BeTrue();
             }
@@ -259,17 +260,17 @@ namespace Tests
             [Test]
             public void PolygonNotEqual()
             {
-                var a = new Polygon(
+                var a = new Polygon(ImmutableArray.Create(
                     new Position2D(0, 1),
                     new Position2D(1, 2),
                     new Position2D(-1, -1)
-                );
+                ));
 
-                var b = new Polygon(
+                var b = new Polygon(ImmutableArray.Create(
                     new Position2D(1, 0),
                     new Position2D(2, 1),
                     new Position2D(-1, -1)
-                );
+                ));
 
                 a.Equals(b).Should().BeFalse();
             }
@@ -277,17 +278,17 @@ namespace Tests
             [Test]
             public void PolygonNotEqualOperator()
             {
-                var a = new Polygon(
+                var a = new Polygon(ImmutableArray.Create(
                     new Position2D(0, 1),
                     new Position2D(1, 2),
                     new Position2D(-1, -1)
-                );
+                ));
 
-                var b = new Polygon(
+                var b = new Polygon(ImmutableArray.Create(
                     new Position2D(1, 0),
                     new Position2D(2, 1),
                     new Position2D(-1, -1)
-                );
+                ));
 
                 (a != b).Should().BeTrue();
             }
@@ -295,12 +296,12 @@ namespace Tests
             [Test]
             public void PolygonRectangleEqual()
             {
-                var a = new Polygon(
+                var a = new Polygon(ImmutableArray.Create(
                     new Position2D(1, 1),
                     new Position2D(1, -1),
                     new Position2D(-1, -1),
                     new Position2D(-1, 1)
-                );
+                ));
 
                 var b = new Rectangle(-1, -1, 1, 1);
 
@@ -310,12 +311,12 @@ namespace Tests
             [Test]
             public void PolygonRectangleNotEqual()
             {
-                var a = new Polygon(
+                var a = new Polygon(ImmutableArray.Create(
                     new Position2D(2, 1),
                     new Position2D(1, -1),
                     new Position2D(-1, -1),
                     new Position2D(-2, 1)
-                );
+                ));
 
                 var b = new Rectangle(-1, -1, 1, 1);
 
@@ -325,12 +326,12 @@ namespace Tests
             [Test]
             public void PolygonRectangleEqualOperator()
             {
-                var a = new Polygon(
+                var a = new Polygon(ImmutableArray.Create(
                     new Position2D(1, 1),
                     new Position2D(1, -1),
                     new Position2D(-1, -1),
                     new Position2D(-1, 1)
-                );
+                ));
 
                 var b = new Rectangle(-1, -1, 1, 1);
 
@@ -340,12 +341,12 @@ namespace Tests
             [Test]
             public void PolygonRectangleNotEqualOperator()
             {
-                var a = new Polygon(
+                var a = new Polygon(ImmutableArray.Create(
                     new Position2D(2, 1),
                     new Position2D(1, -1),
                     new Position2D(-1, -1),
                     new Position2D(-2, 1)
-                );
+                ));
 
                 var b = new Rectangle(-1, -1, 1, 1);
 
@@ -513,6 +514,27 @@ namespace Tests
                 var simplexD = new Simplex2D(Vector2.Zero, Vector2.UnitY, Vector2.UnitX);
 
                 (simplexC == simplexD).Should().BeFalse();
+            }
+        }
+
+        public class AABBTests
+        {
+            [Test]
+            public void Equal()
+            {
+                var aabb = new AABB(0, 0, 3, 3);
+                var other = new AABB(0, 0, 3, 3);
+
+                (aabb == other).Should().BeTrue();
+            }
+
+            [Test]
+            public void NotEqual()
+            {
+                var aabb = new AABB(0, 0, 3, 3);
+                var other = new AABB(0, 0, 6, 6);
+
+                (aabb != other).Should().BeTrue();
             }
         }
     }

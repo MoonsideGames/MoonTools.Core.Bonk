@@ -8,7 +8,7 @@ namespace MoonTools.Core.Bonk
     /// <summary>
     /// A line is a shape defined by exactly two points in space.
     /// </summary>
-    public struct Line : IShape2D, IEquatable<IShape2D>
+    public struct Line : IShape2D, IEquatable<Line>
     {
         private Position2D v0;
         private Position2D v1;
@@ -18,7 +18,7 @@ namespace MoonTools.Core.Bonk
             get
             {
                 yield return v0;
-                yield return v0;
+                yield return v1;
             }
         }
 
@@ -44,31 +44,22 @@ namespace MoonTools.Core.Bonk
 
         public override bool Equals(object obj)
         {
-            if (obj is IShape2D other)
-            {
-                return Equals(other);
-            }
-
-            return false;
+            return obj is IShape2D other && Equals(other);
         }
 
         public bool Equals(IShape2D other)
         {
-            if (other is Line otherLine)
-            {
-                return (v0 == otherLine.v0 && v1 == otherLine.v1) || (v1 == otherLine.v0 && v0 == otherLine.v1);
-            }
+            return other is Line otherLine && Equals(otherLine);
+        }
 
-            return false;
+        public bool Equals(Line other)
+        {
+            return (v0 == other.v0 && v1 == other.v1) || (v1 == other.v0 && v0 == other.v1);
         }
 
         public override int GetHashCode()
         {
-            var hashCode = -851829407;
-            hashCode = hashCode * -1521134295 + EqualityComparer<Position2D>.Default.GetHashCode(v0);
-            hashCode = hashCode * -1521134295 + EqualityComparer<Position2D>.Default.GetHashCode(v1);
-            hashCode = hashCode * -1521134295 + EqualityComparer<IEnumerable<Position2D>>.Default.GetHashCode(Vertices);
-            return hashCode;
+            return HashCode.Combine(v0, v1);
         }
 
         public static bool operator ==(Line a, Line b)

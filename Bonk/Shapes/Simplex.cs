@@ -3,17 +3,18 @@ using System.Collections.Generic;
 using System.Numerics;
 using MoonTools.Core.Structs;
 using MoreLinq;
+using System;
 
 namespace MoonTools.Core.Bonk
 {
     /// <summary>
     /// A simplex is a shape with up to n - 2 vertices in the nth dimension.
     /// </summary>
-    public struct Simplex2D : IShape2D
+    public struct Simplex2D : IShape2D, IEquatable<Simplex2D>
     {
-        Vector2 a;
-        Vector2? b;
-        Vector2? c;
+        private Vector2 a;
+        private Vector2? b;
+        private Vector2? c;
 
         public Vector2 A => a;
         public Vector2? B => b;
@@ -28,15 +29,15 @@ namespace MoonTools.Core.Bonk
         public Simplex2D(Vector2 a)
         {
             this.a = a;
-            this.b = null;
-            this.c = null;
+            b = null;
+            c = null;
         }
 
         public Simplex2D(Vector2 a, Vector2 b)
         {
             this.a = a;
             this.b = b;
-            this.c = null;
+            c = null;
         }
 
         public Simplex2D(Vector2 a, Vector2 b, Vector2 c)
@@ -73,36 +74,26 @@ namespace MoonTools.Core.Bonk
 
         public override bool Equals(object obj)
         {
-            if (obj is IShape2D other)
-            {
-                return Equals(other);
-            }
-
-            return false;
+            return obj is IShape2D other && Equals(other);
         }
 
         public bool Equals(IShape2D other)
         {
-            if (other is Simplex2D otherSimplex)
-            {
-                if (Count != otherSimplex.Count) { return false; }
-                return Vertices.Intersect(otherSimplex.Vertices).Count() == Count;
-            }
+            return other is Simplex2D otherSimplex && Equals(otherSimplex);
+        }
 
-            return false;
+        public bool Equals(Simplex2D other)
+        {
+            var q = from a in Vertices
+                    join b in other.Vertices on a equals b
+                    select a;
+
+            return Count == other.Count && q.Count() == Count;
         }
 
         public override int GetHashCode()
         {
-            var hashCode = -495772172;
-            hashCode = hashCode * -1521134295 + EqualityComparer<Vector2>.Default.GetHashCode(a);
-            hashCode = hashCode * -1521134295 + EqualityComparer<Vector2?>.Default.GetHashCode(b);
-            hashCode = hashCode * -1521134295 + EqualityComparer<Vector2?>.Default.GetHashCode(c);
-            hashCode = hashCode * -1521134295 + ZeroSimplex.GetHashCode();
-            hashCode = hashCode * -1521134295 + OneSimplex.GetHashCode();
-            hashCode = hashCode * -1521134295 + TwoSimplex.GetHashCode();
-            hashCode = hashCode * -1521134295 + EqualityComparer<IEnumerable<Position2D>>.Default.GetHashCode(Vertices);
-            return hashCode;
+            return HashCode.Combine(Vertices);
         }
 
         public static bool operator ==(Simplex2D a, Simplex2D b)
