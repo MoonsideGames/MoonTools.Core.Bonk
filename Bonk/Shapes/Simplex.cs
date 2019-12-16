@@ -2,7 +2,6 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Numerics;
 using MoonTools.Core.Structs;
-using MoreLinq;
 using System;
 
 namespace MoonTools.Core.Bonk
@@ -62,14 +61,21 @@ namespace MoonTools.Core.Bonk
             return Bonk.AABB.FromTransformedVertices(Vertices, transform);
         }
 
-        public Vector2 Support(Vector2 direction)
-        {
-            return Vertices.MaxBy(vertex => Vector2.Dot(vertex, direction)).First();
-        }
-
         public Vector2 Support(Vector2 direction, Transform2D transform)
         {
-            return Vector2.Transform(Support(direction), transform.TransformMatrix);
+            var maxDotProduct = float.NegativeInfinity;
+            var maxVertex = a;
+            foreach (var vertex in Vertices)
+            {
+                var transformed = Vector2.Transform(vertex, transform.TransformMatrix);
+                var dot = Vector2.Dot(transformed, direction);
+                if (dot > maxDotProduct)
+                {
+                    maxVertex = transformed;
+                    maxDotProduct = dot;
+                }
+            }
+            return maxVertex;
         }
 
         public override bool Equals(object obj)
