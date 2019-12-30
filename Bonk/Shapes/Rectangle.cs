@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
 using MoonTools.Core.Structs;
 
@@ -15,6 +14,8 @@ namespace MoonTools.Core.Bonk
         public int MinY { get; }
         public int MaxX { get; }
         public int MaxY { get; }
+
+        public AABB AABB { get; }
 
         public IEnumerable<Position2D> Vertices
         {
@@ -33,6 +34,8 @@ namespace MoonTools.Core.Bonk
             MinY = minY;
             MaxX = maxX;
             MaxY = maxY;
+
+            AABB = new AABB(minX, minY, maxX, maxY);
         }
 
         public Vector2 Support(Vector2 direction, Transform2D transform)
@@ -52,9 +55,9 @@ namespace MoonTools.Core.Bonk
             return maxVertex;
         }
 
-        public AABB AABB(Transform2D Transform2D)
+        public AABB TransformedAABB(Transform2D transform)
         {
-            return Bonk.AABB.FromTransformedVertices(Vertices, Transform2D);
+            return AABB.Transformed(AABB, transform);
         }
 
         public override bool Equals(object obj)

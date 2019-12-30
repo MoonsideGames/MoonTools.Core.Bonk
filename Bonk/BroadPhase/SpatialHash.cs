@@ -1,5 +1,6 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 using MoonTools.Core.Structs;
 
 namespace MoonTools.Core.Bonk
@@ -20,9 +21,9 @@ namespace MoonTools.Core.Bonk
             this.cellSize = cellSize;
         }
 
-        private (int, int) Hash(float x, float y)
+        private (int, int) Hash(Vector2 position)
         {
-            return ((int)Math.Floor(x / cellSize), (int)Math.Floor(y / cellSize));
+            return ((int)Math.Floor(position.X / cellSize), (int)Math.Floor(position.Y / cellSize));
         }
 
         /// <summary>
@@ -33,13 +34,13 @@ namespace MoonTools.Core.Bonk
         /// <param name="transform2D"></param>
         public void Insert(T id, IShape2D shape, Transform2D transform2D)
         {
-            var box = shape.AABB(transform2D);
-            var minHash = Hash(box.MinX, box.MinY);
-            var maxHash = Hash(box.MaxX, box.MaxY);
+            var box = shape.TransformedAABB(transform2D);
+            var minHash = Hash(box.Min);
+            var maxHash = Hash(box.Max);
 
-            for (int i = minHash.Item1; i <= maxHash.Item1; i++)
+            for (var i = minHash.Item1; i <= maxHash.Item1; i++)
             {
-                for (int j = minHash.Item2; j <= maxHash.Item2; j++)
+                for (var j = minHash.Item2; j <= maxHash.Item2; j++)
                 {
                     if (!hashDictionary.ContainsKey(i))
                     {
@@ -62,9 +63,9 @@ namespace MoonTools.Core.Bonk
         /// </summary>
         public IEnumerable<(T, IShape2D, Transform2D)> Retrieve(T id, IShape2D shape, Transform2D transform2D)
         {
-            AABB box = shape.AABB(transform2D);
-            var minHash = Hash(box.MinX, box.MinY);
-            var maxHash = Hash(box.MaxX, box.MaxY);
+            AABB box = shape.TransformedAABB(transform2D);
+            var minHash = Hash(box.Min);
+            var maxHash = Hash(box.Max);
 
             for (int i = minHash.Item1; i <= maxHash.Item1; i++)
             {
