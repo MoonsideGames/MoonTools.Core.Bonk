@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
 using MoonTools.Core.Structs;
 
@@ -21,14 +20,39 @@ namespace MoonTools.Core.Bonk
 
         public static AABB FromTransformedVertices(IEnumerable<Position2D> vertices, Transform2D transform)
         {
-            var TransformedVertices = vertices.Select(vertex => Vector2.Transform(vertex, transform.TransformMatrix));
+            float minX = float.MaxValue;
+            float minY = float.MaxValue;
+            float maxX = float.MinValue;
+            float maxY = float.MinValue;
+
+            foreach (var vertex in vertices)
+            {
+                var transformedVertex = Vector2.Transform(vertex, transform.TransformMatrix);
+
+                if (transformedVertex.X < minX)
+                {
+                    minX = transformedVertex.X;
+                }
+                if (transformedVertex.Y < minY)
+                {
+                    minY = transformedVertex.Y;
+                }
+                if (transformedVertex.X > maxX)
+                {
+                    maxX = transformedVertex.X;
+                }
+                if (transformedVertex.Y > maxY)
+                {
+                    maxY = transformedVertex.Y;
+                }
+            }
 
             return new AABB
             {
-                MinX = TransformedVertices.Min(vertex => vertex.X),
-                MinY = TransformedVertices.Min(vertex => vertex.Y),
-                MaxX = TransformedVertices.Max(vertex => vertex.X),
-                MaxY = TransformedVertices.Max(vertex => vertex.Y)
+                MinX = minX,
+                MinY = minY,
+                MaxX = maxX,
+                MaxY = maxY
             };
         }
 

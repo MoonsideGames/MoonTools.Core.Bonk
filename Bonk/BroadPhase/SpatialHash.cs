@@ -33,8 +33,6 @@ namespace MoonTools.Core.Bonk
         /// <param name="transform2D"></param>
         public void Insert(T id, IShape2D shape, Transform2D transform2D)
         {
-            if (shape == null) { throw new ArgumentNullException(nameof(shape)); }
-
             var box = shape.AABB(transform2D);
             var minHash = Hash(box.MinX, box.MinY);
             var maxHash = Hash(box.MaxX, box.MaxY);
@@ -64,8 +62,6 @@ namespace MoonTools.Core.Bonk
         /// </summary>
         public IEnumerable<(T, IShape2D, Transform2D)> Retrieve(T id, IShape2D shape, Transform2D transform2D)
         {
-            if (shape == null) { throw new ArgumentNullException(paramName: nameof(shape)); }
-
             AABB box = shape.AABB(transform2D);
             var minHash = Hash(box.MinX, box.MinY);
             var maxHash = Hash(box.MaxX, box.MaxY);
