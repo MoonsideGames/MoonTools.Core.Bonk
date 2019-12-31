@@ -1,4 +1,4 @@
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using FluentAssertions;
 
 using MoonTools.Core.Bonk;
@@ -18,7 +18,7 @@ namespace Tests
                 var a = new Point(1, 1);
                 var b = new Point(1, 1);
 
-                a.Should().BeEquivalentTo(b);
+                a.Equals(b).Should().BeTrue();
             }
 
             [Test]
@@ -27,7 +27,7 @@ namespace Tests
                 var a = new Point(1, 1);
                 var b = new Point(-1, 1);
 
-                a.Should().NotBeEquivalentTo(b);
+                a.Equals(b).Should().BeFalse();
             }
 
             [Test]
@@ -305,7 +305,7 @@ namespace Tests
 
                 var b = new Rectangle(-1, -1, 1, 1);
 
-                a.Should().BeEquivalentTo(b);
+                a.Equals(b).Should().BeTrue();
             }
 
             [Test]
@@ -320,7 +320,7 @@ namespace Tests
 
                 var b = new Rectangle(-1, -1, 1, 1);
 
-                a.Should().NotBeEquivalentTo(b);
+                a.Equals(b).Should().BeFalse();
             }
 
             [Test]

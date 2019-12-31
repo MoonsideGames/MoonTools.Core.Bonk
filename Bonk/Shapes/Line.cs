@@ -10,36 +10,40 @@ namespace MoonTools.Core.Bonk
     /// </summary>
     public struct Line : IShape2D, IEquatable<Line>
     {
-        private Position2D v0;
-        private Position2D v1;
+        private Position2D _v0;
+        private Position2D _v1;
+
+        public AABB AABB { get; }
 
         public IEnumerable<Position2D> Vertices
         {
             get
             {
-                yield return v0;
-                yield return v1;
+                yield return _v0;
+                yield return _v1;
             }
         }
 
         public Line(Position2D start, Position2D end)
         {
-            v0 = start;
-            v1 = end;
+            _v0 = start;
+            _v1 = end;
+
+            AABB = new AABB(Math.Min(_v0.X, _v1.X), Math.Min(_v0.Y, _v1.Y), Math.Max(_v0.X, _v1.X), Math.Max(_v0.Y, _v1.Y));
         }
 
         public Vector2 Support(Vector2 direction, Transform2D transform)
         {
-            var TransformedStart = Vector2.Transform(v0, transform.TransformMatrix);
-            var TransformedEnd = Vector2.Transform(v1, transform.TransformMatrix);
-            return Vector2.Dot(TransformedStart, direction) > Vector2.Dot(TransformedEnd, direction) ?
-                TransformedStart :
-                TransformedEnd;
+            var transformedStart = Vector2.Transform(_v0, transform.TransformMatrix);
+            var transformedEnd = Vector2.Transform(_v1, transform.TransformMatrix);
+            return Vector2.Dot(transformedStart, direction) > Vector2.Dot(transformedEnd, direction) ?
+                transformedStart :
+                transformedEnd;
         }
 
-        public AABB AABB(Transform2D Transform2D)
+        public AABB TransformedAABB(Transform2D transform)
         {
-            return Bonk.AABB.FromTransformedVertices(Vertices, Transform2D);
+            return AABB.Transformed(AABB, transform);
         }
 
         public override bool Equals(object obj)
@@ -54,12 +58,12 @@ namespace MoonTools.Core.Bonk
 
         public bool Equals(Line other)
         {
-            return (v0 == other.v0 && v1 == other.v1) || (v1 == other.v0 && v0 == other.v1);
+            return (_v0 == other._v0 && _v1 == other._v1) || (_v1 == other._v0 && _v0 == other._v1);
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(v0, v1);
+            return HashCode.Combine(_v0, _v1);
         }
 
         public static bool operator ==(Line a, Line b)

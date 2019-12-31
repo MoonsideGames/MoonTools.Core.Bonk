@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using System.Collections.Generic;
 using System.Numerics;
 using MoonTools.Core.Structs;
@@ -9,7 +9,7 @@ namespace MoonTools.Core.Bonk
     /// <summary>
     /// A simplex is a shape with up to n - 2 vertices in the nth dimension.
     /// </summary>
-    public struct Simplex2D : IShape2D, IEquatable<Simplex2D>
+    public struct Simplex2D : IEquatable<Simplex2D>
     {
         private Vector2 a;
         private Vector2? b;
@@ -56,11 +56,6 @@ namespace MoonTools.Core.Bonk
             }
         }
 
-        public AABB AABB(Transform2D transform)
-        {
-            return Bonk.AABB.FromTransformedVertices(Vertices, transform);
-        }
-
         public Vector2 Support(Vector2 direction, Transform2D transform)
         {
             var maxDotProduct = float.NegativeInfinity;
@@ -80,12 +75,7 @@ namespace MoonTools.Core.Bonk
 
         public override bool Equals(object obj)
         {
-            return obj is IShape2D other && Equals(other);
-        }
-
-        public bool Equals(IShape2D other)
-        {
-            return other is Simplex2D otherSimplex && Equals(otherSimplex);
+            return obj is Simplex2D other && Equals(other);
         }
 
         public bool Equals(Simplex2D other)

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
 using MoonTools.Core.Structs;
 
@@ -15,6 +14,8 @@ namespace MoonTools.Core.Bonk
         public int MinY { get; }
         public int MaxX { get; }
         public int MaxY { get; }
+
+        public AABB AABB { get; }
 
         public IEnumerable<Position2D> Vertices
         {
@@ -33,28 +34,45 @@ namespace MoonTools.Core.Bonk
             MinY = minY;
             MaxX = maxX;
             MaxY = maxY;
+
+            AABB = new AABB(minX, minY, maxX, maxY);
+        }
+
+        private Vector2 Support(Vector2 direction)
+        {
+            if (direction.X >= 0 && direction.Y >= 0)
+            {
+                return new Vector2(MaxX, MaxY);
+            }
+            else if (direction.X >= 0 && direction.Y < 0)
+            {
+                return new Vector2(MaxX, MinY);
+            }
+            else if (direction.X < 0 && direction.Y >= 0)
+            {
+                return new Vector2(MinX, MaxY);
+            }
+            else if (direction.X < 0 && direction.Y < 0)
+            {
+                return new Vector2(MinX, MinY);
+            }
+            else
+            {
+                throw new ArgumentException("Support vector direction cannot be zero.");
+            }
         }
 
         public Vector2 Support(Vector2 direction, Transform2D transform)
         {
-            var maxDotProduct = float.NegativeInfinity;
-            var maxVertex = new Vector2(MinX, MinY);
-            foreach (var vertex in Vertices)
-            {
-                var transformed = Vector2.Transform(vertex, transform.TransformMatrix);
-                var dot = Vector2.Dot(transformed, direction);
-                if (dot > maxDotProduct)
-                {
-                    maxVertex = transformed;
-                    maxDotProduct = dot;
-                }
-            }
-            return maxVertex;
+            Matrix4x4 inverseTransform;
+            Matrix4x4.Invert(transform.TransformMatrix, out inverseTransform);
+            var inverseDirection = Vector2.TransformNormal(direction, inverseTransform);
+            return Vector2.Transform(Support(inverseDirection), transform.TransformMatrix);
         }
 
-        public AABB AABB(Transform2D Transform2D)
+        public AABB TransformedAABB(Transform2D transform)
         {
-            return Bonk.AABB.FromTransformedVertices(Vertices, Transform2D);
+            return AABB.Transformed(AABB, transform);
         }
 
         public override bool Equals(object obj)
