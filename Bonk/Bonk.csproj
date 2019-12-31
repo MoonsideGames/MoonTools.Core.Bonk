@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Version>5.1.0</Version>
+    <Version>6.0.0</Version>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Description>.NET Core High Performance Collision Detection</Description>
     <PackageId>MoonTools.Core.Bonk</PackageId>
@@ -19,9 +19,9 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="MoonTools.Core.Structs" Version="2.1.0"/>
-    <PackageReference Include="System.Collections.Immutable" Version="1.6.0"/>
-    <PackageReference Include="System.Numerics.Vectors" Version="4.5.0"/>
-    <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.0"/>
+    <PackageReference Include="MoonTools.Core.Structs" Version="2.1.0" />
+    <PackageReference Include="System.Collections.Immutable" Version="1.6.0" />
+    <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
+    <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.0" />
   </ItemGroup>
 </Project>
