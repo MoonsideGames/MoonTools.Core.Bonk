@@ -1,5 +1,4 @@
-using System;
-using System.Linq;
+﻿using System;
 using System.Numerics;
 using MoonTools.Core.Structs;
 
@@ -7,26 +6,29 @@ namespace MoonTools.Core.Bonk
 {
     public struct Point : IShape2D, IEquatable<Point>
     {
-        private Position2D position;
+        private Position2D _position;
+        public AABB AABB { get; }
 
         public Point(Position2D position)
         {
-            this.position = position;
+            _position = position;
+            AABB = new AABB(position, position);
         }
 
         public Point(int x, int y)
         {
-            this.position = new Position2D(x, y);
+            _position = new Position2D(x, y);
+            AABB = new AABB(x, y, x, y);
         }
 
-        public AABB AABB(Transform2D transform)
+        public AABB TransformedAABB(Transform2D transform)
         {
-            return Bonk.AABB.FromTransformedVertices(Enumerable.Repeat<Position2D>(position, 1), transform);
+            return AABB.Transformed(AABB, transform);
         }
 
         public Vector2 Support(Vector2 direction, Transform2D transform)
         {
-            return Vector2.Transform(position.ToVector2(), transform.TransformMatrix);
+            return Vector2.Transform(_position.ToVector2(), transform.TransformMatrix);
         }
 
         public override bool Equals(object obj)
@@ -41,12 +43,12 @@ namespace MoonTools.Core.Bonk
 
         public bool Equals(Point other)
         {
-            return position == other.position;
+            return _position == other._position;
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(position);
+            return HashCode.Combine(_position);
         }
 
         public static bool operator ==(Point a, Point b)

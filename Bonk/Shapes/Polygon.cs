@@ -13,27 +13,30 @@ namespace MoonTools.Core.Bonk
     /// </summary>
     public struct Polygon : IShape2D, IEquatable<Polygon>
     {
-        private ImmutableArray<Position2D> vertices;
+        private ImmutableArray<Position2D> _vertices;
+        public AABB AABB { get; }
 
-        public IEnumerable<Position2D> Vertices { get { return vertices; } }
+        public IEnumerable<Position2D> Vertices { get { return _vertices; } }
 
-        public int VertexCount { get { return vertices.Length; } }
+        public int VertexCount { get { return _vertices.Length; } }
 
         // vertices are local to the origin
-        public Polygon(IEnumerable<Position2D> vertices) // TODO: remove this, params is bad because it allocates an array
+        public Polygon(IEnumerable<Position2D> vertices)
         {
-            this.vertices = vertices.ToImmutableArray();
+            _vertices = vertices.ToImmutableArray();
+            AABB = AABB.FromVertices(vertices);
         }
 
         public Polygon(ImmutableArray<Position2D> vertices)
         {
-            this.vertices = vertices;
+            _vertices = vertices;
+            AABB = AABB.FromVertices(vertices);
         }
 
         public Vector2 Support(Vector2 direction, Transform2D transform)
         {
             var maxDotProduct = float.NegativeInfinity;
-            var maxVertex = vertices[0].ToVector2();
+            var maxVertex = _vertices[0].ToVector2();
             foreach (var vertex in Vertices)
             {
                 var transformed = Vector2.Transform(vertex, transform.TransformMatrix);
@@ -47,9 +50,9 @@ namespace MoonTools.Core.Bonk
             return maxVertex;
         }
 
-        public AABB AABB(Transform2D Transform2D)
+        public AABB TransformedAABB(Transform2D transform)
         {
-            return Bonk.AABB.FromTransformedVertices(Vertices, Transform2D);
+            return AABB.Transformed(AABB, transform);
         }
 
         public override bool Equals(object obj)
@@ -64,11 +67,11 @@ namespace MoonTools.Core.Bonk
 
         public bool Equals(Polygon other)
         {
-            var q = from a in vertices
+            var q = from a in _vertices
                     join b in other.Vertices on a equals b
                     select a;
 
-            return vertices.Length == other.VertexCount && q.Count() == vertices.Length;
+            return _vertices.Length == other.VertexCount && q.Count() == _vertices.Length;
         }
 
         public bool Equals(Rectangle rectangle)

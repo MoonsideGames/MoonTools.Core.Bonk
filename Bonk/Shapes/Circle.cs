@@ -10,10 +10,12 @@ namespace MoonTools.Core.Bonk
     public struct Circle : IShape2D, IEquatable<Circle>
     {
         public int Radius { get; }
+        public AABB AABB { get; }
 
         public Circle(int radius)
         {
             Radius = radius;
+            AABB = new AABB(-Radius, -Radius, Radius, Radius);
         }
 
         public Vector2 Support(Vector2 direction, Transform2D transform)
@@ -21,14 +23,9 @@ namespace MoonTools.Core.Bonk
             return Vector2.Transform(Vector2.Normalize(direction) * Radius, transform.TransformMatrix);
         }
 
-        public AABB AABB(Transform2D transform2D)
+        public AABB TransformedAABB(Transform2D transform2D)
         {
-            return new AABB(
-                transform2D.Position.X - (Radius * transform2D.Scale.X),
-                transform2D.Position.Y - (Radius * transform2D.Scale.Y),
-                transform2D.Position.X + (Radius * transform2D.Scale.X),
-                transform2D.Position.Y + (Radius * transform2D.Scale.Y)
-            );
+            return AABB.Transformed(AABB, transform2D);
         }
 
         public override bool Equals(object obj)
