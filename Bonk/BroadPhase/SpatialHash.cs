@@ -12,7 +12,7 @@ namespace MoonTools.Core.Bonk
     {
         private readonly int cellSize;
 
-        private readonly Dictionary<int, Dictionary<int, HashSet<T>>> hashDictionary = new Dictionary<int, Dictionary<int, HashSet<T>>>();
+        private readonly Dictionary<long, HashSet<T>> hashDictionary = new Dictionary<long, HashSet<T>>();
         private readonly Dictionary<T, (IShape2D, Transform2D)> IDLookup = new Dictionary<T, (IShape2D, Transform2D)>();
 
         public SpatialHash(int cellSize)
@@ -41,17 +41,13 @@ namespace MoonTools.Core.Bonk
             {
                 for (int j = minHash.Item2; j <= maxHash.Item2; j++)
                 {
-                    if (!hashDictionary.ContainsKey(i))
+                    var key = LongHelper.MakeLong(i, j);
+                    if (!hashDictionary.ContainsKey(key))
                     {
-                        hashDictionary.Add(i, new Dictionary<int, HashSet<T>>());
+                        hashDictionary.Add(key, new HashSet<T>());
                     }
 
-                    if (!hashDictionary[i].ContainsKey(j))
-                    {
-                        hashDictionary[i].Add(j, new HashSet<T>());
-                    }
-
-                    hashDictionary[i][j].Add(id);
+                    hashDictionary[key].Add(id);
                     IDLookup[id] = (shape, transform2D);
                 }
             }
@@ -70,9 +66,10 @@ namespace MoonTools.Core.Bonk
             {
                 for (int j = minHash.Item2; j <= maxHash.Item2; j++)
                 {
-                    if (hashDictionary.ContainsKey(i) && hashDictionary[i].ContainsKey(j))
+                    var key = LongHelper.MakeLong(i, j);
+                    if (hashDictionary.ContainsKey(key))
                     {
-                        foreach (var t in hashDictionary[i][j])
+                        foreach (var t in hashDictionary[key])
                         {
                             var (otherShape, otherTransform) = IDLookup[t];
                             if (!id.Equals(t)) { yield return (t, otherShape, otherTransform); }
@@ -87,12 +84,9 @@ namespace MoonTools.Core.Bonk
         /// </summary>
         public void Clear()
         {
-            foreach (var innerDict in hashDictionary.Values)
+            foreach (var hash in hashDictionary.Values)
             {
-                foreach (var set in innerDict.Values)
-                {
-                    set.Clear();
-                }
+                hash.Clear();
             }
 
             IDLookup.Clear();
