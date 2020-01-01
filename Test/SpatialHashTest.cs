@@ -1,4 +1,4 @@
-using FluentAssertions;
+﻿using FluentAssertions;
 using NUnit.Framework;
 using MoonTools.Core.Structs;
 using MoonTools.Core.Bonk;
@@ -34,8 +34,8 @@ namespace Tests
             var line = new Line(new Position2D(20, -4), new Position2D(22, -12));
             var lineTransform = new Transform2D(new Vector2(0, 0));
 
-            var point = new Point(8, 8);
-            var pointTransform = Transform2D.DefaultTransform;
+            var point = new Point();
+            var pointTransform = new Transform2D(new Position2D(8, 8));
 
             spatialHash.Insert(0, rectA, rectATransform);
             spatialHash.Insert(1, rectB, rectBTransform);

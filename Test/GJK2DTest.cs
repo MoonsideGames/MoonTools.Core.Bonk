@@ -12,8 +12,8 @@ namespace Tests
         [Test]
         public void PointLineOverlapping()
         {
-            var point = new Point(-3, -3);
-            var pointTransform = new Transform2D(new Position2D(4, 4));
+            var point = new Point();
+            var pointTransform = new Transform2D(new Position2D(1, 1));
             var line = new Line(new Position2D(-2, -2), new Position2D(2, 2));
 
             NarrowPhase.TestCollision(point, pointTransform, line, Transform2D.DefaultTransform).Should().BeTrue();
@@ -22,10 +22,11 @@ namespace Tests
         [Test]
         public void PointLineNotOverlapping()
         {
-            var point = new Point(1, 1);
+            var point = new Point();
+            var pointTransform = new Transform2D(new Position2D(1, 1));
             var line = new Line(new Position2D(-3, -2), new Position2D(-9, -5));
 
-            NarrowPhase.TestCollision(point, Transform2D.DefaultTransform, line, Transform2D.DefaultTransform).Should().BeFalse();
+            NarrowPhase.TestCollision(point, pointTransform, line, Transform2D.DefaultTransform).Should().BeFalse();
         }
 
         [Test]
@@ -43,7 +44,7 @@ namespace Tests
         [Test]
         public void PointCircleNotOverlapping()
         {
-            var point = new Point(0, 0);
+            var point = new Point();
             var pointTransform = new Transform2D(new Position2D(3, 0));
             var circle = new Circle(1);
 
@@ -53,7 +54,7 @@ namespace Tests
         [Test]
         public void PointRectangleOverlapping()
         {
-            var point = new Point(1, 1);
+            var point = new Point();
             var rectangle = new Rectangle(-2, -2, 2, 2);
 
             NarrowPhase.TestCollision(point, Transform2D.DefaultTransform, rectangle, Transform2D.DefaultTransform).Should().BeTrue();
@@ -62,16 +63,18 @@ namespace Tests
         [Test]
         public void PointRectangleNotOverlapping()
         {
-            var point = new Point(5, 5);
+            var point = new Point();
+            var pointTransform = new Transform2D(new Position2D(5, 5));
             var rectangle = new Rectangle(-2, -2, 2, 2);
 
-            NarrowPhase.TestCollision(point, Transform2D.DefaultTransform, rectangle, Transform2D.DefaultTransform).Should().BeFalse();
+            NarrowPhase.TestCollision(point, pointTransform, rectangle, Transform2D.DefaultTransform).Should().BeFalse();
         }
 
         [Test]
         public void PointPolygonOverlapping()
         {
-            var point = new Point(1, 1);
+            var point = new Point();
+            var pointTransform = new Transform2D(new Position2D(1, 1));
             var polygon = new Polygon(ImmutableArray.Create(
                 new Position2D(-2, -2),
                 new Position2D(-3, 2),
@@ -79,13 +82,14 @@ namespace Tests
                 new Position2D(3, -2)
             ));
 
-            NarrowPhase.TestCollision(point, Transform2D.DefaultTransform, polygon, Transform2D.DefaultTransform).Should().BeTrue();
+            NarrowPhase.TestCollision(point, pointTransform, polygon, Transform2D.DefaultTransform).Should().BeTrue();
         }
 
         [Test]
         public void PointPolygonNotOverlapping()
         {
-            var point = new Point(5, 5);
+            var point = new Point();
+            var pointTransform = new Transform2D(new Position2D(5, 5));
             var polygon = new Polygon(ImmutableArray.Create(
                 new Position2D(-2, -2),
                 new Position2D(-3, 2),
@@ -93,7 +97,7 @@ namespace Tests
                 new Position2D(3, -2)
             ));
 
-            NarrowPhase.TestCollision(point, Transform2D.DefaultTransform, polygon, Transform2D.DefaultTransform).Should().BeFalse();
+            NarrowPhase.TestCollision(point, pointTransform, polygon, Transform2D.DefaultTransform).Should().BeFalse();
         }
 
         [Test]

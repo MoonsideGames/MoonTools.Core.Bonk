@@ -15,36 +15,27 @@ namespace Tests
             [Test]
             public void PointEqual()
             {
-                var a = new Point(1, 1);
-                var b = new Point(1, 1);
+                var a = new Point();
+                var b = new Point();
 
                 a.Equals(b).Should().BeTrue();
             }
 
             [Test]
-            public void PointNotEqual()
-            {
-                var a = new Point(1, 1);
-                var b = new Point(-1, 1);
-
-                a.Equals(b).Should().BeFalse();
-            }
-
-            [Test]
             public void PointEqualOperator()
             {
-                var a = new Point(1, 1);
-                var b = new Point(1, 1);
+                var a = new Point();
+                var b = new Point();
                 (a == b).Should().BeTrue();
             }
 
             [Test]
             public void PointNotEqualOperator()
             {
-                var a = new Point(1, 1);
-                var b = new Point(-1, 1);
+                var a = new Point();
+                var b = new Point();
 
-                (a != b).Should().BeTrue();
+                (a != b).Should().BeFalse();
             }
         }
 

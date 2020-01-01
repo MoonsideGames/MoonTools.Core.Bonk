@@ -65,11 +65,23 @@ namespace MoonTools.Core.Bonk
             {
                 return TestRectangleOverlap(rectangleA, transformA, rectangleB, transformB);
             }
+            else if (shapeA is Point && shapeB is Rectangle && transformB.Rotation == 0)
+            {
+                return TestPointRectangleOverlap((Point)shapeA, transformA, (Rectangle)shapeB, transformB);
+            }
+            else if (shapeA is Rectangle && shapeB is Point && transformA.Rotation == 0)
+            {
+                return TestPointRectangleOverlap((Point)shapeB, transformB, (Rectangle)shapeA, transformA);
+            }
+            else if (shapeA is Circle circleA && shapeB is Circle circleB && transformA.Scale.X == transformA.Scale.Y && transformB.Scale.X == transformB.Scale.Y)
+            {
+                return TestCircleOverlap(circleA, transformA, circleB, transformB);
+            }
             return FindCollisionSimplex(shapeA, transformA, shapeB, transformB).Item1;
         }
 
         /// <summary>
-        /// Fast path for overlapping rectangles. If the transforms have non-zero rotation this will be inaccurate.
+        /// Fast path for axis-aligned rectangles. If the transforms have non-zero rotation this will be inaccurate.
         /// </summary>
         /// <param name="rectangleA"></param>
         /// <param name="transformA"></param>
@@ -82,6 +94,44 @@ namespace MoonTools.Core.Bonk
             var secondAABB = rectangleB.TransformedAABB(transformB);
 
             return firstAABB.Left <= secondAABB.Right && firstAABB.Right >= secondAABB.Left && firstAABB.Top <= secondAABB.Bottom && firstAABB.Bottom >= secondAABB.Top;
+        }
+
+        /// <summary>
+        /// Fast path for overlapping point and axis-aligned rectangle. The rectangle transform must have non-zero rotation.
+        /// </summary>
+        /// <param name="point"></param>
+        /// <param name="pointTransform"></param>
+        /// <param name="rectangle"></param>
+        /// <param name="rectangleTransform"></param>
+        /// <returns></returns>
+        public static bool TestPointRectangleOverlap(Point point, Transform2D pointTransform, Rectangle rectangle, Transform2D rectangleTransform)
+        {
+            var transformedPoint = pointTransform.Position;
+            var AABB = rectangle.TransformedAABB(rectangleTransform);
+
+            return transformedPoint.X >= AABB.Left && transformedPoint.X <= AABB.Right && transformedPoint.Y <= AABB.Bottom && transformedPoint.Y >= AABB.Top;
+        }
+
+        /// <summary>
+        /// Fast path for overlapping circles. The circles must have uniform scaling.
+        /// </summary>
+        /// <param name="circleA"></param>
+        /// <param name="transformA"></param>
+        /// <param name="circleB"></param>
+        /// <param name="transformB"></param>
+        /// <returns></returns>
+        public static bool TestCircleOverlap(Circle circleA, Transform2D transformA, Circle circleB, Transform2D transformB)
+        {
+            var radiusA = circleA.Radius * transformA.Scale.X;
+            var radiusB = circleB.Radius * transformB.Scale.Y;
+
+            var centerA = transformA.Position;
+            var centerB = transformB.Position;
+
+            var distanceSquared = (centerA - centerB).LengthSquared();
+            var radiusSumSquared = (radiusA + radiusB) * (radiusA + radiusB);
+
+            return distanceSquared <= radiusSumSquared;
         }
 
         /// <summary>
