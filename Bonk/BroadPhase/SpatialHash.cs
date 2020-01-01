@@ -42,7 +42,7 @@ namespace MoonTools.Core.Bonk
             {
                 for (var j = minHash.Item2; j <= maxHash.Item2; j++)
                 {
-                    var key = LongHelper.MakeLong(i, j);
+                    var key = MakeLong(i, j);
                     if (!hashDictionary.ContainsKey(key))
                     {
                         hashDictionary.Add(key, new HashSet<T>());
@@ -67,7 +67,7 @@ namespace MoonTools.Core.Bonk
             {
                 for (int j = minHash.Item2; j <= maxHash.Item2; j++)
                 {
-                    var key = LongHelper.MakeLong(i, j);
+                    var key = MakeLong(i, j);
                     if (hashDictionary.ContainsKey(key))
                     {
                         foreach (var t in hashDictionary[key])
@@ -91,6 +91,11 @@ namespace MoonTools.Core.Bonk
             }
 
             IDLookup.Clear();
+        }
+
+        private static long MakeLong(int left, int right)
+        {
+            return ((long)left << 32) | ((uint)right);
         }
     }
 }
