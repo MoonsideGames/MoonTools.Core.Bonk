@@ -13,28 +13,28 @@ namespace Tests
         {
             var spatialHash = new SpatialHash<int>(16);
 
-            var rectA = new MoonTools.Core.Bonk.Rectangle(-2, -2, 2, 2);
+            var rectA = new Rectangle(-2, -2, 2, 2);
             var rectATransform = new Transform2D(new Vector2(-8, -8));
 
-            var rectB = new MoonTools.Core.Bonk.Rectangle(-2, -2, 2, 2);
+            var rectB = new Rectangle(-2, -2, 2, 2);
             var rectBTransform = new Transform2D(new Vector2(8, 8));
 
-            var rectC = new MoonTools.Core.Bonk.Rectangle(-2, -2, 2, 2);
+            var rectC = new Rectangle(-2, -2, 2, 2);
             var rectCTransform = new Transform2D(new Vector2(24, -4));
 
-            var rectD = new MoonTools.Core.Bonk.Rectangle(-2, -2, 2, 2);
+            var rectD = new Rectangle(-2, -2, 2, 2);
             var rectDTransform = new Transform2D(new Vector2(24, 24));
 
-            var circleA = new MoonTools.Core.Bonk.Circle(2);
+            var circleA = new Circle(2);
             var circleATransform = new Transform2D(new Vector2(24, -8));
 
-            var circleB = new MoonTools.Core.Bonk.Circle(8);
+            var circleB = new Circle(8);
             var circleBTransform = new Transform2D(new Vector2(16, 16));
 
-            var line = new MoonTools.Core.Bonk.Line(new Position2D(20, -4), new Position2D(22, -12));
+            var line = new Line(new Position2D(20, -4), new Position2D(22, -12));
             var lineTransform = new Transform2D(new Vector2(0, 0));
 
-            var point = new MoonTools.Core.Bonk.Point(8, 8);
+            var point = new Point(8, 8);
             var pointTransform = Transform2D.DefaultTransform;
 
             spatialHash.Insert(0, rectA, rectATransform);
@@ -63,13 +63,13 @@ namespace Tests
         {
             var spatialHash = new SpatialHash<int>(16);
 
-            var rectA = new MoonTools.Core.Bonk.Rectangle(-2, -2, 2, 2);
+            var rectA = new Rectangle(-2, -2, 2, 2);
             var rectATransform = new Transform2D(new Vector2(-8, -8));
 
-            var rectB = new MoonTools.Core.Bonk.Rectangle(-2, -2, 2, 2);
+            var rectB = new Rectangle(-2, -2, 2, 2);
             var rectBTransform = new Transform2D(new Vector2(-8, -8));
 
-            var rectC = new MoonTools.Core.Bonk.Rectangle(-1, -1, 1, 1);
+            var rectC = new Rectangle(-1, -1, 1, 1);
             var rectCTransform = new Transform2D(new Vector2(-8, -8));
 
             spatialHash.Insert(0, rectA, rectATransform);
@@ -84,10 +84,10 @@ namespace Tests
         {
             var spatialHash = new SpatialHash<int>(16);
 
-            var rectA = new MoonTools.Core.Bonk.Rectangle(-2, -2, 2, 2);
+            var rectA = new Rectangle(-2, -2, 2, 2);
             var rectATransform = new Transform2D(new Vector2(-8, -8));
 
-            var rectB = new MoonTools.Core.Bonk.Rectangle(-2, -2, 2, 2);
+            var rectB = new Rectangle(-2, -2, 2, 2);
             var rectBTransform = new Transform2D(new Vector2(8, 8));
 
             spatialHash.Insert(0, rectA, rectATransform);
