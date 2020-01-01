@@ -16,6 +16,11 @@ namespace MoonTools.Core.Bonk
         public float Width { get { return Max.X - Min.X; } }
         public float Height { get { return Max.Y - Min.Y; } }
 
+        public float Right { get { return Max.X; } }
+        public float Left { get { return Min.X; } }
+        public float Top {  get { return Min.Y; } }
+        public float Bottom { get { return Max.Y; } }
+
         public AABB(float minX, float minY, float maxX, float maxY)
         {
             Min = new Vector2(minX, minY);

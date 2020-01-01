@@ -16,7 +16,7 @@ namespace Tests
             var pointTransform = new Transform2D(new Position2D(4, 4));
             var line = new Line(new Position2D(-2, -2), new Position2D(2, 2));
 
-            GJK2D.TestCollision(point, pointTransform, line, Transform2D.DefaultTransform).Should().BeTrue();
+            NarrowPhase.TestCollision(point, pointTransform, line, Transform2D.DefaultTransform).Should().BeTrue();
         }
 
         [Test]
@@ -25,7 +25,7 @@ namespace Tests
             var point = new Point(1, 1);
             var line = new Line(new Position2D(-3, -2), new Position2D(-9, -5));
 
-            GJK2D.TestCollision(point, Transform2D.DefaultTransform, line, Transform2D.DefaultTransform).Should().BeFalse();
+            NarrowPhase.TestCollision(point, Transform2D.DefaultTransform, line, Transform2D.DefaultTransform).Should().BeFalse();
         }
 
         [Test]
@@ -37,7 +37,7 @@ namespace Tests
             var pointTransform = new Transform2D(new Position2D(1, 1));
             var circleTransform = new Transform2D(new Position2D(-1, 0));
 
-            GJK2D.TestCollision(point, pointTransform, circle, circleTransform).Should().BeTrue();
+            NarrowPhase.TestCollision(point, pointTransform, circle, circleTransform).Should().BeTrue();
         }
 
         [Test]
@@ -47,7 +47,7 @@ namespace Tests
             var pointTransform = new Transform2D(new Position2D(3, 0));
             var circle = new Circle(1);
 
-            GJK2D.TestCollision(point, pointTransform, circle, Transform2D.DefaultTransform).Should().BeFalse();
+            NarrowPhase.TestCollision(point, pointTransform, circle, Transform2D.DefaultTransform).Should().BeFalse();
         }
 
         [Test]
@@ -56,7 +56,7 @@ namespace Tests
             var point = new Point(1, 1);
             var rectangle = new Rectangle(-2, -2, 2, 2);
 
-            GJK2D.TestCollision(point, Transform2D.DefaultTransform, rectangle, Transform2D.DefaultTransform).Should().BeTrue();
+            NarrowPhase.TestCollision(point, Transform2D.DefaultTransform, rectangle, Transform2D.DefaultTransform).Should().BeTrue();
         }
 
         [Test]
@@ -65,7 +65,7 @@ namespace Tests
             var point = new Point(5, 5);
             var rectangle = new Rectangle(-2, -2, 2, 2);
 
-            GJK2D.TestCollision(point, Transform2D.DefaultTransform, rectangle, Transform2D.DefaultTransform).Should().BeFalse();
+            NarrowPhase.TestCollision(point, Transform2D.DefaultTransform, rectangle, Transform2D.DefaultTransform).Should().BeFalse();
         }
 
         [Test]
@@ -79,7 +79,7 @@ namespace Tests
                 new Position2D(3, -2)
             ));
 
-            GJK2D.TestCollision(point, Transform2D.DefaultTransform, polygon, Transform2D.DefaultTransform).Should().BeTrue();
+            NarrowPhase.TestCollision(point, Transform2D.DefaultTransform, polygon, Transform2D.DefaultTransform).Should().BeTrue();
         }
 
         [Test]
@@ -93,7 +93,7 @@ namespace Tests
                 new Position2D(3, -2)
             ));
 
-            GJK2D.TestCollision(point, Transform2D.DefaultTransform, polygon, Transform2D.DefaultTransform).Should().BeFalse();
+            NarrowPhase.TestCollision(point, Transform2D.DefaultTransform, polygon, Transform2D.DefaultTransform).Should().BeFalse();
         }
 
         [Test]
@@ -102,7 +102,7 @@ namespace Tests
             var lineA = new Line(new Position2D(-1, -1), new Position2D(1, 1));
             var lineB = new Line(new Position2D(-1, 1), new Position2D(1, -1));
 
-            GJK2D.TestCollision(lineA, Transform2D.DefaultTransform, lineB, Transform2D.DefaultTransform).Should().BeTrue();
+            NarrowPhase.TestCollision(lineA, Transform2D.DefaultTransform, lineB, Transform2D.DefaultTransform).Should().BeTrue();
         }
 
         [Test]
@@ -113,7 +113,7 @@ namespace Tests
 
             var transform = new Transform2D(new Position2D(0, 0), 0f, new Vector2(2, 2));
 
-            GJK2D.TestCollision(lineA, transform, lineB, transform).Should().BeTrue();
+            NarrowPhase.TestCollision(lineA, transform, lineB, transform).Should().BeTrue();
         }
 
         [Test]
@@ -122,7 +122,7 @@ namespace Tests
             var lineA = new Line(new Position2D(0, 1), new Position2D(1, 0));
             var lineB = new Line(new Position2D(-1, -1), new Position2D(-2, -2));
 
-            GJK2D.TestCollision(lineA, Transform2D.DefaultTransform, lineB, Transform2D.DefaultTransform).Should().BeFalse();
+            NarrowPhase.TestCollision(lineA, Transform2D.DefaultTransform, lineB, Transform2D.DefaultTransform).Should().BeFalse();
         }
 
         [Test]
@@ -133,7 +133,7 @@ namespace Tests
 
             var transform = new Transform2D(new Position2D(0, 0), 0f, new Vector2(2, 2));
 
-            GJK2D.TestCollision(lineA, transform, lineB, transform).Should().BeFalse();
+            NarrowPhase.TestCollision(lineA, transform, lineB, transform).Should().BeFalse();
         }
 
         [Test]
@@ -144,7 +144,7 @@ namespace Tests
             var circleB = new Circle(2);
             var transformB = new Transform2D(new Vector2(1, 1));
 
-            GJK2D.TestCollision(circleA, transformA, circleB, transformB).Should().BeTrue();
+            NarrowPhase.TestCollision(circleA, transformA, circleB, transformB).Should().BeTrue();
         }
 
         [Test]
@@ -155,7 +155,7 @@ namespace Tests
             var circleB = new Circle(2);
             var transformB = new Transform2D(new Vector2(3, 0), 0f, new Vector2(2, 2));
 
-            GJK2D.TestCollision(circleA, transformA, circleB, transformB).Should().BeTrue();
+            NarrowPhase.TestCollision(circleA, transformA, circleB, transformB).Should().BeTrue();
         }
 
         [Test]
@@ -166,7 +166,7 @@ namespace Tests
             var circleB = new Circle(2);
             var transformB = new Transform2D(new Vector2(5, 5));
 
-            GJK2D.TestCollision(circleA, transformA, circleB, transformB).Should().BeFalse();
+            NarrowPhase.TestCollision(circleA, transformA, circleB, transformB).Should().BeFalse();
         }
 
         [Test]
@@ -177,7 +177,7 @@ namespace Tests
             var circleB = new Circle(2);
             var transformB = new Transform2D(new Vector2(5, 5), 0, new Vector2(0.2f, 0.2f));
 
-            GJK2D.TestCollision(circleA, transformA, circleB, transformB).Should().BeFalse();
+            NarrowPhase.TestCollision(circleA, transformA, circleB, transformB).Should().BeFalse();
         }
 
         [Test]
@@ -197,7 +197,7 @@ namespace Tests
 
             var transformB = new Transform2D(new Vector2(0.5f, 0.5f));
 
-            GJK2D.TestCollision(shapeA, transformA, shapeB, transformB).Should().BeTrue();
+            NarrowPhase.TestCollision(shapeA, transformA, shapeB, transformB).Should().BeTrue();
         }
 
         [Test]
@@ -217,7 +217,7 @@ namespace Tests
 
             var transformB = new Transform2D(new Vector2(3f, 0f), 0f, new Vector2(3f, 3f));
 
-            GJK2D.TestCollision(shapeA, transformA, shapeB, transformB).Should().BeTrue();
+            NarrowPhase.TestCollision(shapeA, transformA, shapeB, transformB).Should().BeTrue();
         }
 
         [Test]
@@ -237,7 +237,7 @@ namespace Tests
 
             var transformB = new Transform2D(new Vector2(5, 0));
 
-            GJK2D.TestCollision(shapeA, transformA, shapeB, transformB).Should().BeFalse();
+            NarrowPhase.TestCollision(shapeA, transformA, shapeB, transformB).Should().BeFalse();
         }
 
         [Test]
@@ -257,7 +257,7 @@ namespace Tests
 
             var transformB = new Transform2D(new Vector2(3f, 0), 0f, new Vector2(0.5f, 0.5f));
 
-            GJK2D.TestCollision(shapeA, transformA, shapeB, transformB).Should().BeFalse();
+            NarrowPhase.TestCollision(shapeA, transformA, shapeB, transformB).Should().BeFalse();
         }
 
         [Test]
@@ -274,7 +274,7 @@ namespace Tests
 
             var transformB = Transform2D.DefaultTransform;
 
-            GJK2D.TestCollision(line, transformA, polygon, transformB).Should().BeTrue();
+            NarrowPhase.TestCollision(line, transformA, polygon, transformB).Should().BeTrue();
         }
 
         [Test]
@@ -291,7 +291,7 @@ namespace Tests
 
             var transformB = Transform2D.DefaultTransform;
 
-            GJK2D.TestCollision(line, transformA, polygon, transformB).Should().BeFalse();
+            NarrowPhase.TestCollision(line, transformA, polygon, transformB).Should().BeFalse();
         }
 
         [Test]
@@ -302,7 +302,7 @@ namespace Tests
             var circle = new Circle(1);
             var transformB = Transform2D.DefaultTransform;
 
-            GJK2D.TestCollision(line, transformA, circle, transformB).Should().BeTrue();
+            NarrowPhase.TestCollision(line, transformA, circle, transformB).Should().BeTrue();
         }
 
         [Test]
@@ -313,7 +313,7 @@ namespace Tests
             var circle = new Circle(1);
             var transformB = Transform2D.DefaultTransform;
 
-            GJK2D.TestCollision(line, transformA, circle, transformB).Should().BeFalse();
+            NarrowPhase.TestCollision(line, transformA, circle, transformB).Should().BeFalse();
         }
 
         [Test]
@@ -329,7 +329,7 @@ namespace Tests
 
             var transformB = Transform2D.DefaultTransform;
 
-            GJK2D.TestCollision(circle, transformA, square, transformB).Should().BeTrue();
+            NarrowPhase.TestCollision(circle, transformA, square, transformB).Should().BeTrue();
         }
 
         [Test]
@@ -344,7 +344,7 @@ namespace Tests
             ));
             var squareTransform = Transform2D.DefaultTransform;
 
-            GJK2D.TestCollision(circle, circleTransform, square, squareTransform).Should().BeFalse();
+            NarrowPhase.TestCollision(circle, circleTransform, square, squareTransform).Should().BeFalse();
         }
 
         [Test]
@@ -356,7 +356,7 @@ namespace Tests
             var rectangleB = new MoonTools.Core.Bonk.Rectangle(0, 0, 16, 16);
             var transformB = new Transform2D(new Position2D(16, 240));
 
-            GJK2D.TestCollision(rectangleA, transformA, rectangleB, transformB).Should().BeFalse();
+            NarrowPhase.TestCollision(rectangleA, transformA, rectangleB, transformB).Should().BeFalse();
         }
 
         [Test]
@@ -368,11 +368,11 @@ namespace Tests
             var rectangleB = new MoonTools.Core.Bonk.Rectangle(-1, -1, 1, 1);
             var transformB = new Transform2D(new Vector2(1, 0));
 
-            GJK2D.TestCollision(rectangleA, transformA, rectangleB, transformB).Should().BeTrue();
+            NarrowPhase.TestCollision(rectangleA, transformA, rectangleB, transformB).Should().BeTrue();
         }
 
         [Test]
-        public void RectanglesTouching()
+        public void RectanglesTouchingGJK2D()
         {
             var rectangleA = new MoonTools.Core.Bonk.Rectangle(-1, -1, 1, 1);
             var transformA = new Transform2D(new Position2D(-1, 0));
@@ -380,7 +380,43 @@ namespace Tests
             var rectangleB = new MoonTools.Core.Bonk.Rectangle(-1, -1, 1, 1);
             var transformB = new Transform2D(new Vector2(1, 0));
 
-            GJK2D.TestCollision(rectangleA, transformA, rectangleB, transformB).Should().BeTrue();
+            NarrowPhase.TestCollision(rectangleA, transformA, rectangleB, transformB).Should().BeTrue();
+        }
+
+        [Test]
+        public void RectanglesOverlappingGJK2D()
+        {
+            var rectangleA = new MoonTools.Core.Bonk.Rectangle(-1, -1, 1, 1);
+            var transformA = new Transform2D(new Position2D(0, 0));
+
+            var rectangleB = new MoonTools.Core.Bonk.Rectangle(-1, -1, 1, 1);
+            var transformB = new Transform2D(new Vector2(1, 0));
+
+            NarrowPhase.TestCollision(rectangleA, transformA, rectangleB, transformB).Should().BeTrue();
+        }
+
+        [Test]
+        public void RectanglesTouchingOverlap()
+        {
+            var rectangleA = new MoonTools.Core.Bonk.Rectangle(-1, -1, 1, 1);
+            var transformA = new Transform2D(new Position2D(-1, 0));
+
+            var rectangleB = new MoonTools.Core.Bonk.Rectangle(-1, -1, 1, 1);
+            var transformB = new Transform2D(new Vector2(1, 0));
+
+            NarrowPhase.TestRectangleOverlap(rectangleA, transformA, rectangleB, transformB).Should().BeTrue();
+        }
+
+        [Test]
+        public void RectanglesOverlappingOverlap()
+        {
+            var rectangleA = new MoonTools.Core.Bonk.Rectangle(-1, -1, 1, 1);
+            var transformA = new Transform2D(new Position2D(0, 0));
+
+            var rectangleB = new MoonTools.Core.Bonk.Rectangle(-1, -1, 1, 1);
+            var transformB = new Transform2D(new Vector2(1, 0));
+
+            NarrowPhase.TestRectangleOverlap(rectangleA, transformA, rectangleB, transformB).Should().BeTrue();
         }
     }
 }
