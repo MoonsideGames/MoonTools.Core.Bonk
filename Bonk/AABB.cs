@@ -49,14 +49,13 @@ namespace MoonTools.Core.Bonk
             Max = max;
         }
 
-        private static Matrix4x4 AbsoluteMatrix(Matrix4x4 matrix)
+        private static Matrix3x2 AbsoluteMatrix(Matrix3x2 matrix)
         {
-            return new Matrix4x4
+            return new Matrix3x2
             (
-                Math.Abs(matrix.M11), Math.Abs(matrix.M12), Math.Abs(matrix.M13), Math.Abs(matrix.M14),
-                Math.Abs(matrix.M21), Math.Abs(matrix.M22), Math.Abs(matrix.M23), Math.Abs(matrix.M24),
-                Math.Abs(matrix.M31), Math.Abs(matrix.M32), Math.Abs(matrix.M33), Math.Abs(matrix.M34),
-                Math.Abs(matrix.M41), Math.Abs(matrix.M42), Math.Abs(matrix.M43), Math.Abs(matrix.M44)
+                Math.Abs(matrix.M11), Math.Abs(matrix.M12),
+                Math.Abs(matrix.M21), Math.Abs(matrix.M22),
+                Math.Abs(matrix.M31), Math.Abs(matrix.M32)
             );
         }
 

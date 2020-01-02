@@ -79,8 +79,8 @@ namespace MoonTools.Core.Bonk
 
         public Vector2 Support(Vector2 direction, Transform2D transform)
         {
-            Matrix4x4 inverseTransform;
-            Matrix4x4.Invert(transform.TransformMatrix, out inverseTransform);
+            Matrix3x2 inverseTransform;
+            Matrix3x2.Invert(transform.TransformMatrix, out inverseTransform);
             var inverseDirection = Vector2.TransformNormal(direction, inverseTransform);
             return Vector2.Transform(Support(inverseDirection), transform.TransformMatrix);
         }

@@ -59,13 +59,13 @@ namespace MoonTools.Core.Bonk
         /// </summary>
         public IEnumerable<(T, IShape2D, Transform2D)> Retrieve(T id, IShape2D shape, Transform2D transform2D)
         {
-            AABB box = shape.TransformedAABB(transform2D);
+            var box = shape.TransformedAABB(transform2D);
             var minHash = Hash(box.Min);
             var maxHash = Hash(box.Max);
 
-            for (int i = minHash.Item1; i <= maxHash.Item1; i++)
+            for (var i = minHash.Item1; i <= maxHash.Item1; i++)
             {
-                for (int j = minHash.Item2; j <= maxHash.Item2; j++)
+                for (var j = minHash.Item2; j <= maxHash.Item2; j++)
                 {
                     var key = MakeLong(i, j);
                     if (hashDictionary.ContainsKey(key))
