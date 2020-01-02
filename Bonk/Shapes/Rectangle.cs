@@ -10,51 +10,66 @@ namespace MoonTools.Core.Bonk
     /// </summary>
     public struct Rectangle : IShape2D, IEquatable<Rectangle>
     {
-        public int MinX { get; }
-        public int MinY { get; }
-        public int MaxX { get; }
-        public int MaxY { get; }
-
+        /// <summary>
+        /// The minimum position of the rectangle. Note that we assume y-down coordinates.
+        /// </summary>
+        /// <value></value>
+        public Position2D Min { get; }
+        /// <summary>
+        /// The maximum position of the rectangle. Note that we assume y-down coordinates.
+        /// </summary>
+        /// <value></value>
+        public Position2D Max { get; }
         public AABB AABB { get; }
+
+        public int Left { get { return Min.X; } }
+        public int Right { get { return Max.X; } }
+        public int Top { get { return Min.Y; } }
+        public int Bottom { get { return Max.Y; } }
+
+        public int Width { get; }
+        public int Height { get; }
+
+        public Position2D TopRight { get { return new Position2D(Right, Top); } }
+        public Position2D BottomLeft { get { return new Position2D(Left, Bottom); } }
 
         public IEnumerable<Position2D> Vertices
         {
             get
             {
-                yield return new Position2D(MinX, MinY);
-                yield return new Position2D(MinX, MaxY);
-                yield return new Position2D(MaxX, MinY);
-                yield return new Position2D(MaxX, MaxY);
+                yield return new Position2D(Min.X, Min.Y);
+                yield return new Position2D(Min.X, Max.Y);
+                yield return new Position2D(Max.X, Min.Y);
+                yield return new Position2D(Max.X, Max.Y);
             }
         }
 
         public Rectangle(int minX, int minY, int maxX, int maxY)
         {
-            MinX = minX;
-            MinY = minY;
-            MaxX = maxX;
-            MaxY = maxY;
-
+            Min = new Position2D(minX, minY);
+            Max = new Position2D(maxX, maxY);
             AABB = new AABB(minX, minY, maxX, maxY);
+            Width = Max.X - Min.X;
+            Height = Max.Y - Min.Y;
         }
 
         private Vector2 Support(Vector2 direction)
         {
             if (direction.X >= 0 && direction.Y >= 0)
             {
-                return new Vector2(MaxX, MaxY);
+                return Max;
             }
             else if (direction.X >= 0 && direction.Y < 0)
             {
-                return new Vector2(MaxX, MinY);
+                return new Vector2(Max.X, Min.Y);
             }
             else if (direction.X < 0 && direction.Y >= 0)
             {
-                return new Vector2(MinX, MaxY);
+                return new Vector2(Min.X, Max.Y);
             }
             else if (direction.X < 0 && direction.Y < 0)
             {
-                return new Vector2(MinX, MinY);
+                return new Vector2(Min.X, Min.Y);
             }
             else
             {
@@ -87,10 +102,7 @@ namespace MoonTools.Core.Bonk
 
         public bool Equals(Rectangle other)
         {
-            return MinX == other.MinX &&
-                MinY == other.MinY &&
-                MaxX == other.MaxX &&
-                MaxY == other.MaxY;
+            return Min == other.Min && Max == other.Max;
         }
 
         public bool Equals(Polygon other)
@@ -100,7 +112,7 @@ namespace MoonTools.Core.Bonk
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(MinX, MinY, MaxX, MaxY);
+            return HashCode.Combine(Min, Max);
         }
 
         public static bool operator ==(Rectangle a, Rectangle b)
@@ -109,6 +121,16 @@ namespace MoonTools.Core.Bonk
         }
 
         public static bool operator !=(Rectangle a, Rectangle b)
+        {
+            return !(a == b);
+        }
+
+        public static bool operator ==(Rectangle a, Polygon b)
+        {
+            return a.Equals(b);
+        }
+
+        public static bool operator !=(Rectangle a, Polygon b)
         {
             return !(a == b);
         }

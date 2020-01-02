@@ -288,45 +288,48 @@ namespace Tests
             public void PolygonRectangleEqual()
             {
                 var a = new Polygon(ImmutableArray.Create(
-                    new Position2D(1, 1),
-                    new Position2D(1, -1),
                     new Position2D(-1, -1),
+                    new Position2D(1, -1),
+                    new Position2D(1, 1),
                     new Position2D(-1, 1)
                 ));
 
                 var b = new Rectangle(-1, -1, 1, 1);
 
                 a.Equals(b).Should().BeTrue();
+                b.Equals(a).Should().BeTrue();
             }
 
             [Test]
             public void PolygonRectangleNotEqual()
             {
                 var a = new Polygon(ImmutableArray.Create(
-                    new Position2D(2, 1),
+                    new Position2D(-2, -1),
                     new Position2D(1, -1),
-                    new Position2D(-1, -1),
+                    new Position2D(1, 1),
                     new Position2D(-2, 1)
                 ));
 
                 var b = new Rectangle(-1, -1, 1, 1);
 
                 a.Equals(b).Should().BeFalse();
+                b.Equals(a).Should().BeFalse();
             }
 
             [Test]
             public void PolygonRectangleEqualOperator()
             {
                 var a = new Polygon(ImmutableArray.Create(
-                    new Position2D(1, 1),
-                    new Position2D(1, -1),
                     new Position2D(-1, -1),
+                    new Position2D(1, -1),
+                    new Position2D(1, 1),
                     new Position2D(-1, 1)
                 ));
 
                 var b = new Rectangle(-1, -1, 1, 1);
 
                 (a == b).Should().BeTrue();
+                (b == a).Should().BeTrue();
             }
 
             [Test]
@@ -342,6 +345,7 @@ namespace Tests
                 var b = new Rectangle(-1, -1, 1, 1);
 
                 (a != b).Should().BeTrue();
+                (b != a).Should().BeTrue();
             }
         }
 

@@ -1,4 +1,4 @@
-﻿using System.Linq;
+﻿using MoonTools.Core.Structs;
 
 namespace MoonTools.Core.Bonk
 {
@@ -6,11 +6,20 @@ namespace MoonTools.Core.Bonk
     {
         public static bool Equals(Polygon polygon, Rectangle rectangle)
         {
-            var q = from a in polygon.Vertices
-                    join b in rectangle.Vertices on a equals b
-                    select a;
+            if (polygon.VertexCount != 4) { return false; }
 
-            return polygon.VertexCount == 4 && q.Count() == 4;
+            int? minIndex = null;
+            for (var i = 0; i < 4; i++)
+            {
+                if (polygon.Vertices[i] == rectangle.Min) { minIndex = i; break; }
+            }
+
+            if (!minIndex.HasValue) { return false; }
+
+            return
+                polygon.Vertices[(minIndex.Value + 1) % 4] == rectangle.TopRight &&
+                polygon.Vertices[(minIndex.Value + 2) % 4] == rectangle.Max &&
+                polygon.Vertices[(minIndex.Value + 3) % 4] == rectangle.BottomLeft;
         }
     }
 }

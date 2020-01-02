@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Numerics;
@@ -9,34 +8,32 @@ namespace MoonTools.Core.Bonk
 {
     /// <summary>
     /// A Shape defined by an arbitrary collection of vertices.
-    /// NOTE: A Polygon must have more than 2 vertices, be convex, and should not have duplicate vertices.
+    /// NOTE: A Polygon must be defined in clockwise order, have more than 2 vertices, be convex, and have no duplicate vertices.
     /// </summary>
     public struct Polygon : IShape2D, IEquatable<Polygon>
     {
-        private ImmutableArray<Position2D> _vertices;
+        public ImmutableArray<Position2D> Vertices { get; private set; }
         public AABB AABB { get; }
 
-        public IEnumerable<Position2D> Vertices { get { return _vertices; } }
-
-        public int VertexCount { get { return _vertices.Length; } }
+        public int VertexCount { get { return Vertices.Length; } }
 
         // vertices are local to the origin
         public Polygon(IEnumerable<Position2D> vertices)
         {
-            _vertices = vertices.ToImmutableArray();
+            Vertices = vertices.ToImmutableArray();
             AABB = AABB.FromVertices(vertices);
         }
 
         public Polygon(ImmutableArray<Position2D> vertices)
         {
-            _vertices = vertices;
+            Vertices = vertices;
             AABB = AABB.FromVertices(vertices);
         }
 
         public Vector2 Support(Vector2 direction, Transform2D transform)
         {
             var maxDotProduct = float.NegativeInfinity;
-            var maxVertex = _vertices[0].ToVector2();
+            var maxVertex = Vertices[0].ToVector2();
             foreach (var vertex in Vertices)
             {
                 var transformed = Vector2.Transform(vertex, transform.TransformMatrix);
@@ -67,11 +64,22 @@ namespace MoonTools.Core.Bonk
 
         public bool Equals(Polygon other)
         {
-            var q = from a in _vertices
-                    join b in other.Vertices on a equals b
-                    select a;
+            if (VertexCount != other.VertexCount) { return false; }
 
-            return _vertices.Length == other.VertexCount && q.Count() == _vertices.Length;
+            int? offset = null;
+            for (var i = 0; i < VertexCount; i++)
+            {
+                if (Vertices[0] == other.Vertices[i]) { offset = i; break; }
+            }
+
+            if (!offset.HasValue) { return false; }
+
+            for (var i = 0; i < VertexCount; i++)
+            {
+                if (Vertices[i] != other.Vertices[(i + offset.Value) % VertexCount]) { return false; }
+            }
+
+            return true;
         }
 
         public bool Equals(Rectangle rectangle)
