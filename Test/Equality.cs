@@ -455,14 +455,26 @@ namespace Tests
             public void TwoSimplexEquals()
             {
                 var simplexA = new Simplex2D(Vector2.One, Vector2.Zero, Vector2.UnitX);
+
                 var simplexB = new Simplex2D(Vector2.One, Vector2.Zero, Vector2.UnitX);
 
                 simplexA.Equals(simplexB).Should().BeTrue();
 
-                var simplexC = new Simplex2D(Vector2.One, Vector2.Zero, Vector2.UnitX);
-                var simplexD = new Simplex2D(Vector2.Zero, Vector2.One, Vector2.UnitX);
+                var simplexC = new Simplex2D(Vector2.Zero, Vector2.One, Vector2.UnitX);
 
-                simplexC.Equals(simplexD).Should().BeTrue();
+                simplexA.Equals(simplexC).Should().BeTrue();
+
+                var simplexD = new Simplex2D(Vector2.UnitX, Vector2.Zero, Vector2.One);
+
+                simplexA.Equals(simplexD).Should().BeTrue();
+
+                var simplexE = new Simplex2D(Vector2.One, Vector2.UnitX, Vector2.Zero);
+
+                simplexA.Equals(simplexE).Should().BeTrue();
+
+                var simplexF = new Simplex2D(Vector2.Zero, Vector2.UnitX, Vector2.One);
+
+                simplexA.Equals(simplexF).Should().BeTrue();
             }
 
             [Test]

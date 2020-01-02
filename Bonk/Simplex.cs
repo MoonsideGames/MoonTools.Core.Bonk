@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Numerics;
 using MoonTools.Core.Structs;
 using System;
@@ -80,11 +79,15 @@ namespace MoonTools.Core.Bonk
 
         public bool Equals(Simplex2D other)
         {
-            var q = from a in Vertices
-                    join b in other.Vertices on a equals b
-                    select a;
+            if (Count != other.Count) { return false; }
 
-            return Count == other.Count && q.Count() == Count;
+            return
+                (A == other.A && B == other.B && C == other.C) ||
+                (A == other.A && B == other.C && C == other.B) ||
+                (A == other.B && B == other.A && C == other.C) ||
+                (A == other.B && B == other.C && C == other.A) ||
+                (A == other.C && B == other.A && C == other.B) ||
+                (A == other.C && B == other.B && C == other.A);
         }
 
         public override int GetHashCode()
