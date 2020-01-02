@@ -73,7 +73,10 @@ namespace MoonTools.Core.Bonk
                         foreach (var t in hashDictionary[key])
                         {
                             var (otherShape, otherTransform) = IDLookup[t];
-                            if (!id.Equals(t)) { yield return (t, otherShape, otherTransform); }
+                            if (!id.Equals(t) && AABB.TestOverlap(shape.TransformedAABB(transform2D), otherShape.TransformedAABB(otherTransform)))
+                            {
+                                yield return (t, otherShape, otherTransform);
+                            }
                         }
                     }
                 }

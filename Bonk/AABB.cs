@@ -10,7 +10,15 @@ namespace MoonTools.Core.Bonk
     /// </summary>
     public struct AABB : IEquatable<AABB>
     {
+        /// <summary>
+        /// The top-left position of the AABB.
+        /// </summary>
+        /// <value></value>
         public Vector2 Min { get; private set; }
+        /// <summary>
+        /// The bottom-right position of the AABB.
+        /// </summary>
+        /// <value></value>
         public Vector2 Max { get; private set; }
 
         public float Width { get { return Max.X - Min.X; } }
@@ -18,7 +26,15 @@ namespace MoonTools.Core.Bonk
 
         public float Right { get { return Max.X; } }
         public float Left { get { return Min.X; } }
-        public float Top {  get { return Min.Y; } }
+        /// <summary>
+        /// The top of the AABB. Assumes a downward-aligned Y axis, so this value will be smaller than Bottom.
+        /// </summary>
+        /// <value></value>
+        public float Top { get { return Min.Y; } }
+        /// <summary>
+        /// The bottom of the AABB. Assumes a downward-aligned Y axis, so this value will be larger than Top.
+        /// </summary>
+        /// <value></value>
         public float Bottom { get { return Max.Y; } }
 
         public AABB(float minX, float minY, float maxX, float maxY)
@@ -44,6 +60,12 @@ namespace MoonTools.Core.Bonk
             );
         }
 
+        /// <summary>
+        /// Efficiently transforms the AABB by a Transform2D.
+        /// </summary>
+        /// <param name="aabb"></param>
+        /// <param name="transform"></param>
+        /// <returns></returns>
         public static AABB Transformed(AABB aabb, Transform2D transform)
         {
             var center = (aabb.Min + aabb.Max) / 2f;
@@ -55,6 +77,12 @@ namespace MoonTools.Core.Bonk
             return new AABB(newCenter - newExtent, newCenter + newExtent);
         }
 
+        /// <summary>
+        /// Creates an AABB for an arbitrary collection of positions.
+        /// This is less efficient than defining a custom AABB method for most shapes, so avoid using this if possible.
+        /// </summary>
+        /// <param name="vertices"></param>
+        /// <returns></returns>
         public static AABB FromVertices(IEnumerable<Position2D> vertices)
         {
             var minX = float.MaxValue;
@@ -83,6 +111,11 @@ namespace MoonTools.Core.Bonk
             }
 
             return new AABB(minX, minY, maxX, maxY);
+        }
+
+        public static bool TestOverlap(AABB a, AABB b)
+        {
+            return a.Left <= b.Right && a.Right >= b.Left && a.Top <= b.Bottom && a.Bottom >= b.Top;
         }
 
         public override bool Equals(object obj)

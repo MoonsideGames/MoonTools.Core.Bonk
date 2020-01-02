@@ -6,7 +6,6 @@ namespace MoonTools.Core.Bonk
 {
     public struct Point : IShape2D, IEquatable<Point>
     {
-        private Position2D Position { get; }
         public AABB AABB { get; }
 
         public AABB TransformedAABB(Transform2D transform)
@@ -16,7 +15,7 @@ namespace MoonTools.Core.Bonk
 
         public Vector2 Support(Vector2 direction, Transform2D transform)
         {
-            return Vector2.Transform(Position.ToVector2(), transform.TransformMatrix);
+            return Vector2.Transform(Vector2.Zero, transform.TransformMatrix);
         }
 
         public override bool Equals(object obj)
@@ -31,12 +30,12 @@ namespace MoonTools.Core.Bonk
 
         public bool Equals(Point other)
         {
-            return Position == other.Position;
+            return true;
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Position);
+            return 0;
         }
 
         public static bool operator ==(Point a, Point b)
