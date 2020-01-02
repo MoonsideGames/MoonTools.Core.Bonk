@@ -13,9 +13,9 @@ namespace Tests
         [Test]
         public void RectangleOverlap()
         {
-            var squareA = new MoonTools.Core.Bonk.Rectangle(-1, -1, 1, 1);
+            var squareA = new Rectangle(2, 2);
             var transformA = Transform2D.DefaultTransform;
-            var squareB = new MoonTools.Core.Bonk.Rectangle(-1, -1, 1, 1);
+            var squareB = new Rectangle(2, 2);
             var transformB = new Transform2D(new Vector2(1.5f, 0));
 
             var (result, simplex) = NarrowPhase.FindCollisionSimplex(squareA, transformA, squareB, transformB);
@@ -62,7 +62,7 @@ namespace Tests
         {
             var line = new Line(new Position2D(-4, -4), new Position2D(4, 4));
             var transformA = Transform2D.DefaultTransform;
-            var square = new MoonTools.Core.Bonk.Rectangle(-1, -1, 1, 1);
+            var square = new Rectangle(2, 2);
             var transformB = Transform2D.DefaultTransform;
 
             var (result, simplex) = NarrowPhase.FindCollisionSimplex(line, transformA, square, transformB);

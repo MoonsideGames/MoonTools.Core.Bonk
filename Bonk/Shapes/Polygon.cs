@@ -59,7 +59,7 @@ namespace MoonTools.Core.Bonk
 
         public bool Equals(IShape2D other)
         {
-            return (other is Polygon otherPolygon && Equals(otherPolygon)) || (other is Rectangle rectangle && Equals(rectangle));
+            return (other is Polygon otherPolygon && Equals(otherPolygon));
         }
 
         public bool Equals(Polygon other)
@@ -80,11 +80,6 @@ namespace MoonTools.Core.Bonk
             }
 
             return true;
-        }
-
-        public bool Equals(Rectangle rectangle)
-        {
-            return RectanglePolygonComparison.Equals(this, rectangle);
         }
 
         public override int GetHashCode()

@@ -14,7 +14,7 @@ namespace MoonTools.Core.Bonk
         private readonly int cellSize;
 
         private readonly Dictionary<long, HashSet<T>> hashDictionary = new Dictionary<long, HashSet<T>>();
-        private readonly Dictionary<T, (IShape2D, Transform2D)> IDLookup = new Dictionary<T, (IShape2D, Transform2D)>();
+        private readonly Dictionary<T, (IHasAABB2D, Transform2D)> IDLookup = new Dictionary<T, (IHasAABB2D, Transform2D)>();
 
         public SpatialHash(int cellSize)
         {
@@ -32,7 +32,7 @@ namespace MoonTools.Core.Bonk
         /// <param name="id">A unique ID for the shape-transform pair.</param>
         /// <param name="shape"></param>
         /// <param name="transform2D"></param>
-        public void Insert(T id, IShape2D shape, Transform2D transform2D)
+        public void Insert(T id, IHasAABB2D shape, Transform2D transform2D)
         {
             var box = shape.TransformedAABB(transform2D);
             var minHash = Hash(box.Min);
@@ -57,7 +57,7 @@ namespace MoonTools.Core.Bonk
         /// <summary>
         /// Retrieves all the potential collisions of a shape-transform pair. Excludes any shape-transforms with the given ID.
         /// </summary>
-        public IEnumerable<(T, IShape2D, Transform2D)> Retrieve(T id, IShape2D shape, Transform2D transform2D)
+        public IEnumerable<(T, IHasAABB2D, Transform2D)> Retrieve(T id, IHasAABB2D shape, Transform2D transform2D)
         {
             var box = shape.TransformedAABB(transform2D);
             var minHash = Hash(box.Min);

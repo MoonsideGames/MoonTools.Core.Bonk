@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Numerics;
 using MoonTools.Core.Structs;
 
@@ -10,47 +9,33 @@ namespace MoonTools.Core.Bonk
     /// </summary>
     public struct Rectangle : IShape2D, IEquatable<Rectangle>
     {
-        /// <summary>
-        /// The minimum position of the rectangle. Note that we assume y-down coordinates.
-        /// </summary>
-        /// <value></value>
-        public Position2D Min { get; }
-        /// <summary>
-        /// The maximum position of the rectangle. Note that we assume y-down coordinates.
-        /// </summary>
-        /// <value></value>
-        public Position2D Max { get; }
         public AABB AABB { get; }
-
-        public int Left { get { return Min.X; } }
-        public int Right { get { return Max.X; } }
-        public int Top { get { return Min.Y; } }
-        public int Bottom { get { return Max.Y; } }
-
         public int Width { get; }
         public int Height { get; }
 
-        public Position2D TopRight { get { return new Position2D(Right, Top); } }
-        public Position2D BottomLeft { get { return new Position2D(Left, Bottom); } }
+        public float Right { get; }
+        public float Left { get; }
+        public float Top { get; }
+        public float Bottom { get; }
+        public Vector2 BottomLeft { get; }
+        public Vector2 TopRight { get; }
 
-        public IEnumerable<Position2D> Vertices
-        {
-            get
-            {
-                yield return new Position2D(Min.X, Min.Y);
-                yield return new Position2D(Min.X, Max.Y);
-                yield return new Position2D(Max.X, Min.Y);
-                yield return new Position2D(Max.X, Max.Y);
-            }
-        }
+        public Vector2 Min { get; }
+        public Vector2 Max { get; }
 
-        public Rectangle(int minX, int minY, int maxX, int maxY)
+        public Rectangle(int width, int height)
         {
-            Min = new Position2D(minX, minY);
-            Max = new Position2D(maxX, maxY);
-            AABB = new AABB(minX, minY, maxX, maxY);
-            Width = Max.X - Min.X;
-            Height = Max.Y - Min.Y;
+            Width = width;
+            Height = height;
+            AABB = new AABB(-width / 2f, -height / 2f, width / 2f, height / 2f);
+            Right = AABB.Right;
+            Left = AABB.Left;
+            Top = AABB.Top;
+            Bottom = AABB.Bottom;
+            BottomLeft = new Vector2(Left, Bottom);
+            TopRight = new Vector2(Top, Right);
+            Min = AABB.Min;
+            Max = AABB.Max;
         }
 
         private Vector2 Support(Vector2 direction)
@@ -97,17 +82,12 @@ namespace MoonTools.Core.Bonk
 
         public bool Equals(IShape2D other)
         {
-            return (other is Rectangle rectangle && Equals(rectangle)) || (other is Polygon polygon && Equals(polygon));
+            return (other is Rectangle rectangle && Equals(rectangle));
         }
 
         public bool Equals(Rectangle other)
         {
             return Min == other.Min && Max == other.Max;
-        }
-
-        public bool Equals(Polygon other)
-        {
-            return RectanglePolygonComparison.Equals(other, this);
         }
 
         public override int GetHashCode()

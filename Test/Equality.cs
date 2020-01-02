@@ -140,8 +140,8 @@ namespace Tests
             [Test]
             public void RectangleEqual()
             {
-                var a = new Rectangle(0, 0, 3, 3);
-                var b = new Rectangle(0, 0, 3, 3);
+                var a = new Rectangle(3, 3);
+                var b = new Rectangle(3, 3);
 
                 a.Equals(b).Should().BeTrue();
             }
@@ -149,8 +149,8 @@ namespace Tests
             [Test]
             public void RectangleEqualOperator()
             {
-                var a = new Rectangle(0, 0, 3, 3);
-                var b = new Rectangle(0, 0, 3, 3);
+                var a = new Rectangle(3, 3);
+                var b = new Rectangle(3, 3);
 
                 (a == b).Should().BeTrue();
             }
@@ -158,8 +158,8 @@ namespace Tests
             [Test]
             public void RectangleNotEqual()
             {
-                var a = new Rectangle(0, 0, 3, 3);
-                var b = new Rectangle(-1, -1, 5, 5);
+                var a = new Rectangle(3, 3);
+                var b = new Rectangle(6, 6);
 
                 a.Equals(b).Should().BeFalse();
             }
@@ -167,8 +167,8 @@ namespace Tests
             [Test]
             public void RectangleNotEqualOperator()
             {
-                var a = new Rectangle(0, 0, 3, 3);
-                var b = new Rectangle(-1, -1, 5, 5);
+                var a = new Rectangle(3, 3);
+                var b = new Rectangle(6, 6);
 
                 (a != b).Should().BeTrue();
             }
@@ -282,70 +282,6 @@ namespace Tests
                 ));
 
                 (a != b).Should().BeTrue();
-            }
-
-            [Test]
-            public void PolygonRectangleEqual()
-            {
-                var a = new Polygon(ImmutableArray.Create(
-                    new Position2D(-1, -1),
-                    new Position2D(1, -1),
-                    new Position2D(1, 1),
-                    new Position2D(-1, 1)
-                ));
-
-                var b = new Rectangle(-1, -1, 1, 1);
-
-                a.Equals(b).Should().BeTrue();
-                b.Equals(a).Should().BeTrue();
-            }
-
-            [Test]
-            public void PolygonRectangleNotEqual()
-            {
-                var a = new Polygon(ImmutableArray.Create(
-                    new Position2D(-2, -1),
-                    new Position2D(1, -1),
-                    new Position2D(1, 1),
-                    new Position2D(-2, 1)
-                ));
-
-                var b = new Rectangle(-1, -1, 1, 1);
-
-                a.Equals(b).Should().BeFalse();
-                b.Equals(a).Should().BeFalse();
-            }
-
-            [Test]
-            public void PolygonRectangleEqualOperator()
-            {
-                var a = new Polygon(ImmutableArray.Create(
-                    new Position2D(-1, -1),
-                    new Position2D(1, -1),
-                    new Position2D(1, 1),
-                    new Position2D(-1, 1)
-                ));
-
-                var b = new Rectangle(-1, -1, 1, 1);
-
-                (a == b).Should().BeTrue();
-                (b == a).Should().BeTrue();
-            }
-
-            [Test]
-            public void PolygonRectangleNotEqualOperator()
-            {
-                var a = new Polygon(ImmutableArray.Create(
-                    new Position2D(2, 1),
-                    new Position2D(1, -1),
-                    new Position2D(-1, -1),
-                    new Position2D(-2, 1)
-                ));
-
-                var b = new Rectangle(-1, -1, 1, 1);
-
-                (a != b).Should().BeTrue();
-                (b != a).Should().BeTrue();
             }
         }
 

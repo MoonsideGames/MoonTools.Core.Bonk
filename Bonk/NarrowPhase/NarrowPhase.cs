@@ -36,6 +36,63 @@ namespace MoonTools.Core.Bonk
         }
 
         /// <summary>
+        /// Tests if a multishape-transform and shape-transform pair are overlapping. 
+        /// Note that this must perform pairwise comparison so the worst-case performance of this method will vary inversely with the amount of shapes in the multishape.
+        /// </summary>
+        /// <param name="multiShape"></param>
+        /// <param name="multiShapeTransform"></param>
+        /// <param name="shape"></param>
+        /// <param name="shapeTransform"></param>
+        /// <returns></returns>
+        public static bool TestCollision(IMultiShape2D multiShape, Transform2D multiShapeTransform, IShape2D shape, Transform2D shapeTransform)
+        {
+            foreach (var (otherShape, otherTransform) in multiShape.ShapeTransformPairs)
+            {
+                if (TestCollision(shape, shapeTransform, otherShape, multiShapeTransform.Compose(otherTransform))) { return true; }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Tests if a multishape-transform and shape-transform pair are overlapping. 
+        /// Note that this must perform pairwise comparison so the worst-case performance of this method will vary inversely with the amount of shapes in the multishape.
+        /// </summary>
+        /// <param name="multiShape"></param>
+        /// <param name="multiShapeTransform"></param>
+        /// <param name="shape"></param>
+        /// <param name="shapeTransform"></param>
+        /// <returns></returns>
+        public static bool TestCollision(IShape2D shape, Transform2D shapeTransform, IMultiShape2D multiShape, Transform2D multiShapeTransform)
+        {
+            foreach (var (otherShape, otherTransform) in multiShape.ShapeTransformPairs)
+            {
+                if (TestCollision(shape, shapeTransform, otherShape, multiShapeTransform.Compose(otherTransform))) { return true; }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Tests if two multishape-transform pairs are overlapping. 
+        /// Note that this must perform pairwise comparison so the worst-case performance of this method will vary inversely with the amount of shapes in the multishapes.
+        /// </summary>
+        /// <param name="multiShapeA"></param>
+        /// <param name="transformA"></param>
+        /// <param name="multiShapeB"></param>
+        /// <param name="transformB"></param>
+        /// <returns></returns>
+        public static bool TestCollision(IMultiShape2D multiShapeA, Transform2D transformA, IMultiShape2D multiShapeB, Transform2D transformB)
+        {
+            foreach (var (shapeA, shapeTransformA) in multiShapeA.ShapeTransformPairs)
+            {
+                foreach (var (shapeB, shapeTransformB) in multiShapeB.ShapeTransformPairs)
+                {
+                    if (TestCollision(shapeA, transformA.Compose(shapeTransformA), shapeB, transformB.Compose(shapeTransformB))) { return true; }
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Fast path for axis-aligned rectangles. If the transforms have non-zero rotation this will be inaccurate.
         /// </summary>
         /// <param name="rectangleA"></param>
