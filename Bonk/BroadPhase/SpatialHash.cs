@@ -73,7 +73,38 @@ namespace MoonTools.Core.Bonk
                         foreach (var t in hashDictionary[key])
                         {
                             var (otherShape, otherTransform) = IDLookup[t];
-                            if (!id.Equals(t) && AABB.TestOverlap(shape.TransformedAABB(transform2D), otherShape.TransformedAABB(otherTransform)))
+                            if (!id.Equals(t) && AABB.TestOverlap(box, otherShape.TransformedAABB(otherTransform)))
+                            {
+                                yield return (t, otherShape, otherTransform);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Retrieves objects based on a pre-transformed AABB.
+        /// </summary>
+        /// <param name="aabb">A transformed AABB.</param>
+        /// <returns></returns>
+        public IEnumerable<(T, IHasAABB2D, Transform2D)> Retrieve(AABB aabb)
+        {
+            var minHash = Hash(aabb.Min);
+            var maxHash = Hash(aabb.Max);
+
+            for (var i = minHash.Item1; i <= maxHash.Item1; i++)
+            {
+                for (var j = minHash.Item2; j <= maxHash.Item2; j++)
+                {
+                    var key = MakeLong(i, j);
+                    if (hashDictionary.ContainsKey(key))
+                    {
+                        foreach (var t in hashDictionary[key])
+                        {
+                            var (otherShape, otherTransform) = IDLookup[t];
+                            if (AABB.TestOverlap(aabb, otherShape.TransformedAABB(otherTransform)))
                             {
                                 yield return (t, otherShape, otherTransform);
                             }

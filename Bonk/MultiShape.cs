@@ -30,6 +30,16 @@ namespace MoonTools.Core.Bonk
             }
         }
 
+        public bool IsSingleShape<T>() where T : struct, IShape2D
+        {
+            return ShapeTransformPairs.Length == 1 && ShapeTransformPairs[0].Item1 is T;
+        }
+
+        public (T, Transform2D) ShapeTransformPair<T>() where T : struct, IShape2D
+        {
+            return ((T, Transform2D))ShapeTransformPairs[0];
+        }
+
         private static AABB AABBFromShapes(IEnumerable<(IShape2D, Transform2D)> shapeTransforms)
         {
             var minX = float.MaxValue;

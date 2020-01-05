@@ -7,7 +7,7 @@ namespace MoonTools.Core.Bonk
     public static class SweepTest
     {
         /// <summary>
-        /// Performs a sweep test on rectangles.
+        /// Performs a sweep test on rectangles. Returns the position 1 pixel before overlap occurs.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="spatialHash">A spatial hash.</param>
@@ -27,67 +27,88 @@ namespace MoonTools.Core.Bonk
 
             foreach (var (id, shape, shapeTransform) in spatialHash.Retrieve(sweepBox))
             {
-                if (shape is Rectangle otherRectangle)
+                Rectangle otherRectangle;
+                Transform2D otherTransform;
+                AABB otherTransformedAABB;
+                if (shape is Rectangle)
                 {
-                    var otherTransformedAABB = otherRectangle.TransformedAABB(shapeTransform);
-                    float xInvEntry, yInvEntry;
+                    otherRectangle = (Rectangle)shape;
+                    otherTransformedAABB = shape.TransformedAABB(shapeTransform);
+                    otherTransform = shapeTransform;
+                }
+                else if (shape is MultiShape multiShape && multiShape.IsSingleShape<Rectangle>())
+                {
+                    Transform2D rectangleOffset;
+                    (otherRectangle, rectangleOffset) = multiShape.ShapeTransformPair<Rectangle>();
+                    otherTransform = shapeTransform.Compose(rectangleOffset);
+                    otherTransformedAABB = shape.TransformedAABB(otherTransform);
+                }
+                else
+                {
+                    continue;
+                }
 
-                    if (ray.X > 0)
-                    {
-                        xInvEntry = shapeTransform.Position.X - (transform.Position.X + transformedAABB.Width);
-                    }
-                    else
-                    {
-                        xInvEntry = (shapeTransform.Position.X + otherTransformedAABB.Width) - transform.Position.X;
-                    }
+                float xInvEntry, yInvEntry;
 
-                    if (ray.Y > 0)
-                    {
-                        yInvEntry = shapeTransform.Position.Y - (transform.Position.Y + transformedAABB.Height);
-                    }
-                    else
-                    {
-                        yInvEntry = (shapeTransform.Position.Y + otherTransformedAABB.Height) - shapeTransform.Position.Y;
-                    }
+                if (ray.X > 0)
+                {
+                    xInvEntry = otherTransformedAABB.Left - (transformedAABB.Right);
+                }
+                else
+                {
+                    xInvEntry = (otherTransformedAABB.Right) - transformedAABB.Left;
+                }
 
-                    float xEntry, yEntry;
+                if (ray.Y > 0)
+                {
+                    yInvEntry = otherTransformedAABB.Top - (transformedAABB.Bottom);
+                }
+                else
+                {
+                    yInvEntry = (otherTransformedAABB.Bottom) - transformedAABB.Top;
+                }
 
-                    if (ray.X == 0)
-                    {
-                        xEntry = float.MinValue;
-                    }
-                    else
-                    {
-                        xEntry = xInvEntry / ray.X;
-                    }
+                float xEntry, yEntry;
 
-                    if (ray.Y == 0)
-                    {
-                        yEntry = float.MinValue;
-                    }
-                    else
-                    {
-                        yEntry = yInvEntry / ray.Y;
-                    }
+                if (ray.X == 0)
+                {
+                    xEntry = float.MinValue;
+                }
+                else
+                {
+                    xEntry = xInvEntry / ray.X;
+                }
 
-                    var entryTime = Math.Max(xEntry, yEntry);
+                if (ray.Y == 0)
+                {
+                    yEntry = float.MinValue;
+                }
+                else
+                {
+                    yEntry = yInvEntry / ray.Y;
+                }
 
-                    if (entryTime > 0 && entryTime < 1)
+                var entryTime = Math.Max(xEntry, yEntry);
+
+                if (entryTime >= 0 && entryTime <= 1)
+                {
+                    if (entryTime < shortestDistance)
                     {
-                        if (entryTime < shortestDistance)
-                        {
-                            shortestDistance = entryTime;
-                            nearestID = id;
-                            nearestRectangle = rectangle;
-                            nearestTransform = shapeTransform;
-                        }
+                        shortestDistance = entryTime;
+                        nearestID = id;
+                        nearestRectangle = otherRectangle;
+                        nearestTransform = shapeTransform;
                     }
                 }
+                
             }
 
             if (nearestRectangle.HasValue)
             {
-                return new SweepResult<T, Rectangle>(true, ray * shortestDistance, nearestID, nearestRectangle.Value, nearestTransform.Value);
+                var overlapPosition = ray * shortestDistance;
+                var correctionX = ray.X > 0 ? -1 : 1;
+                var correctionY = ray.Y > 0 ? -1 : 1;
+                return new SweepResult<T, Rectangle>(true, new Position2D((int)overlapPosition.X + correctionX, (int)overlapPosition.Y + correctionY), nearestID, nearestRectangle.Value, nearestTransform.Value);
             }
             else
             {

@@ -20,15 +20,23 @@ namespace Tests
             var farthestRectangle = new Rectangle(4, 4);
             var farthestTransform = new Transform2D(new Position2D(12, 0));
 
+            var downRectangle = new Rectangle(12, 4);
+            var downTransform = new Transform2D(new Position2D(-6, 20));
+
             var spatialHash = new SpatialHash<int>(16);
             spatialHash.Insert(1, otherRectangle, otherTransform);
             spatialHash.Insert(2, farthestRectangle, farthestTransform);
+            spatialHash.Insert(3, downRectangle, downTransform);
 
             SweepTest.Rectangle(spatialHash, rectangle, transform, new Vector2(12, 0)).Should().Be(
                 new SweepResult<int, Rectangle>(true, new Vector2(8, 0), 1, otherRectangle, otherTransform)
             );
 
             SweepTest.Rectangle(spatialHash, rectangle, transform, new Vector2(-12, 0)).Hit.Should().BeFalse();
+
+            SweepTest.Rectangle(spatialHash, rectangle, transform, new Vector2(0, 20)).Should().Be(
+                new SweepResult<int, Rectangle>(true, new Vector2(0, 16), 3, downRectangle, downTransform)
+            );
         }
     }
 }
