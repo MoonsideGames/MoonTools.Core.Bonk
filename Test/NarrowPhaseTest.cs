@@ -418,7 +418,7 @@ namespace Tests
             var transformA = new Transform2D(new Position2D(0, 0));
 
             var rectangleB = new Rectangle(2, 2);
-            var transformB = new Transform2D(new Vector2(1, 0));
+            var transformB = new Transform2D(new Vector2(1, 0), 0, new Vector2(-1, 1));
 
             NarrowPhase.TestRectangleOverlap(rectangleA, transformA, rectangleB, transformB).Should().BeTrue();
         }

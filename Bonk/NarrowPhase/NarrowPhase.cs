@@ -70,9 +70,9 @@ namespace MoonTools.Core.Bonk
         /// <returns></returns>
         public static bool TestCollision(MultiShape multiShape, Transform2D multiShapeTransform, IShape2D shape, Transform2D shapeTransform)
         {
-            foreach (var (otherShape, otherTransform) in multiShape.ShapeTransformPairs)
+            foreach (var (otherShape, otherTransform) in multiShape.TransformedShapeTransforms(multiShapeTransform))
             {
-                if (TestCollision(shape, shapeTransform, otherShape, multiShapeTransform.Compose(otherTransform))) { return true; }
+                if (TestCollision(shape, shapeTransform, otherShape, otherTransform)) { return true; }
             }
             return false;
         }
@@ -88,9 +88,9 @@ namespace MoonTools.Core.Bonk
         /// <returns></returns>
         public static bool TestCollision(IShape2D shape, Transform2D shapeTransform, MultiShape multiShape, Transform2D multiShapeTransform)
         {
-            foreach (var (otherShape, otherTransform) in multiShape.ShapeTransformPairs)
+            foreach (var (otherShape, otherTransform) in multiShape.TransformedShapeTransforms(multiShapeTransform))
             {
-                if (TestCollision(shape, shapeTransform, otherShape, multiShapeTransform.Compose(otherTransform))) { return true; }
+                if (TestCollision(shape, shapeTransform, otherShape, otherTransform)) { return true; }
             }
             return false;
         }
@@ -106,11 +106,11 @@ namespace MoonTools.Core.Bonk
         /// <returns></returns>
         public static bool TestCollision(MultiShape multiShapeA, Transform2D transformA, MultiShape multiShapeB, Transform2D transformB)
         {
-            foreach (var (shapeA, shapeTransformA) in multiShapeA.ShapeTransformPairs)
+            foreach (var (shapeA, shapeTransformA) in multiShapeA.TransformedShapeTransforms(transformA))
             {
-                foreach (var (shapeB, shapeTransformB) in multiShapeB.ShapeTransformPairs)
+                foreach (var (shapeB, shapeTransformB) in multiShapeB.TransformedShapeTransforms(transformB))
                 {
-                    if (TestCollision(shapeA, transformA.Compose(shapeTransformA), shapeB, transformB.Compose(shapeTransformB))) { return true; }
+                    if (TestCollision(shapeA, shapeTransformA, shapeB, shapeTransformB)) { return true; }
                 }
             }
             return false;
