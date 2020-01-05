@@ -1,57 +1,50 @@
 ﻿using System;
 using System.Numerics;
-using MoonTools.Core.Structs;
 
 namespace MoonTools.Core.Bonk
 {
     /// <summary>
     /// A Minkowski difference between two shapes.
     /// </summary>
-    public struct MinkowskiDifference : IEquatable<MinkowskiDifference>
+    public struct MinkowskiDifference<T, U> : IEquatable<MinkowskiDifference<T, U>> where T : struct, IShape2D where U : struct, IShape2D
     {
-        private IShape2D ShapeA { get; }
-        private Transform2D TransformA { get; }
-        private IShape2D ShapeB { get; }
-        private Transform2D TransformB { get; }
+        private TransformedShape2D<T> ShapeA { get; }
+        private TransformedShape2D<U> ShapeB { get; }
 
-        public MinkowskiDifference(IShape2D shapeA, Transform2D transformA, IShape2D shapeB, Transform2D transformB)
+        public MinkowskiDifference(TransformedShape2D<T> shapeA, TransformedShape2D<U> shapeB)
         {
             ShapeA = shapeA;
-            TransformA = transformA;
             ShapeB = shapeB;
-            TransformB = transformB;
         }
 
         public Vector2 Support(Vector2 direction)
         {
-            return ShapeA.Support(direction, TransformA) - ShapeB.Support(-direction, TransformB);
+            return ShapeA.Support(direction) - ShapeB.Support(-direction);
         }
 
         public override bool Equals(object other)
         {
-            return other is MinkowskiDifference minkowskiDifference && Equals(minkowskiDifference);
+            return other is MinkowskiDifference<T, U> minkowskiDifference && Equals(minkowskiDifference);
         }
 
-        public bool Equals(MinkowskiDifference other)
+        public bool Equals(MinkowskiDifference<T, U> other)
         {
             return
                 ShapeA == other.ShapeA &&
-                TransformA == other.TransformA &&
-                ShapeB == other.ShapeB &&
-                TransformB == other.TransformB;
+                ShapeB == other.ShapeB;
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(ShapeA, TransformA, ShapeB, TransformB);
+            return HashCode.Combine(ShapeA, ShapeB);
         }
 
-        public static bool operator ==(MinkowskiDifference a, MinkowskiDifference b)
+        public static bool operator ==(MinkowskiDifference<T, U> a, MinkowskiDifference<T, U> b)
         {
             return a.Equals(b);
         }
 
-        public static bool operator !=(MinkowskiDifference a, MinkowskiDifference b)
+        public static bool operator !=(MinkowskiDifference<T, U> a, MinkowskiDifference<T, U> b)
         {
             return !(a == b);
         }

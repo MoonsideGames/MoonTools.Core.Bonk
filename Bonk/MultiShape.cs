@@ -4,17 +4,30 @@ using MoonTools.Core.Structs;
 
 namespace MoonTools.Core.Bonk
 {
-    public struct MultiShape : IHasAABB2D
+    public struct MultiShape<TShape2D> : IHasAABB2D, ICollisionTestable<TShape2D> where TShape2D : struct, IShape2D
     {
-        public ImmutableArray<(IShape2D, Transform2D)> ShapeTransformPairs { get; }
+        private static ImmutableArray<TransformedShape2D<TShape2D>>.Builder _builder = ImmutableArray.CreateBuilder<TransformedShape2D<TShape2D>>();
+        private ImmutableArray<TransformedShape2D<TShape2D>> _transformedShapes;
+        public IEnumerable<TransformedShape2D<TShape2D>> TransformedShapes { get { return _transformedShapes; } }
 
         public AABB AABB { get; }
 
-        public MultiShape(ImmutableArray<(IShape2D, Transform2D)> shapeTransformPairs)
+        public MultiShape(ImmutableArray<(TShape2D, Transform2D)> shapeTransformPairs)
         {
-            ShapeTransformPairs = shapeTransformPairs;
+            _builder.Clear();
+            foreach (var (shape, transform) in shapeTransformPairs)
+            {
+                _builder.Add(new TransformedShape2D<TShape2D>(shape, transform));
+            }
 
-            AABB = AABBFromShapes(shapeTransformPairs);
+            _transformedShapes = _builder.ToImmutable();
+            AABB = AABBFromShapes(_transformedShapes);
+        }
+
+        public MultiShape(ImmutableArray<TransformedShape2D<TShape2D>> transformedShapes)
+        {
+            _transformedShapes = transformedShapes;
+            AABB = AABBFromShapes(transformedShapes);
         }
 
         public AABB TransformedAABB(Transform2D transform)
@@ -22,24 +35,24 @@ namespace MoonTools.Core.Bonk
             return AABB.Transformed(AABB, transform);
         }
 
-        public IEnumerable<(IShape2D, Transform2D)> TransformedShapeTransforms(Transform2D transform)
+        public IEnumerable<TransformedShape2D<TShape2D>> Compose(Transform2D transform)
         {
-            foreach (var (shape, shapeTransform) in ShapeTransformPairs)
+            foreach (var transformedShape in TransformedShapes)
             {
-                yield return (shape, transform.Compose(shapeTransform));
+                yield return transformedShape.Compose(transform);
             }
         }
 
-        private static AABB AABBFromShapes(IEnumerable<(IShape2D, Transform2D)> shapeTransforms)
+        private static AABB AABBFromShapes(IEnumerable<TransformedShape2D<TShape2D>> transformedShapes)
         {
             var minX = float.MaxValue;
             var minY = float.MaxValue;
             var maxX = float.MinValue;
             var maxY = float.MinValue;
 
-            foreach (var (shape, transform) in shapeTransforms)
+            foreach (var transformedShape in transformedShapes)
             {
-                var aabb = shape.TransformedAABB(transform);
+                var aabb = transformedShape.AABB;
 
                 if (aabb.Min.X < minX)
                 {

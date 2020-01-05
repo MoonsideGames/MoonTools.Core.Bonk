@@ -38,8 +38,8 @@ namespace Tests
             var point = new Point();
             var pointTransform = new Transform2D(new Position2D(8, 8));
 
-            var multiRectangle = new MultiShape(
-                ImmutableArray.Create<(IShape2D, Transform2D)>(
+            var multiRectangle = new MultiShape<Rectangle>(
+                ImmutableArray.Create(
                     (new Rectangle(4, 1), new Transform2D(new Position2D(-2, -2))),
                     (new Rectangle(4, 1), new Transform2D(new Position2D(-2, -1))),
                     (new Rectangle(4, 1), new Transform2D(new Position2D(-2, 0)))

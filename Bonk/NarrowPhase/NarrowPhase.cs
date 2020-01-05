@@ -1,4 +1,6 @@
 ﻿using MoonTools.Core.Structs;
+using System;
+using System.Collections.Generic;
 using System.Numerics;
 
 namespace MoonTools.Core.Bonk
@@ -11,52 +13,37 @@ namespace MoonTools.Core.Bonk
             CounterClockwise
         }
 
-        /// <summary>
-        /// Tests if two shape-transform pairs are overlapping. Automatically detects fast-path optimizations.
-        /// </summary>
-        public static bool TestCollision(IHasAABB2D hasBoundingBoxA, Transform2D transformA, IHasAABB2D hasBoundingBoxB, Transform2D transformB)
+        public static bool TestCollision<T, U>(ICollisionTestable<T> a, ICollisionTestable<U> b) where T : struct, IShape2D where U : struct, IShape2D
         {
-            if (hasBoundingBoxA is MultiShape && hasBoundingBoxB is MultiShape)
+            foreach (var shape in a.TransformedShapes)
             {
-                return TestCollision((MultiShape)hasBoundingBoxA, transformA, (MultiShape)hasBoundingBoxB, transformB);
+                foreach (var shapeB in b.TransformedShapes)
+                {
+                    return TestCollision(shape, shapeB);
+                }
             }
-            else if (hasBoundingBoxA is MultiShape && hasBoundingBoxB is IShape2D)
-            {
-                return TestCollision((MultiShape)hasBoundingBoxA, transformA, (IShape2D)hasBoundingBoxB, transformB);
-            }
-            else if (hasBoundingBoxA is IShape2D && hasBoundingBoxB is MultiShape)
-            {
-                return TestCollision((IShape2D)hasBoundingBoxA, transformA, (MultiShape)hasBoundingBoxB, transformB);
-            }
-            else if (hasBoundingBoxA is IShape2D && hasBoundingBoxB is IShape2D)
-            {
-                return TestCollision((IShape2D)hasBoundingBoxA, transformA, (IShape2D)hasBoundingBoxB, transformB);
-            }
-            else
-            {
-                throw new System.ArgumentException("Collision testing requires MultiShapes or IShape2Ds.");
-            }
+            return false;
         }
 
-        public static bool TestCollision(IShape2D shapeA, Transform2D transformA, IShape2D shapeB, Transform2D transformB)
+        /// <summary>
+        /// Tests if two shape-transform pairs are overlapping.
+        /// </summary>
+        public static bool TestCollision<T, U>(T shape, Transform2D transform, U shapeB, Transform2D transformB) where T : struct, IShape2D where U : struct, IShape2D
         {
-            if (shapeA is Rectangle rectangleA && shapeB is Rectangle rectangleB && transformA.Rotation == 0 && transformB.Rotation == 0)
-            {
-                return TestRectangleOverlap(rectangleA, transformA, rectangleB, transformB);
-            }
-            else if (shapeA is Point && shapeB is Rectangle && transformB.Rotation == 0)
-            {
-                return TestPointRectangleOverlap((Point)shapeA, transformA, (Rectangle)shapeB, transformB);
-            }
-            else if (shapeA is Rectangle && shapeB is Point && transformA.Rotation == 0)
-            {
-                return TestPointRectangleOverlap((Point)shapeB, transformB, (Rectangle)shapeA, transformA);
-            }
-            else if (shapeA is Circle circleA && shapeB is Circle circleB && transformA.Scale.X == transformA.Scale.Y && transformB.Scale.X == transformB.Scale.Y)
-            {
-                return TestCircleOverlap(circleA, transformA, circleB, transformB);
-            }
-            return FindCollisionSimplex(shapeA, transformA, shapeB, transformB).Item1;
+            return TestCollision(new TransformedShape2D<T>(shape, transform), new TransformedShape2D<U>(shapeB, transformB));
+        }
+
+        /// <summary>
+        /// Tests if two TransformedShapes are overlapping.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="U"></typeparam>
+        /// <param name="transformedShapeA"></param>
+        /// <param name="transformedShapeB"></param>
+        /// <returns></returns>
+        public static bool TestCollision<T, U>(TransformedShape2D<T> transformedShapeA, TransformedShape2D<U> transformedShapeB) where T : struct, IShape2D where U : struct, IShape2D
+        {
+            return FindCollisionSimplex(transformedShapeA, transformedShapeB).Item1;
         }
 
         /// <summary>
@@ -66,13 +53,21 @@ namespace MoonTools.Core.Bonk
         /// <param name="multiShape"></param>
         /// <param name="multiShapeTransform"></param>
         /// <param name="shape"></param>
-        /// <param name="shapeTransform"></param>
         /// <returns></returns>
-        public static bool TestCollision(MultiShape multiShape, Transform2D multiShapeTransform, IShape2D shape, Transform2D shapeTransform)
+        public static bool TestCollision<T, U>(MultiShape<T> multiShape, Transform2D multiShapeTransform, TransformedShape2D<U> shape) where T : struct, IShape2D where U : struct, IShape2D
         {
-            foreach (var (otherShape, otherTransform) in multiShape.ShapeTransformPairs)
+            foreach (var transformedShape in multiShape.Compose(multiShapeTransform))
             {
-                if (TestCollision(shape, shapeTransform, otherShape, multiShapeTransform.Compose(otherTransform))) { return true; }
+                if (TestCollision(shape, transformedShape)) { return true; }
+            }
+            return false;
+        }
+
+        public static bool TestCollison<T>(IEnumerable<TransformedShape2D<T>> transformedShapes, Transform2D multiShapeTransform, TransformedShape2D<U> shape) where T : struct, IShape2D where U : struct, IShape2D
+        {
+            foreach (var transformedShape in transformedShapes)
+            {
+                if (TestCollision(transformedShape.Compose(multiShapeTransform), shape)) { return true; }
             }
             return false;
         }
@@ -84,15 +79,10 @@ namespace MoonTools.Core.Bonk
         /// <param name="multiShape"></param>
         /// <param name="multiShapeTransform"></param>
         /// <param name="shape"></param>
-        /// <param name="shapeTransform"></param>
         /// <returns></returns>
-        public static bool TestCollision(IShape2D shape, Transform2D shapeTransform, MultiShape multiShape, Transform2D multiShapeTransform)
+        public static bool TestCollision<T, U>(TransformedShape2D<T> shape, MultiShape<U> multiShape, Transform2D multiShapeTransform) where T : struct, IShape2D where U : struct, IShape2D
         {
-            foreach (var (otherShape, otherTransform) in multiShape.ShapeTransformPairs)
-            {
-                if (TestCollision(shape, shapeTransform, otherShape, multiShapeTransform.Compose(otherTransform))) { return true; }
-            }
-            return false;
+            return TestCollision(multiShape, multiShapeTransform, shape);
         }
 
         /// <summary>
@@ -104,13 +94,13 @@ namespace MoonTools.Core.Bonk
         /// <param name="multiShapeB"></param>
         /// <param name="transformB"></param>
         /// <returns></returns>
-        public static bool TestCollision(MultiShape multiShapeA, Transform2D transformA, MultiShape multiShapeB, Transform2D transformB)
+        public static bool TestCollision<T, U>(MultiShape<T> multiShapeA, Transform2D transformA, MultiShape<U> multiShapeB, Transform2D transformB) where T : struct, IShape2D where U : struct, IShape2D
         {
-            foreach (var (shapeA, shapeTransformA) in multiShapeA.ShapeTransformPairs)
+            foreach (var transformedShapeA in multiShapeA.Compose(transformA))
             {
-                foreach (var (shapeB, shapeTransformB) in multiShapeB.ShapeTransformPairs)
+                foreach (var transformedShapeB in multiShapeB.Compose(transformB))
                 {
-                    if (TestCollision(shapeA, transformA.Compose(shapeTransformA), shapeB, transformB.Compose(shapeTransformB))) { return true; }
+                    if (TestCollision(transformedShapeA, transformedShapeB)) { return true; }
                 }
             }
             return false;
@@ -120,14 +110,12 @@ namespace MoonTools.Core.Bonk
         /// Fast path for axis-aligned rectangles. If the transforms have non-zero rotation this will be inaccurate.
         /// </summary>
         /// <param name="rectangleA"></param>
-        /// <param name="transformA"></param>
         /// <param name="rectangleB"></param>
-        /// <param name="transformB"></param>
         /// <returns></returns>
-        public static bool TestRectangleOverlap(Rectangle rectangleA, Transform2D transformA, Rectangle rectangleB, Transform2D transformB)
+        public static bool TestCollision(TransformedShape2D<Rectangle> rectangleA, TransformedShape2D<Rectangle> rectangleB)
         {
-            var firstAABB = rectangleA.TransformedAABB(transformA);
-            var secondAABB = rectangleB.TransformedAABB(transformB);
+            var firstAABB = rectangleA.AABB;
+            var secondAABB = rectangleB.AABB;
 
             return firstAABB.Left <= secondAABB.Right && firstAABB.Right >= secondAABB.Left && firstAABB.Top <= secondAABB.Bottom && firstAABB.Bottom >= secondAABB.Top;
         }
@@ -136,33 +124,34 @@ namespace MoonTools.Core.Bonk
         /// Fast path for overlapping point and axis-aligned rectangle. The rectangle transform must have non-zero rotation.
         /// </summary>
         /// <param name="point"></param>
-        /// <param name="pointTransform"></param>
         /// <param name="rectangle"></param>
-        /// <param name="rectangleTransform"></param>
         /// <returns></returns>
-        public static bool TestPointRectangleOverlap(Point point, Transform2D pointTransform, Rectangle rectangle, Transform2D rectangleTransform)
+        public static bool TestCollision(TransformedShape2D<Point> point, TransformedShape2D<Rectangle> rectangle)
         {
-            var transformedPoint = pointTransform.Position;
-            var AABB = rectangle.TransformedAABB(rectangleTransform);
+            var transformedPoint = point.Transform.Position;
+            var AABB = rectangle.AABB;
 
             return transformedPoint.X >= AABB.Left && transformedPoint.X <= AABB.Right && transformedPoint.Y <= AABB.Bottom && transformedPoint.Y >= AABB.Top;
+        }
+
+        public static bool TestCollision(TransformedShape2D<Rectangle> rectangle, TransformedShape2D<Point> point)
+        {
+            return TestCollision(point, rectangle);
         }
 
         /// <summary>
         /// Fast path for overlapping circles. The circles must have uniform scaling.
         /// </summary>
         /// <param name="circleA"></param>
-        /// <param name="transformA"></param>
         /// <param name="circleB"></param>
-        /// <param name="transformB"></param>
         /// <returns></returns>
-        public static bool TestCircleOverlap(Circle circleA, Transform2D transformA, Circle circleB, Transform2D transformB)
+        public static bool TestCollision(TransformedShape2D<Circle> circleA, TransformedShape2D<Circle> circleB)
         {
-            var radiusA = circleA.Radius * transformA.Scale.X;
-            var radiusB = circleB.Radius * transformB.Scale.Y;
+            var radiusA = circleA.Shape.Radius * circleA.Transform.Scale.X;
+            var radiusB = circleB.Shape.Radius * circleB.Transform.Scale.Y;
 
-            var centerA = transformA.Position;
-            var centerB = transformB.Position;
+            var centerA = circleA.Transform.Position;
+            var centerB = circleB.Transform.Position;
 
             var distanceSquared = (centerA - centerB).LengthSquared();
             var radiusSumSquared = (radiusA + radiusB) * (radiusA + radiusB);
@@ -173,9 +162,9 @@ namespace MoonTools.Core.Bonk
         /// <summary>
         /// Tests if the two shape-transform pairs are overlapping, and returns a simplex that can be used by the EPA algorithm to determine a miminum separating vector.
         /// </summary>
-        public static (bool, Simplex2D) FindCollisionSimplex(IShape2D shapeA, Transform2D transformA, IShape2D shapeB, Transform2D transformB)
+        public static (bool, Simplex2D) FindCollisionSimplex<T, U>(TransformedShape2D<T> shapeA, TransformedShape2D<U> shapeB) where T : struct, IShape2D where U : struct, IShape2D
         {
-            var minkowskiDifference = new MinkowskiDifference(shapeA, transformA, shapeB, transformB);
+            var minkowskiDifference = new MinkowskiDifference<T, U>(shapeA, shapeB);
             var c = minkowskiDifference.Support(Vector2.UnitX);
             var b = minkowskiDifference.Support(-Vector2.UnitX);
             return Check(minkowskiDifference, c, b);
@@ -185,7 +174,7 @@ namespace MoonTools.Core.Bonk
         /// Returns a minimum separating vector in the direction from A to B.
         /// </summary>
         /// <param name="simplex">A simplex returned by the GJK algorithm.</param>
-        public unsafe static Vector2 Intersect(IShape2D shapeA, Transform2D Transform2DA, IShape2D shapeB, Transform2D Transform2DB, Simplex2D simplex)
+        public unsafe static Vector2 Intersect<T, U>(TransformedShape2D<T> shapeA, TransformedShape2D<U> shapeB, Simplex2D simplex) where T : struct, IShape2D where U : struct, IShape2D
         {
             if (shapeA == null) { throw new System.ArgumentNullException(nameof(shapeA)); }
             if (shapeB == null) { throw new System.ArgumentNullException(nameof(shapeB)); }
@@ -207,7 +196,7 @@ namespace MoonTools.Core.Bonk
             for (var i = 0; i < 32; i++)
             {
                 var edge = FindClosestEdge(winding, simplexVertices);
-                var support = CalculateSupport(shapeA, Transform2DA, shapeB, Transform2DB, edge.normal);
+                var support = CalculateSupport(shapeA, shapeB, edge.normal);
                 var distance = Vector2.Dot(support, edge.normal);
 
                 intersection = edge.normal;
@@ -261,12 +250,12 @@ namespace MoonTools.Core.Bonk
             return new Edge(closestDistance, closestNormal, closestIndex);
         }
 
-        private static Vector2 CalculateSupport(IShape2D shapeA, Transform2D Transform2DA, IShape2D shapeB, Transform2D Transform2DB, Vector2 direction)
+        private static Vector2 CalculateSupport<T, U>(TransformedShape2D<T> shapeA, TransformedShape2D<U> shapeB, Vector2 direction) where T : struct, IShape2D where U : struct, IShape2D
         {
-            return shapeA.Support(direction, Transform2DA) - shapeB.Support(-direction, Transform2DB);
+            return shapeA.Support(direction) - shapeB.Support(-direction);
         }
 
-        private static (bool, Simplex2D) Check(MinkowskiDifference minkowskiDifference, Vector2 c, Vector2 b)
+        private static (bool, Simplex2D) Check<T, U>(MinkowskiDifference<T, U> minkowskiDifference, Vector2 c, Vector2 b) where T : struct, IShape2D where U : struct, IShape2D
         {
             var cb = c - b;
             var c0 = -c;
@@ -274,7 +263,7 @@ namespace MoonTools.Core.Bonk
             return DoSimplex(minkowskiDifference, new Simplex2D(b, c), d);
         }
 
-        private static (bool, Simplex2D) DoSimplex(MinkowskiDifference minkowskiDifference, Simplex2D simplex, Vector2 direction)
+        private static (bool, Simplex2D) DoSimplex<T, U>(MinkowskiDifference<T, U> minkowskiDifference, Simplex2D simplex, Vector2 direction) where T : struct, IShape2D where U : struct, IShape2D
         {
             var a = minkowskiDifference.Support(direction);
             var notPastOrigin = Vector2.Dot(a, direction) < 0;

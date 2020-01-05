@@ -14,7 +14,7 @@ namespace MoonTools.Core.Bonk
         private readonly int cellSize;
 
         private readonly Dictionary<long, HashSet<T>> hashDictionary = new Dictionary<long, HashSet<T>>();
-        private readonly Dictionary<T, (IHasAABB2D, Transform2D)> IDLookup = new Dictionary<T, (IHasAABB2D, Transform2D)>();
+        private readonly Dictionary<T, IHasAABB2D> IDLookup = new Dictionary<T, IHasAABB2D>();
 
         public SpatialHash(int cellSize)
         {
@@ -31,10 +31,9 @@ namespace MoonTools.Core.Bonk
         /// </summary>
         /// <param name="id">A unique ID for the shape-transform pair.</param>
         /// <param name="shape"></param>
-        /// <param name="transform2D"></param>
-        public void Insert(T id, IHasAABB2D shape, Transform2D transform2D)
+        public void Insert(T id, IHasAABB2D shape)
         {
-            var box = shape.TransformedAABB(transform2D);
+            var box = shape.AABB;
             var minHash = Hash(box.Min);
             var maxHash = Hash(box.Max);
 
@@ -57,9 +56,9 @@ namespace MoonTools.Core.Bonk
         /// <summary>
         /// Retrieves all the potential collisions of a shape-transform pair. Excludes any shape-transforms with the given ID.
         /// </summary>
-        public IEnumerable<(T, IHasAABB2D, Transform2D)> Retrieve(T id, IHasAABB2D shape, Transform2D transform2D)
+        public IEnumerable<(T, IHasAABB2D)> Retrieve(T id, IHasAABB2D shape)
         {
-            var box = shape.TransformedAABB(transform2D);
+            var box = shape.AABB;
             var minHash = Hash(box.Min);
             var maxHash = Hash(box.Max);
 
@@ -72,10 +71,40 @@ namespace MoonTools.Core.Bonk
                     {
                         foreach (var t in hashDictionary[key])
                         {
-                            var (otherShape, otherTransform) = IDLookup[t];
-                            if (!id.Equals(t) && AABB.TestOverlap(shape.TransformedAABB(transform2D), otherShape.TransformedAABB(otherTransform)))
+                            var otherShape = IDLookup[t];
+                            if (!id.Equals(t) && AABB.TestOverlap(shape.AABB, otherShape.AABB))
                             {
-                                yield return (t, otherShape, otherTransform);
+                                yield return (t, otherShape);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Retrieves objects based on a pre-transformed AABB.
+        /// </summary>
+        /// <param name="aabb">A transformed AABB.</param>
+        /// <returns></returns>
+        public IEnumerable<(T, IHasAABB2D)> Retrieve(AABB aabb)
+        {
+            var minHash = Hash(aabb.Min);
+            var maxHash = Hash(aabb.Max);
+
+            for (var i = minHash.Item1; i <= maxHash.Item1; i++)
+            {
+                for (var j = minHash.Item2; j <= maxHash.Item2; j++)
+                {
+                    var key = MakeLong(i, j);
+                    if (hashDictionary.ContainsKey(key))
+                    {
+                        foreach (var t in hashDictionary[key])
+                        {
+                            var otherShape = IDLookup[t];
+                            if (AABB.TestOverlap(aabb, otherShape.AABB))
+                            {
+                                yield return (t, otherShape);
                             }
                         }
                     }
