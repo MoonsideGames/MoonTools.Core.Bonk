@@ -29,13 +29,13 @@ namespace Tests
             spatialHash.Insert(3, downRectangle, downTransform);
 
             SweepTest.Rectangle(spatialHash, rectangle, transform, new Vector2(12, 0)).Should().Be(
-                new SweepResult<int, Rectangle>(true, new Vector2(8, 0), 1, otherRectangle, otherTransform)
+                new SweepResult<int, Rectangle>(true, new Vector2(7, 0), 1, otherRectangle, otherTransform)
             );
 
             SweepTest.Rectangle(spatialHash, rectangle, transform, new Vector2(-12, 0)).Hit.Should().BeFalse();
 
             SweepTest.Rectangle(spatialHash, rectangle, transform, new Vector2(0, 20)).Should().Be(
-                new SweepResult<int, Rectangle>(true, new Vector2(0, 16), 3, downRectangle, downTransform)
+                new SweepResult<int, Rectangle>(true, new Vector2(0, 15), 3, downRectangle, downTransform)
             );
         }
     }

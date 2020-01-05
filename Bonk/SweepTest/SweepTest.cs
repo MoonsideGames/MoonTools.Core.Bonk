@@ -106,8 +106,8 @@ namespace MoonTools.Core.Bonk
             if (nearestRectangle.HasValue)
             {
                 var overlapPosition = ray * shortestDistance;
-                var correctionX = ray.X > 0 ? -1 : 1;
-                var correctionY = ray.Y > 0 ? -1 : 1;
+                var correctionX = -Math.Sign(ray.X);
+                var correctionY = -Math.Sign(ray.Y);
                 return new SweepResult<T, Rectangle>(true, new Position2D((int)overlapPosition.X + correctionX, (int)overlapPosition.Y + correctionY), nearestID, nearestRectangle.Value, nearestTransform.Value);
             }
             else
