@@ -38,8 +38,8 @@ namespace Tests
             var point = new Point();
             var pointTransform = new Transform2D(new Position2D(8, 8));
 
-            var multiRectangle = new MultiRectangle(
-                ImmutableArray.Create(
+            var multiRectangle = new MultiShape(
+                ImmutableArray.Create<(IShape2D, Transform2D)>(
                     (new Rectangle(4, 1), new Transform2D(new Position2D(-2, -2))),
                     (new Rectangle(4, 1), new Transform2D(new Position2D(-2, -1))),
                     (new Rectangle(4, 1), new Transform2D(new Position2D(-2, 0)))
@@ -70,6 +70,7 @@ namespace Tests
             spatialHash.Retrieve(6, line, lineTransform).Should().Contain((4, circleA, circleATransform)).And.Contain((2, rectC, rectCTransform));
 
             spatialHash.Retrieve(8, multiRectangle, multiRectangleTransform).Should().Contain((1, rectB, rectBTransform));
+            spatialHash.Retrieve(8, multiRectangle, multiRectangleTransform).Should().NotContain((0, rectA, rectATransform));
         }
 
         [Test]

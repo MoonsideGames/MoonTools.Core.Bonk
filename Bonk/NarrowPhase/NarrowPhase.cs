@@ -14,6 +14,30 @@ namespace MoonTools.Core.Bonk
         /// <summary>
         /// Tests if two shape-transform pairs are overlapping. Automatically detects fast-path optimizations.
         /// </summary>
+        public static bool TestCollision(IHasAABB2D hasBoundingBoxA, Transform2D transformA, IHasAABB2D hasBoundingBoxB, Transform2D transformB)
+        {
+            if (hasBoundingBoxA is MultiShape && hasBoundingBoxB is MultiShape)
+            {
+                return TestCollision((MultiShape)hasBoundingBoxA, transformA, (MultiShape)hasBoundingBoxB, transformB);
+            }
+            else if (hasBoundingBoxA is MultiShape && hasBoundingBoxB is IShape2D)
+            {
+                return TestCollision((MultiShape)hasBoundingBoxA, transformA, (IShape2D)hasBoundingBoxB, transformB);
+            }
+            else if (hasBoundingBoxA is IShape2D && hasBoundingBoxB is MultiShape)
+            {
+                return TestCollision((IShape2D)hasBoundingBoxA, transformA, (MultiShape)hasBoundingBoxB, transformB);
+            }
+            else if (hasBoundingBoxA is IShape2D && hasBoundingBoxB is IShape2D)
+            {
+                return TestCollision((IShape2D)hasBoundingBoxA, transformA, (IShape2D)hasBoundingBoxB, transformB);
+            }
+            else
+            {
+                throw new System.ArgumentException("Collision testing requires MultiShapes or IShape2Ds.");
+            }
+        }
+
         public static bool TestCollision(IShape2D shapeA, Transform2D transformA, IShape2D shapeB, Transform2D transformB)
         {
             if (shapeA is Rectangle rectangleA && shapeB is Rectangle rectangleB && transformA.Rotation == 0 && transformB.Rotation == 0)
@@ -44,7 +68,7 @@ namespace MoonTools.Core.Bonk
         /// <param name="shape"></param>
         /// <param name="shapeTransform"></param>
         /// <returns></returns>
-        public static bool TestCollision(IMultiShape2D multiShape, Transform2D multiShapeTransform, IShape2D shape, Transform2D shapeTransform)
+        public static bool TestCollision(MultiShape multiShape, Transform2D multiShapeTransform, IShape2D shape, Transform2D shapeTransform)
         {
             foreach (var (otherShape, otherTransform) in multiShape.ShapeTransformPairs)
             {
@@ -62,7 +86,7 @@ namespace MoonTools.Core.Bonk
         /// <param name="shape"></param>
         /// <param name="shapeTransform"></param>
         /// <returns></returns>
-        public static bool TestCollision(IShape2D shape, Transform2D shapeTransform, IMultiShape2D multiShape, Transform2D multiShapeTransform)
+        public static bool TestCollision(IShape2D shape, Transform2D shapeTransform, MultiShape multiShape, Transform2D multiShapeTransform)
         {
             foreach (var (otherShape, otherTransform) in multiShape.ShapeTransformPairs)
             {
@@ -80,7 +104,7 @@ namespace MoonTools.Core.Bonk
         /// <param name="multiShapeB"></param>
         /// <param name="transformB"></param>
         /// <returns></returns>
-        public static bool TestCollision(IMultiShape2D multiShapeA, Transform2D transformA, IMultiShape2D multiShapeB, Transform2D transformB)
+        public static bool TestCollision(MultiShape multiShapeA, Transform2D transformA, MultiShape multiShapeB, Transform2D transformB)
         {
             foreach (var (shapeA, shapeTransformA) in multiShapeA.ShapeTransformPairs)
             {

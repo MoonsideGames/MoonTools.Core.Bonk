@@ -5,7 +5,7 @@ using MoonTools.Core.Structs;
 namespace MoonTools.Core.Bonk
 {
     /// <summary>
-    /// A rectangle is a shape defined by a minimum and maximum X value and a minimum and maximum Y value.
+    /// A rectangle is a shape defined by a width and height. The origin is the center of the rectangle.
     /// </summary>
     public struct Rectangle : IShape2D, IEquatable<Rectangle>
     {

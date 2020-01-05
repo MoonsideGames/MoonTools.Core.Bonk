@@ -366,11 +366,11 @@ namespace Tests
         [Test]
         public void RotatedRectanglesOverlapping()
         {
-            var rectangleA = new Rectangle(3, 3);
-            var transformA = new Transform2D(new Vector2(-1, 0), -90f);
+            var rectangleA = new Rectangle(3, 6);
+            var transformA = new Transform2D(new Vector2(4f, 0), (float)System.Math.PI / 2);
 
             var rectangleB = new Rectangle(2, 2);
-            var transformB = new Transform2D(new Vector2(1, 0));
+            var transformB = new Transform2D(new Vector2(0, 0));
 
             NarrowPhase.TestCollision(rectangleA, transformA, rectangleB, transformB).Should().BeTrue();
         }
@@ -426,8 +426,8 @@ namespace Tests
         [Test]
         public void MultiRectanglesOverlapping()
         {
-            var multiRectangleA = new MultiRectangle(
-                ImmutableArray.Create(
+            var multiRectangleA = new MultiShape(
+                ImmutableArray.Create<(IShape2D, Transform2D)>(
                     (new Rectangle(4, 1), new Transform2D(new Position2D(-5, 0))),
                     (new Rectangle(4, 1), new Transform2D(new Position2D(-5, 1))),
                     (new Rectangle(4, 1), new Transform2D(new Position2D(-5, 2)))
@@ -435,8 +435,8 @@ namespace Tests
             );
             var transformA = new Transform2D(new Position2D(5, 0));
 
-            var multiRectangleB = new MultiRectangle(
-                ImmutableArray.Create(
+            var multiRectangleB = new MultiShape(
+                ImmutableArray.Create<(IShape2D, Transform2D)>(
                     (new Rectangle(4, 1), new Transform2D(new Position2D(4, -1))),
                     (new Rectangle(4, 1), new Transform2D(new Position2D(4, 0))),
                     (new Rectangle(4, 1), new Transform2D(new Position2D(4, 1)))
@@ -450,8 +450,8 @@ namespace Tests
         [Test]
         public void MultiRectanglesNotOverlapping()
         {
-            var multiRectangleA = new MultiRectangle(
-                ImmutableArray.Create(
+            var multiRectangleA = new MultiShape(
+                ImmutableArray.Create<(IShape2D, Transform2D)>(
                     (new Rectangle(4, 1), new Transform2D(new Position2D(-5, 0))),
                     (new Rectangle(4, 1), new Transform2D(new Position2D(-5, 1))),
                     (new Rectangle(4, 1), new Transform2D(new Position2D(-5, 2)))
@@ -459,8 +459,8 @@ namespace Tests
             );
             var transformA = new Transform2D(new Position2D(5, 0));
 
-            var multiRectangleB = new MultiRectangle(
-                ImmutableArray.Create(
+            var multiRectangleB = new MultiShape(
+                ImmutableArray.Create<(IShape2D, Transform2D)>(
                     (new Rectangle(4, 1), new Transform2D(new Position2D(4, -1))),
                     (new Rectangle(4, 1), new Transform2D(new Position2D(4, 0))),
                     (new Rectangle(4, 1), new Transform2D(new Position2D(4, 1)))
