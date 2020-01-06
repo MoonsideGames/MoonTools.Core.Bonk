@@ -7,7 +7,7 @@ namespace MoonTools.Core.Bonk
     public static class SweepTest
     {
         /// <summary>
-        /// Performs a sweep test on rectangles. Returns the position 1 pixel before overlap occurs.
+        /// Performs a sweep test on and against rectangles. Returns the position 1 pixel before overlap occurs.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="spatialHash">A spatial hash.</param>
@@ -15,7 +15,7 @@ namespace MoonTools.Core.Bonk
         /// <param name="transform">A transform by which to transform the IHasAABB2D.</param>
         /// <param name="ray">Given in world-space.</param>
         /// <returns></returns>
-        public static SweepResult<T, Rectangle> Rectangle<T>(SpatialHash<T> spatialHash, Rectangle rectangle, Transform2D transform, Vector2 ray) where T : IEquatable<T>
+        public static SweepResult<T> Test<T>(SpatialHash<T> spatialHash, Rectangle rectangle, Transform2D transform, Vector2 ray) where T : IEquatable<T>
         {
             var transformedAABB = rectangle.TransformedAABB(transform);
             var sweepBox = SweepBox(transformedAABB, ray);
@@ -108,12 +108,17 @@ namespace MoonTools.Core.Bonk
                 var overlapPosition = ray * shortestDistance;
                 var correctionX = -Math.Sign(ray.X);
                 var correctionY = -Math.Sign(ray.Y);
-                return new SweepResult<T, Rectangle>(true, new Position2D((int)overlapPosition.X + correctionX, (int)overlapPosition.Y + correctionY), nearestID, nearestRectangle.Value, nearestTransform.Value);
+                return new SweepResult<T>(true, new Position2D((int)overlapPosition.X + correctionX, (int)overlapPosition.Y + correctionY), nearestID);
             }
             else
             {
-                return SweepResult<T, Rectangle>.False;
+                return SweepResult<T>.False;
             }
+        }
+
+        public static SweepResult<T> Test<T>(SpatialHash<T> spatialHash, Point point, Transform2D transform, Vector2 ray) where T : IEquatable<T>
+        {
+            return Test(spatialHash, new Rectangle(0, 0), transform, ray);
         }
 
         private static AABB SweepBox(AABB aabb, Vector2 ray)

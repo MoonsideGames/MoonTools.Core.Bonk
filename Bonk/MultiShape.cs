@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Numerics;
 using MoonTools.Core.Structs;
 
 namespace MoonTools.Core.Bonk
@@ -22,11 +23,17 @@ namespace MoonTools.Core.Bonk
             return AABB.Transformed(AABB, transform);
         }
 
-        public IEnumerable<(IShape2D, Transform2D)> TransformedShapeTransforms(Transform2D transform)
+        /// <summary>
+        /// Moves the shapes by pivoting with an offset transform. 
+        /// </summary>
+        /// <param name="offsetTransform"></param>
+        /// <returns></returns>
+        public IEnumerable<(IShape2D, Transform2D)> TransformShapesUsingOffset(Transform2D offsetTransform)
         {
             foreach (var (shape, shapeTransform) in ShapeTransformPairs)
             {
-                yield return (shape, transform.Compose(shapeTransform));
+                var newTransform = new Transform2D(Vector2.Transform(shapeTransform.Position, offsetTransform.TransformMatrix), offsetTransform.Rotation, offsetTransform.Scale);
+                yield return (shape, newTransform);
             }
         }
 
