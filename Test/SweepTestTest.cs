@@ -28,14 +28,14 @@ namespace Tests
             spatialHash.Insert(2, farthestRectangle, farthestTransform);
             spatialHash.Insert(3, downRectangle, downTransform);
 
-            SweepTest.Rectangle(spatialHash, rectangle, transform, new Vector2(12, 0)).Should().Be(
-                new SweepResult<int, Rectangle>(true, new Vector2(7, 0), 1, otherRectangle, otherTransform)
+            SweepTest.Test(spatialHash, rectangle, transform, new Vector2(12, 0)).Should().Be(
+                new SweepResult<int>(true, new Vector2(7, 0), 1)
             );
 
-            SweepTest.Rectangle(spatialHash, rectangle, transform, new Vector2(-12, 0)).Hit.Should().BeFalse();
+            SweepTest.Test(spatialHash, rectangle, transform, new Vector2(-12, 0)).Hit.Should().BeFalse();
 
-            SweepTest.Rectangle(spatialHash, rectangle, transform, new Vector2(0, 20)).Should().Be(
-                new SweepResult<int, Rectangle>(true, new Vector2(0, 15), 3, downRectangle, downTransform)
+            SweepTest.Test(spatialHash, rectangle, transform, new Vector2(0, 20)).Should().Be(
+                new SweepResult<int>(true, new Vector2(0, 15), 3)
             );
         }
     }
