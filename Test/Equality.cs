@@ -140,8 +140,8 @@ namespace Tests
             [Test]
             public void RectangleEqual()
             {
-                var a = new Rectangle(3, 3);
-                var b = new Rectangle(3, 3);
+                var a = new Rectangle(-1, -1, 3, 3);
+                var b = new Rectangle(-1, -1, 3, 3);
 
                 a.Equals(b).Should().BeTrue();
             }
@@ -149,8 +149,8 @@ namespace Tests
             [Test]
             public void RectangleEqualOperator()
             {
-                var a = new Rectangle(3, 3);
-                var b = new Rectangle(3, 3);
+                var a = new Rectangle(-1, -1, 3, 3);
+                var b = new Rectangle(-1, -1, 3, 3);
 
                 (a == b).Should().BeTrue();
             }
@@ -158,8 +158,8 @@ namespace Tests
             [Test]
             public void RectangleNotEqual()
             {
-                var a = new Rectangle(3, 3);
-                var b = new Rectangle(6, 6);
+                var a = new Rectangle(-1, -1, 3, 3);
+                var b = new Rectangle(-3, -3, 6, 6);
 
                 a.Equals(b).Should().BeFalse();
             }
@@ -167,8 +167,8 @@ namespace Tests
             [Test]
             public void RectangleNotEqualOperator()
             {
-                var a = new Rectangle(3, 3);
-                var b = new Rectangle(6, 6);
+                var a = new Rectangle(-1, -1, 3, 3);
+                var b = new Rectangle(-3, -3, 6, 6);
 
                 (a != b).Should().BeTrue();
             }

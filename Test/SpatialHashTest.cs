@@ -14,16 +14,16 @@ namespace Tests
         {
             var spatialHash = new SpatialHash<int>(16);
 
-            var rectA = new Rectangle(4, 4);
+            var rectA = new Rectangle(-2, -2, 4, 4);
             var rectATransform = new Transform2D(new Vector2(-8, -8));
 
-            var rectB = new Rectangle(4, 4);
+            var rectB = new Rectangle(-2, -2, 4, 4);
             var rectBTransform = new Transform2D(new Vector2(8, 8));
 
-            var rectC = new Rectangle(4, 4);
+            var rectC = new Rectangle(-2, -2, 4, 4);
             var rectCTransform = new Transform2D(new Vector2(24, -4));
 
-            var rectD = new Rectangle(4, 4);
+            var rectD = new Rectangle(-2, -2, 4, 4);
             var rectDTransform = new Transform2D(new Vector2(24, 24));
 
             var circleA = new Circle(2);
@@ -40,9 +40,9 @@ namespace Tests
 
             var multiRectangle = new MultiShape(
                 ImmutableArray.Create<(IShape2D, Transform2D)>(
-                    (new Rectangle(4, 1), new Transform2D(new Position2D(-2, -2))),
-                    (new Rectangle(4, 1), new Transform2D(new Position2D(-2, -1))),
-                    (new Rectangle(4, 1), new Transform2D(new Position2D(-2, 0)))
+                    (new Rectangle(-2, 0, 4, 1), new Transform2D(new Position2D(-2, -2))),
+                    (new Rectangle(-2, 0, 4, 1), new Transform2D(new Position2D(-2, -1))),
+                    (new Rectangle(-2, 0, 4, 1), new Transform2D(new Position2D(-2, 0)))
                 )
             );
             var multiRectangleTransform = new Transform2D(new Position2D(8, 8));
@@ -78,13 +78,13 @@ namespace Tests
         {
             var spatialHash = new SpatialHash<int>(16);
 
-            var rectA = new Rectangle(4, 4);
+            var rectA = new Rectangle(-2, -2, 4, 4);
             var rectATransform = new Transform2D(new Vector2(-8, -8));
 
-            var rectB = new Rectangle(4, 4);
+            var rectB = new Rectangle(-2, -2, 4, 4);
             var rectBTransform = new Transform2D(new Vector2(-8, -8));
 
-            var rectC = new Rectangle(2, 2);
+            var rectC = new Rectangle(-2, -2, 2, 2);
             var rectCTransform = new Transform2D(new Vector2(-8, -8));
 
             spatialHash.Insert(0, rectA, rectATransform);
@@ -99,10 +99,10 @@ namespace Tests
         {
             var spatialHash = new SpatialHash<int>(16);
 
-            var rectA = new Rectangle(4, 4);
+            var rectA = new Rectangle(-2, -2, 4, 4);
             var rectATransform = new Transform2D(new Vector2(-8, -8));
 
-            var rectB = new Rectangle(4, 4);
+            var rectB = new Rectangle(-2, -2, 4, 4);
             var rectBTransform = new Transform2D(new Vector2(8, 8));
 
             spatialHash.Insert(0, rectA, rectATransform);

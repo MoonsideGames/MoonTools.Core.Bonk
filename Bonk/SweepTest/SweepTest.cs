@@ -118,7 +118,7 @@ namespace MoonTools.Core.Bonk
 
         public static SweepResult<T> Test<T>(SpatialHash<T> spatialHash, Point point, Transform2D transform, Vector2 ray) where T : IEquatable<T>
         {
-            return Test(spatialHash, new Rectangle(0, 0), transform, ray);
+            return Test(spatialHash, new Rectangle(0, 0, 0, 0), transform, ray);
         }
 
         private static AABB SweepBox(AABB aabb, Vector2 ray)

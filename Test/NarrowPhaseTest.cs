@@ -55,7 +55,7 @@ namespace Tests
         public void PointRectangleOverlapping()
         {
             var point = new Point();
-            var rectangle = new Rectangle(4, 4);
+            var rectangle = new Rectangle(-2, -2, 4, 4);
 
             NarrowPhase.TestCollision(point, Transform2D.DefaultTransform, rectangle, Transform2D.DefaultTransform).Should().BeTrue();
         }
@@ -65,7 +65,7 @@ namespace Tests
         {
             var point = new Point();
             var pointTransform = new Transform2D(new Position2D(5, 5));
-            var rectangle = new Rectangle(4, 4);
+            var rectangle = new Rectangle(-2, -2, 4, 4);
 
             NarrowPhase.TestCollision(point, pointTransform, rectangle, Transform2D.DefaultTransform).Should().BeFalse();
         }
@@ -354,10 +354,10 @@ namespace Tests
         [Test]
         public void RectanglesNotOverlapping()
         {
-            var rectangleA = new Rectangle(12, 12);
+            var rectangleA = new Rectangle(-6, -6, 12, 12);
             var transformA = new Transform2D(new Position2D(39, 249));
 
-            var rectangleB = new Rectangle(16, 16);
+            var rectangleB = new Rectangle(-8, -8, 16, 16);
             var transformB = new Transform2D(new Position2D(16, 240));
 
             NarrowPhase.TestCollision(rectangleA, transformA, rectangleB, transformB).Should().BeFalse();
@@ -366,10 +366,10 @@ namespace Tests
         [Test]
         public void RotatedRectanglesOverlapping()
         {
-            var rectangleA = new Rectangle(3, 6);
+            var rectangleA = new Rectangle(-1, -3, 3, 6);
             var transformA = new Transform2D(new Vector2(4f, 0), (float)System.Math.PI / 2);
 
-            var rectangleB = new Rectangle(2, 2);
+            var rectangleB = new Rectangle(-1, -1, 2, 2);
             var transformB = new Transform2D(new Vector2(0, 0));
 
             NarrowPhase.TestCollision(rectangleA, transformA, rectangleB, transformB).Should().BeTrue();
@@ -378,10 +378,10 @@ namespace Tests
         [Test]
         public void RectanglesTouchingGJK2D()
         {
-            var rectangleA = new Rectangle(2, 2);
+            var rectangleA = new Rectangle(-1, -1, 2, 2);
             var transformA = new Transform2D(new Position2D(-1, 0));
 
-            var rectangleB = new Rectangle(2, 2);
+            var rectangleB = new Rectangle(-1, -1, 2, 2);
             var transformB = new Transform2D(new Vector2(1, 0));
 
             NarrowPhase.TestCollision(rectangleA, transformA, rectangleB, transformB).Should().BeTrue();
@@ -390,10 +390,10 @@ namespace Tests
         [Test]
         public void RectanglesOverlappingGJK2D()
         {
-            var rectangleA = new Rectangle(2, 2);
+            var rectangleA = new Rectangle(-1, -1, 2, 2);
             var transformA = new Transform2D(new Position2D(0, 0));
 
-            var rectangleB = new Rectangle(2, 2);
+            var rectangleB = new Rectangle(-1, -1, 2, 2);
             var transformB = new Transform2D(new Vector2(1, 0));
 
             NarrowPhase.TestCollision(rectangleA, transformA, rectangleB, transformB).Should().BeTrue();
@@ -402,10 +402,10 @@ namespace Tests
         [Test]
         public void RectanglesTouchingOverlap()
         {
-            var rectangleA = new Rectangle(2, 2);
+            var rectangleA = new Rectangle(-1, -1, 2, 2);
             var transformA = new Transform2D(new Position2D(-1, 0));
 
-            var rectangleB = new Rectangle(2, 2);
+            var rectangleB = new Rectangle(-1, -1, 2, 2);
             var transformB = new Transform2D(new Vector2(1, 0));
 
             NarrowPhase.TestRectangleOverlap(rectangleA, transformA, rectangleB, transformB).Should().BeTrue();
@@ -414,10 +414,10 @@ namespace Tests
         [Test]
         public void RectanglesOverlappingOverlap()
         {
-            var rectangleA = new Rectangle(2, 2);
+            var rectangleA = new Rectangle(-1, -1, 2, 2);
             var transformA = new Transform2D(new Position2D(0, 0));
 
-            var rectangleB = new Rectangle(2, 2);
+            var rectangleB = new Rectangle(-1, -1, 2, 2);
             var transformB = new Transform2D(new Vector2(1, 0), 0, new Vector2(-1, 1));
 
             NarrowPhase.TestRectangleOverlap(rectangleA, transformA, rectangleB, transformB).Should().BeTrue();
@@ -428,18 +428,18 @@ namespace Tests
         {
             var multiRectangleA = new MultiShape(
                 ImmutableArray.Create<(IShape2D, Transform2D)>(
-                    (new Rectangle(4, 1), new Transform2D(new Position2D(-5, 0))),
-                    (new Rectangle(4, 1), new Transform2D(new Position2D(-5, 1))),
-                    (new Rectangle(4, 1), new Transform2D(new Position2D(-5, 2)))
+                    (new Rectangle(-2, 0, 4, 1), new Transform2D(new Position2D(-5, 0))),
+                    (new Rectangle(-2, 0, 4, 1), new Transform2D(new Position2D(-5, 1))),
+                    (new Rectangle(-2, 0, 4, 1), new Transform2D(new Position2D(-5, 2)))
                 )
             );
             var transformA = new Transform2D(new Position2D(5, 0));
 
             var multiRectangleB = new MultiShape(
                 ImmutableArray.Create<(IShape2D, Transform2D)>(
-                    (new Rectangle(4, 1), new Transform2D(new Position2D(4, -1))),
-                    (new Rectangle(4, 1), new Transform2D(new Position2D(4, 0))),
-                    (new Rectangle(4, 1), new Transform2D(new Position2D(4, 1)))
+                    (new Rectangle(-2, 0, 4, 1), new Transform2D(new Position2D(4, -1))),
+                    (new Rectangle(-2, 0, 4, 1), new Transform2D(new Position2D(4, 0))),
+                    (new Rectangle(-2, 0, 4, 1), new Transform2D(new Position2D(4, 1)))
                 )
             );
             var transformB = new Transform2D(new Position2D(0, 3));
@@ -452,18 +452,18 @@ namespace Tests
         {
             var multiRectangleA = new MultiShape(
                 ImmutableArray.Create<(IShape2D, Transform2D)>(
-                    (new Rectangle(4, 1), new Transform2D(new Position2D(-5, 0))),
-                    (new Rectangle(4, 1), new Transform2D(new Position2D(-5, 1))),
-                    (new Rectangle(4, 1), new Transform2D(new Position2D(-5, 2)))
+                    (new Rectangle(-2, 0, 4, 1), new Transform2D(new Position2D(-5, 0))),
+                    (new Rectangle(-2, 0, 4, 1), new Transform2D(new Position2D(-5, 1))),
+                    (new Rectangle(-2, 0, 4, 1), new Transform2D(new Position2D(-5, 2)))
                 )
             );
             var transformA = new Transform2D(new Position2D(5, 0));
 
             var multiRectangleB = new MultiShape(
                 ImmutableArray.Create<(IShape2D, Transform2D)>(
-                    (new Rectangle(4, 1), new Transform2D(new Position2D(4, -1))),
-                    (new Rectangle(4, 1), new Transform2D(new Position2D(4, 0))),
-                    (new Rectangle(4, 1), new Transform2D(new Position2D(4, 1)))
+                    (new Rectangle(-2, 0, 4, 1), new Transform2D(new Position2D(4, -1))),
+                    (new Rectangle(-2, 0, 4, 1), new Transform2D(new Position2D(4, 0))),
+                    (new Rectangle(-2, 0, 4, 1), new Transform2D(new Position2D(4, 1)))
                 )
             );
             var transformB = new Transform2D(new Position2D(0, -3));

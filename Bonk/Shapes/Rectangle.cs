@@ -23,15 +23,15 @@ namespace MoonTools.Core.Bonk
         public Vector2 Min { get; }
         public Vector2 Max { get; }
 
-        public Rectangle(int width, int height)
+        public Rectangle(int left, int top, int width, int height)
         {
             Width = width;
             Height = height;
-            AABB = new AABB(-width / 2f, -height / 2f, width / 2f, height / 2f);
-            Right = AABB.Right;
-            Left = AABB.Left;
-            Top = AABB.Top;
-            Bottom = AABB.Bottom;
+            Left = left;
+            Right = left + width;
+            Top = top;
+            Bottom = top + height;
+            AABB = new AABB(left, top, Right, Bottom);
             BottomLeft = new Vector2(Left, Bottom);
             TopRight = new Vector2(Top, Right);
             Min = AABB.Min;
