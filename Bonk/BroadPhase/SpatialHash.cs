@@ -16,6 +16,12 @@ namespace MoonTools.Core.Bonk
         private readonly Dictionary<long, HashSet<T>> hashDictionary = new Dictionary<long, HashSet<T>>();
         private readonly Dictionary<T, (IHasAABB2D, Transform2D)> IDLookup = new Dictionary<T, (IHasAABB2D, Transform2D)>();
 
+        public int MinX { get; private set; } = 0;
+        public int MaxX { get; private set; } = 0;
+        public int MinY { get; private set; } = 0;
+        public int MaxY { get; private set; } = 0;
+
+
         public SpatialHash(int cellSize)
         {
             this.cellSize = cellSize;
@@ -52,6 +58,11 @@ namespace MoonTools.Core.Bonk
                     IDLookup[id] = (shape, transform2D);
                 }
             }
+
+            MinX = Math.Min(MinX, minHash.Item1);
+            MinY = Math.Min(MinY, minHash.Item2);
+            MaxX = Math.Max(MaxX, maxHash.Item1);
+            MaxY = Math.Max(MaxY, maxHash.Item2);
         }
 
         /// <summary>
@@ -60,12 +71,17 @@ namespace MoonTools.Core.Bonk
         public IEnumerable<(T, IHasAABB2D, Transform2D)> Retrieve(T id, IHasAABB2D shape, Transform2D transform2D)
         {
             var box = shape.TransformedAABB(transform2D);
-            var minHash = Hash(box.Min);
-            var maxHash = Hash(box.Max);
+            var (minX, minY) = Hash(box.Min);
+            var (maxX, maxY) = Hash(box.Max);
 
-            for (var i = minHash.Item1; i <= maxHash.Item1; i++)
+            if (minX < MinX) { minX = MinX; }
+            if (maxX > MaxX) { maxX = MaxX; }
+            if (minY < MinY) { minY = MinY; }
+            if (maxY > MaxY) { maxY = MaxY; }
+
+            for (var i = minX; i <= maxX; i++)
             {
-                for (var j = minHash.Item2; j <= maxHash.Item2; j++)
+                for (var j = minY; j <= maxY; j++)
                 {
                     var key = MakeLong(i, j);
                     if (hashDictionary.ContainsKey(key))
@@ -91,12 +107,17 @@ namespace MoonTools.Core.Bonk
         /// <returns></returns>
         public IEnumerable<(T, IHasAABB2D, Transform2D)> Retrieve(AABB aabb)
         {
-            var minHash = Hash(aabb.Min);
-            var maxHash = Hash(aabb.Max);
+            var (minX, minY) = Hash(aabb.Min);
+            var (maxX, maxY) = Hash(aabb.Max);
 
-            for (var i = minHash.Item1; i <= maxHash.Item1; i++)
+            if (minX < MinX) { minX = MinX; }
+            if (maxX > MaxX) { maxX = MaxX; }
+            if (minY < MinY) { minY = MinY; }
+            if (maxY > MaxY) { maxY = MaxY; }
+
+            for (var i = minX; i <= maxX; i++)
             {
-                for (var j = minHash.Item2; j <= maxHash.Item2; j++)
+                for (var j = minY; j <= maxY; j++)
                 {
                     var key = MakeLong(i, j);
                     if (hashDictionary.ContainsKey(key))
